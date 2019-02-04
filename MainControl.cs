@@ -37,7 +37,7 @@ namespace ACT.DFAssist
         private Localization.Language _selectedGameLanguage;
 
         private readonly string _settingPath;
-        private readonly ConcurrentDictionary<int, ProNet> _procaps;
+        private readonly ConcurrentDictionary<int, ProNet> _pronets;
         private readonly ConcurrentStack<string> _selectedFateStack;
 
         private Timer _timer;
@@ -65,7 +65,7 @@ namespace ACT.DFAssist
             cboLogBackground.SelectedValue = rtxLogger.BackColor.Name;
 
             _settingPath = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config", "ACT.DFAssist.config.xml");
-            _procaps = new ConcurrentDictionary<int, ProNet>();
+            _pronets = new ConcurrentDictionary<int, ProNet>();
             _selectedFateStack = new ConcurrentStack<string>();
 
             foreach (var f in Application.OpenForms)
@@ -132,8 +132,8 @@ namespace ACT.DFAssist
             Localization.Language deflang = new Localization.Language { Name = "English", Code = "en" };
             ReadLanguage(deflang);
 
-            MsgLog.Info("ui-dbg-msg", System.Environment.CurrentDirectory);
-            MsgLog.Info("ui-dbg-msg", PluginPath);
+            //MsgLog.Info("ui-dbg-msg", System.Environment.CurrentDirectory);
+            //MsgLog.Info("ui-dbg-msg", PluginPath);
 
             ReadGameData(deflang);
 
@@ -199,7 +199,7 @@ namespace ACT.DFAssist
                 _actLabelStatus = null;
             }
 
-            foreach (var e in _procaps)
+            foreach (var e in _pronets)
                 e.Value.Network.StopCapture();
 
             _timer.Enabled = false;
@@ -224,8 +224,14 @@ namespace ACT.DFAssist
         {
             lblUiLanguage.Text = Localization.GetText("ui-language-display-text");
             lblGameLanguage.Text = Localization.GetText("ui-language-game-text");
+            lblBackColor.Text = Localization.GetText("ui-language-back-color");
             btnClearLogs.Text = Localization.GetText("ui-log-clear-display-text");
+            btnReconnect.Text = Localization.GetText("ui-reconnect-display-text");
             label1.Text= Localization.GetText("app-description");
+
+            // 색깔도 여기서...
+            if (!string.IsNullOrWhiteSpace(cboLogBackground.Text) && !cboLogBackground.Text.Equals(Color.Transparent.Name))
+                rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
         }
 
         private void UpdateProcesses()
@@ -238,13 +244,13 @@ namespace ACT.DFAssist
             {
                 try
                 {
-                    if (_procaps.ContainsKey(p.Id))
+                    if (_pronets.ContainsKey(p.Id))
                         continue;
 
-                    var pc = new ProNet(p, new Network());
+                    var pn = new ProNet(p, new Network());
                     PacketFFXIV.OnEventReceived += PacketFFXIV_OnEventReceived;
 
-                    _procaps.TryAdd(p.Id, pc);
+                    _pronets.TryAdd(p.Id, pn);
                     MsgLog.Success("l-process-set-success", p.Id);
                 }
                 catch (Exception e)
@@ -254,7 +260,7 @@ namespace ACT.DFAssist
             }
 
             var dels = new List<int>();
-            foreach (var e in _procaps)
+            foreach (var e in _pronets)
             {
                 if (e.Value.Process.HasExited)
                 {
@@ -274,7 +280,7 @@ namespace ACT.DFAssist
             {
                 try
                 {
-                    _procaps.TryRemove(u, out var _);
+                    _pronets.TryRemove(u, out var _);
                     PacketFFXIV.OnEventReceived -= PacketFFXIV_OnEventReceived;
                 }
                 catch (Exception e)
@@ -284,10 +290,21 @@ namespace ACT.DFAssist
             }
         }
 
+        private void ClearProcesses()
+        {
+            foreach (var e in _pronets)
+            {
+                e.Value.Network.StopCapture();
+                PacketFFXIV.OnEventReceived -= PacketFFXIV_OnEventReceived;
+            }
+
+            _pronets.Clear();
+        }
+
         private void PacketFFXIV_OnEventReceived(int pid, GameEvents gameevent, int[] args)
         {
 #if true
-            var server = _procaps[pid].Process.MainModule.FileName.Contains("KOREA") ? "KOREA" : "GLOBAL";
+            var server = _pronets[pid].Process.MainModule.FileName.Contains("KOREA") ? "KOREA" : "GLOBAL";
             var text = pid + "|" + server + "|" + gameevent + "|";
 #else
             var text = pid + "|GLOBAL|" + gameevent + "|";
@@ -600,6 +617,19 @@ namespace ACT.DFAssist
             }
         }
 
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                linkLabel2.LinkVisited = true;
+                System.Diagnostics.Process.Start("https://github.com/lalafellsleep/ACTFate/");
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
         private void CboLogBackground_DrawItem(object sender, DrawItemEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -618,7 +648,18 @@ namespace ACT.DFAssist
 
         private void CboLogBackground_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
+            if (!string.IsNullOrWhiteSpace(cboLogBackground.Text) && !cboLogBackground.Text.Equals(Color.Transparent.Name))
+                rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
+        }
+
+        private void BtnReconnect_Click(object sender, EventArgs e)
+        {
+            _timer.Enabled = false;
+
+            ClearProcesses();
+            UpdateProcesses();
+
+            _timer.Enabled = true;
         }
     }
 }

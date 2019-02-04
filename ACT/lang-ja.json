@@ -51,6 +51,8 @@
   "ui-dbg-msg": "テストメッセージ: {0}",
   "ui-language-display-text": "UI言語",
   "ui-language-game-text": "ゲーム言語",
+  "ui-language-back-color": "背景色",
   "ui-log-clear-display-text": "ログクリア",
+  "ui-reconnect-display-text": "再コネクト",
   "ui-info-version": "Info: データ(バージョン{0})を読みました (A:{1}/I:{2}/R:{3}/F:{4})",
 }

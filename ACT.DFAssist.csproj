@@ -65,6 +65,11 @@
     </Compile>
     <Compile Include="ProNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -72,6 +77,10 @@
   <ItemGroup>
     <EmbeddedResource Include="MainControl.resx">
       <DependentUpon>MainControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +93,27 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btn_del.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\annotation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\061809.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Main_Command_52_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Map64_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player2_Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player12_Icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

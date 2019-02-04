@@ -51,6 +51,8 @@
   "ui-dbg-msg": "디버그: {0}",
   "ui-language-display-text": "UI언어",
   "ui-language-game-text": "게임언어",
+  "ui-language-back-color": "배경색",
   "ui-log-clear-display-text": "로그 지우기",
+  "ui-reconnect-display-text": "재접속",
   "ui-info-version": "Info: 데이터(버전{0})를 읽었습니다 (A:{1}/I:{2}/R:{3}/F:{4})",
 }

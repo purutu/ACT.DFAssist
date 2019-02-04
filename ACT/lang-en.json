@@ -51,6 +51,8 @@
   "ui-dbg-msg": "Debug: {0}",
   "ui-language-display-text": "UI Language",
   "ui-language-game-text": "In Game",
+  "ui-language-back-color": "Back Color",
   "ui-log-clear-display-text": "Clear logs",
+  "ui-reconnect-display-text": "Reconnect",
   "ui-info-version": "Info: Using data version {0} (A:{1}/I:{2}/R:{3}/F:{4})",
 }

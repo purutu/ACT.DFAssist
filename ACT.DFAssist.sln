@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.DFAssist", "ACT.DFAssist.csproj", "{5ECF9B82-353A-4A75-AB43-0160B296C5EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5ECF9B82-353A-4A75-AB43-0160B296C5EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ECF9B82-353A-4A75-AB43-0160B296C5EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ECF9B82-353A-4A75-AB43-0160B296C5EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ECF9B82-353A-4A75-AB43-0160B296C5EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D7D63E81-60EB-4EEB-AF3C-02FD7B3CE5B7}
+	EndGlobalSection
+EndGlobal

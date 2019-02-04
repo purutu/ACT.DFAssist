@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace ACT.DFAssist
 {
-    static class PacketAnalyzer
+    static class PacketFFXIV
     {
-        private static int _lastMember;
-
-        public delegate void EventHandler(int pid, DataModel.EventType eventType, int[] args);
+        public delegate void EventHandler(int pid, GameEvents gameevent, int[] args);
         public static event EventHandler OnEventReceived;
+
+        private static int _lastMember;
 
         public static void Analyze(int pid, byte[] payload, ref State state)
         {
@@ -145,13 +145,13 @@ namespace ACT.DFAssist
 
                     if (type == 0x0B)
                     {
-                        MsgLog.Info("l-field-instance-entered", Data.GetInstance(code).Name);
-                        FireEvent(pid, DataModel.EventType.INSTANCE_ENTER, new int[] { code });
+                        MsgLog.Info("l-field-instance-entered", GameData.GetInstance(code).Name);
+                        FireEvent(pid, GameEvents.InstanceEnter, new int[] { code });
                     }
                     else if (type == 0x0C)
                     {
                         MsgLog.Info("l-field-instance-left");
-                        FireEvent(pid, DataModel.EventType.INSTANCE_EXIT, new int[] { code });
+                        FireEvent(pid, GameEvents.InstanceLeave, new int[] { code });
                     }
                 }
                 else if (opcode == 0x0143) // FATE 진행
@@ -162,19 +162,19 @@ namespace ACT.DFAssist
                     {
                         var code = BitConverter.ToUInt16(data, 4);
                         var progress = data[8];
-                        FireEvent(pid, DataModel.EventType.FATE_PROGRESS, new int[] { code, progress });
+                        FireEvent(pid, GameEvents.FateProgress, new int[] { code, progress });
                     }
                     else if (type == 0x79) // FATE 끗
                     {
                         var code = BitConverter.ToUInt16(data, 4);
                         var status = BitConverter.ToUInt16(data, 28);
-                        FireEvent(pid, DataModel.EventType.FATE_END, new int[] { code, status });
+                        FireEvent(pid, GameEvents.FateEnd, new int[] { code, status });
                     }
                     else if (type == 0x74) // FATE 시작! 에이리어 이동해도 진행중인 것도 이걸로 처리됨
                     {
                         var code = BitConverter.ToUInt16(data, 4);
-                        MsgLog.Info("l-fate-occured-info", Data.GetFate(code).Name);
-                        FireEvent(pid, DataModel.EventType.FATE_BEGIN, new int[] { code });
+                        MsgLog.Info("l-fate-occured-info", GameData.GetFate(code).Name);
+                        FireEvent(pid, GameEvents.FateBegin, new int[] { code });
                     }
                 }
                 else if (opcode == 0x0078) // Duties
@@ -184,14 +184,14 @@ namespace ACT.DFAssist
 
                     if (status == 0) // 듀티 큐
                     {
-                        state = State.QUEUED;
+                        state = State.Queued;
 
                         var rouletteCode = data[20];
 
                         if (rouletteCode != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
                         {
-                            MsgLog.Info("l-queue-started-roulette", Data.GetRoulette(rouletteCode).Name);
-                            FireEvent(pid, DataModel.EventType.MATCH_BEGIN, new[] { (int)MatchType.ROULETTE, rouletteCode });
+                            MsgLog.Info("l-queue-started-roulette", GameData.GetRoulette(rouletteCode).Name);
+                            FireEvent(pid, GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, rouletteCode });
                         }
                         else // 듀티 지정 큐 (Dungeon/Trial/Raid)
                         {
@@ -209,35 +209,35 @@ namespace ACT.DFAssist
                             if (!instances.Any())
                                 return;
 
-                            var args = new List<int> { (int)MatchType.SELECTIVE, instances.Count };
+                            var args = new List<int> { (int)MatchType.Assignment, instances.Count };
                             foreach (var item in instances)
                                 args.Add(item);
 
-                            MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => Data.GetInstance(x).Name).ToArray()));
-                            FireEvent(pid, DataModel.EventType.MATCH_BEGIN, args.ToArray());
+                            MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => GameData.GetInstance(x).Name).ToArray()));
+                            FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
                         }
                     }
                     else if (status == 3) // 취소
                     {
-                        state = reason == 8 ? State.QUEUED : State.IDLE;
+                        state = reason == 8 ? State.Queued : State.Idle;
                         MsgLog.Info("l-queue-stopped");
-                        FireEvent(pid, DataModel.EventType.MATCH_END, new[] { (int)MatchEndType.CANCELLED });
+                        FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
                     }
                     else if (status == 6) // 들어가기
                     {
-                        state = State.IDLE;
+                        state = State.Idle;
                         MsgLog.Info("l-queue-entered");
-                        FireEvent(pid, DataModel.EventType.MATCH_END, new[] { (int)MatchEndType.ENTER_INSTANCE });
+                        FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Enter });
                     }
                     else if (status == 4) // 매치
                     {
                         var roulette = data[20];
                         var code = BitConverter.ToUInt16(data, 22);
 
-                        state = State.MATCHED;
+                        state = State.Matched;
 
-                        MsgLog.Info("l-queue-matched", Data.GetInstance(code).Name);
-                        FireEvent(pid, DataModel.EventType.MATCH_ALERT, new int[] { roulette, code });
+                        MsgLog.Info("l-queue-matched", GameData.GetInstance(code).Name);
+                        FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
                     }
                 }
                 else if (opcode == 0x006F)
@@ -256,24 +256,24 @@ namespace ACT.DFAssist
                     var dps = data[6];
                     var healer = data[7];
 #if false
-                    var instance = Data.GetInstance(code, true); // 예전 아이디 사용
+                    var instance = GameData.GetInstance(code, true); // 예전 아이디 사용
 #else
-                    var instance = Data.GetInstance(code);
+                    var instance = GameData.GetInstance(code);
 #endif
 
                     if (status == 1)
                     {
                         var member = tank * 10000 + dps * 100 + healer;
 
-                        if (state == State.MATCHED && _lastMember != member)
+                        if (state == State.Matched && _lastMember != member)
                         {
                             // 마지막 정보와 다름
-                            state = State.QUEUED;
+                            state = State.Queued;
                         }
-                        else if (state == State.IDLE)
+                        else if (state == State.Idle)
                         {
                             // 매칭 중간에 플러그리인이 시작됨
-                            state = State.QUEUED;
+                            state = State.Queued;
                         }
 
                         _lastMember = member;
@@ -289,28 +289,35 @@ namespace ACT.DFAssist
                     }
 
                     MsgLog.Info("l-queue-updated", instance.Name, status, tank, instance.Tank, healer, instance.Healer, dps, instance.Dps);
-                    FireEvent(pid, DataModel.EventType.MATCH_PROGRESS, new int[] { code, status, tank, healer, dps });
+                    FireEvent(pid, GameEvents.MatchStatus, new int[] { code, status, tank, healer, dps });
                 }
                 else if (opcode == 0x0080)
                 {
                     var roulette = data[2];
                     var code = BitConverter.ToUInt16(data, 4);
 
-                    state = State.MATCHED;
+                    state = State.Matched;
 
                     MsgLog.Success("l-queue-matched ", code);
-                    FireEvent(pid, DataModel.EventType.MATCH_ALERT, new int[] { roulette, code });
+                    FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
                 }
             }
             catch (Exception ex)
             {
+#if false
                 MsgLog.Exception(ex, "l-analyze-error-handle");
+#else
+                // 지역이동할때만 나타난다. 메시지를 출력하지 말자
+                var fmt = Localization.GetText("l-analyze-error-handle");
+                var msg = MsgLog.Escape(ex.Message);
+                System.Diagnostics.Debug.WriteLine($"{fmt}: {msg}");
+#endif
             }
         }
 
-        private static void FireEvent(int pid, DataModel.EventType eventType, int[] args)
+        private static void FireEvent(int pid, GameEvents gameevent, int[] args)
         {
-            OnEventReceived?.Invoke(pid, eventType, args);
+            OnEventReceived?.Invoke(pid, gameevent, args);
         }
     }
 }

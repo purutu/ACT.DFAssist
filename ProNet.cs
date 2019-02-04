@@ -2,15 +2,15 @@
 
 namespace ACT.DFAssist
 {
-    class ProCap
+    class ProNet
     {
         public Process Process { get; }
-        public Network.Capture Capture { get; }
+        public Network Network { get; }
 
-        public ProCap(Process p, Network.Capture c)
+        public ProNet(Process p, Network n)
         {
             Process = p;
-            Capture = c;
+            Network = n;
         }
     }
 }

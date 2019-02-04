@@ -1,6 +1,7 @@
 ﻿using Advanced_Combat_Tracker;
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -9,21 +10,36 @@ namespace ACT.DFAssist
 {
     public static class MsgLog
     {
+        private static class NativeMethods
+        {
+            [DllImport("user32.dll", CharSet = CharSet.Auto)]
+            private static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+            private const int WM_VSCROLL = 277;
+            private const int SB_PAGEBOTTOM = 7;
+
+            internal static void ScrollToBottom(RichTextBox richTextBox)
+            {
+                SendMessage(richTextBox.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
+                richTextBox.SelectionStart = richTextBox.Text.Length;
+            }
+        }
+
         private static readonly Regex EscapePattern = new Regex(@"\{(.+?)\}");
 
-        private static RichTextBox _richTextBox;
+        private static RichTextBox _logbox;
 
-        public static void SetTextBox(RichTextBox box)
+        public static void SetTextBox(RichTextBox logbox)
         {
-            _richTextBox = box;
+            _logbox = logbox;
         }
 
         private static void Write(Color color, object format, params object[] args)
         {
-            if (_richTextBox == null || _richTextBox.IsDisposed)
+            if (_logbox == null || _logbox.IsDisposed)
                 return;
 
             var formatted = format ?? "(null)";
+
             try
             {
                 formatted = string.Format(formatted.ToString(), args);
@@ -37,12 +53,13 @@ namespace ACT.DFAssist
 
             ActGlobals.oFormActMain.Invoke(new Action(() =>
             {
-                _richTextBox.SelectionStart = _richTextBox.TextLength;
-                _richTextBox.SelectionLength = 0;
-                _richTextBox.SelectionColor = color;
-                _richTextBox.AppendText(message);
-                _richTextBox.SelectionColor = _richTextBox.ForeColor;
-                NativeMethods.ScrollToBottom(_richTextBox);
+                _logbox.SelectionColor = color;
+                _logbox.SelectionStart = _logbox.TextLength;
+                _logbox.SelectionLength = 0;
+                _logbox.AppendText(message);
+
+                _logbox.SelectionColor = _logbox.ForeColor;
+                NativeMethods.ScrollToBottom(_logbox);
             }));
         }
 
@@ -63,11 +80,10 @@ namespace ACT.DFAssist
 
         public static void Exception(Exception ex, string key, params object[] args)
         {
-            var format = Localization.GetText(key);
-            var message = ex.Message;
+            var fmt = Localization.GetText(key);
+            var msg = Escape(ex.Message);
 
-            message = Escape(message);
-            Error($"{format}: {message}", args);
+            Error($"{fmt}: {msg}", args);
         }
 
         public static void Debug(object format, params object[] args)
@@ -104,7 +120,7 @@ namespace ACT.DFAssist
             Debug(stringBuilder.ToString());
         }
 
-        private static string Escape(string line)
+        internal static string Escape(string line)
         {
             return EscapePattern.Replace(line, "{{$1}}");
         }

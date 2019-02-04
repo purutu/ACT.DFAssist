@@ -14,6 +14,7 @@ using System.Collections.Concurrent;
 using System.Collections;
 using System.Xml;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace ACT.DFAssist
 {
@@ -32,11 +33,11 @@ namespace ACT.DFAssist
         private bool _isPluginEnabled;
         private bool _isLockFates;
         private string _selectedFates;
-        private DataModel.Language _selectedUiLanguage;
-        private DataModel.Language _selectedGameLanguage;
+        private Localization.Language _selectedUiLanguage;
+        private Localization.Language _selectedGameLanguage;
 
         private readonly string _settingPath;
-        private readonly ConcurrentDictionary<int, ProCap> _procaps;
+        private readonly ConcurrentDictionary<int, ProNet> _procaps;
         private readonly ConcurrentStack<string> _selectedFateStack;
 
         private Timer _timer;
@@ -55,8 +56,16 @@ namespace ACT.DFAssist
 
             InitializeComponent();
 
+            ArrayList colors = new ArrayList();
+            Type colortype = typeof(System.Drawing.Color);
+            PropertyInfo[] pis = colortype.GetProperties(BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public);
+            foreach (var p in pis)
+                cboLogBackground.Items.Add(p.Name);
+
+            cboLogBackground.SelectedValue = rtxLogger.BackColor.Name;
+
             _settingPath = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config", "ACT.DFAssist.config.xml");
-            _procaps = new ConcurrentDictionary<int, ProCap>();
+            _procaps = new ConcurrentDictionary<int, ProNet>();
             _selectedFateStack = new ConcurrentStack<string>();
 
             foreach (var f in Application.OpenForms)
@@ -120,37 +129,35 @@ namespace ACT.DFAssist
             MsgLog.SetTextBox(rtxLogger);
             ActGlobals.oFormActMain.Shown -= OFormActMain_Shown;
 
-            DataModel.Language deflang = new DataModel.Language { Name = "English", Code = "en" };
+            Localization.Language deflang = new Localization.Language { Name = "English", Code = "en" };
             ReadLanguage(deflang);
 
             MsgLog.Info("ui-dbg-msg", System.Environment.CurrentDirectory);
             MsgLog.Info("ui-dbg-msg", PluginPath);
 
-            ReadInstanceData(deflang);
+            ReadGameData(deflang);
 
             _isPluginEnabled = true;
 
-            cboUiLanguage.DataSource = new DataModel.Language[]
+            cboUiLanguage.DataSource = new Localization.Language[]
             {
-                new DataModel.Language{Name="English", Code="en"},
-                new DataModel.Language{Name="にほんご", Code="ja"},
-                new DataModel.Language{Name="한국말", Code="ko"},
+                new Localization.Language{Name="English", Code="en"},
+                new Localization.Language{Name="にほんご", Code="ja"},
+                new Localization.Language{Name="한국말", Code="ko"},
             }; 
             cboUiLanguage.DisplayMember = "Name";
             cboUiLanguage.ValueMember = "Code";
 
-            cboGameLanguage.DataSource = new DataModel.Language[]
+            cboGameLanguage.DataSource = new Localization.Language[]
             {
-                new DataModel.Language{Name="English", Code="en"},
-                new DataModel.Language{Name="にほんご", Code="ja"},
-                new DataModel.Language{Name="한국말", Code="ko"},
+                new Localization.Language{Name="English", Code="en"},
+                new Localization.Language{Name="にほんご", Code="ja"},
+                new Localization.Language{Name="한국말", Code="ko"},
             };
             cboGameLanguage.DisplayMember = "Name";
             cboGameLanguage.ValueMember = "Code";
 
-            //cboUiLanguage.DataSource
-
-            this.Dock = DockStyle.Fill;
+            Dock = DockStyle.Fill;
 
             _actLabelStatus.Text = "Initializing...";
 
@@ -162,7 +169,8 @@ namespace ACT.DFAssist
 
             _srset = new SettingsSerializer(this);
             ReadSettings();
-            ReadFates();
+
+            UpdateFates();
 
             UpdateProcesses();
 
@@ -192,7 +200,7 @@ namespace ACT.DFAssist
             }
 
             foreach (var e in _procaps)
-                e.Value.Capture.StopCapture();
+                e.Value.Network.StopCapture();
 
             _timer.Enabled = false;
 
@@ -233,8 +241,8 @@ namespace ACT.DFAssist
                     if (_procaps.ContainsKey(p.Id))
                         continue;
 
-                    var pc = new ProCap(p, new Network.Capture());
-                    PacketAnalyzer.OnEventReceived += FFXIVPacketHandler_OnEventReceived;
+                    var pc = new ProNet(p, new Network());
+                    PacketFFXIV.OnEventReceived += PacketFFXIV_OnEventReceived;
 
                     _procaps.TryAdd(p.Id, pc);
                     MsgLog.Success("l-process-set-success", p.Id);
@@ -250,15 +258,15 @@ namespace ACT.DFAssist
             {
                 if (e.Value.Process.HasExited)
                 {
-                    e.Value.Capture.StopCapture();
+                    e.Value.Network.StopCapture();
                     dels.Add(e.Key);
                 }
                 else
                 {
-                    if (e.Value.Capture.IsRunning)
-                        e.Value.Capture.UpdateGameConnections(e.Value.Process);
+                    if (e.Value.Network.IsRunning)
+                        e.Value.Network.UpdateGameConnections(e.Value.Process);
                     else
-                        e.Value.Capture.StartCapture(e.Value.Process);
+                        e.Value.Network.StartCapture(e.Value.Process);
                 }
             }
 
@@ -267,7 +275,7 @@ namespace ACT.DFAssist
                 try
                 {
                     _procaps.TryRemove(u, out var _);
-                    PacketAnalyzer.OnEventReceived -= FFXIVPacketHandler_OnEventReceived;
+                    PacketFFXIV.OnEventReceived -= PacketFFXIV_OnEventReceived;
                 }
                 catch (Exception e)
                 {
@@ -276,45 +284,47 @@ namespace ACT.DFAssist
             }
         }
 
-        private void FFXIVPacketHandler_OnEventReceived(int pid, DataModel.EventType eventType, int[] args)
+        private void PacketFFXIV_OnEventReceived(int pid, GameEvents gameevent, int[] args)
         {
 #if true
             var server = _procaps[pid].Process.MainModule.FileName.Contains("KOREA") ? "KOREA" : "GLOBAL";
-            var text = pid + "|" + server + "|" + eventType + "|";
+            var text = pid + "|" + server + "|" + gameevent + "|";
 #else
-            var text = pid + "|GLOBAL|" + eventType + "|";
+            var text = pid + "|GLOBAL|" + gameevent + "|";
 #endif
             var pos = 0;
             var isFate = false;
 
-            switch (eventType)
+            switch (gameevent)
             {
-                case DataModel.EventType.INSTANCE_ENTER:
-                case DataModel.EventType.INSTANCE_EXIT:
+                case GameEvents.InstanceEnter:
+                case GameEvents.InstanceLeave:
                     if (args.Length > 0)
                     {
                         text += GetInstanceName(args[0]) + "|";
                         pos++;
                     }
-
                     break;
-                case DataModel.EventType.FATE_BEGIN:
-                case DataModel.EventType.FATE_PROGRESS:
-                case DataModel.EventType.FATE_END:
+
+                case GameEvents.FateBegin:
+                case GameEvents.FateProgress:
+                case GameEvents.FateEnd:
                     isFate = true;
                     text += GetFateName(args[0]) + "|" + GetAreaNameFromFate(args[0]) + "|";
                     pos++;
                     break;
-                case DataModel.EventType.MATCH_BEGIN:
+
+                case GameEvents.MatchBegin:
                     text += (MatchType)args[0] + "|";
                     pos++;
                     switch ((MatchType)args[0])
                     {
-                        case MatchType.ROULETTE:
+                        case MatchType.Roulette:
                             text += GetRouletteName(args[1]) + "|";
                             pos++;
                             break;
-                        case MatchType.SELECTIVE:
+
+                        case MatchType.Assignment:
                             text += args[1] + "|";
                             pos++;
                             var p = pos;
@@ -323,20 +333,21 @@ namespace ACT.DFAssist
                                 text += GetInstanceName(args[i]) + "|";
                                 pos++;
                             }
-
                             break;
                     }
-
                     break;
-                case DataModel.EventType.MATCH_END:
-                    text += (MatchEndType)args[0] + "|";
+
+                case GameEvents.MatchEnd:
+                    text += (MatchResult)args[0] + "|";
                     pos++;
                     break;
-                case DataModel.EventType.MATCH_PROGRESS:
+
+                case GameEvents.MatchStatus:
                     text += GetInstanceName(args[0]) + "|";
                     pos++;
                     break;
-                case DataModel.EventType.MATCH_ALERT:
+
+                case GameEvents.MatchDone:
                     text += GetRouletteName(args[0]) + "|";
                     pos++;
                     text += GetInstanceName(args[1]) + "|";
@@ -344,19 +355,17 @@ namespace ACT.DFAssist
                     break;
             }
 
-            for (var i = pos; i < args.Length; i++) text += args[i] + "|";
+            for (var i = pos; i < args.Length; i++)
+                text += args[i] + "|";
 
             if (isFate) text += args[0] + "|";
 
             ActGlobals.oFormActMain.ParseRawLogLine(false, DateTime.Now, "00|" + DateTime.Now.ToString("O") + "|0048|F|" + text);
-
-            //PostToToastWindowsNotificationIfNeeded(server, eventType, args);
-            //PostToTelegramIfNeeded(server, eventType, args);
         }
 
-        private void ReadLanguage(DataModel.Language uilang=null)
+        private void ReadLanguage(Localization.Language uilang=null)
         {
-            DataModel.Language lang = uilang ?? (DataModel.Language)cboUiLanguage.SelectedItem;
+            Localization.Language lang = uilang ?? (Localization.Language)cboUiLanguage.SelectedItem;
 
             if (_selectedUiLanguage == null || !lang.Code.Equals(_selectedUiLanguage.Code))
             {
@@ -365,16 +374,19 @@ namespace ACT.DFAssist
             }
         }
 
-        private void ReadInstanceData(DataModel.Language gamelang=null)
+        private void ReadGameData(Localization.Language gamelang=null)
         {
-            DataModel.Language lang = gamelang ?? (DataModel.Language)cboGameLanguage.SelectedItem;
+            Localization.Language lang = gamelang ?? (Localization.Language)cboGameLanguage.SelectedItem;
 
             if (_selectedGameLanguage == null || !lang.Code.Equals(_selectedGameLanguage.Code))
             {
                 _selectedGameLanguage = lang;
-                Data.Initialize(PluginPath, lang.Code);
+                GameData.Initialize(PluginPath, lang.Code);
 
-                MsgLog.Info("ui-info-version", Data.Version, Data.Areas.Count, Data.Instances.Count, Data.Roulettes.Count, Data.Fates.Count);
+                MsgLog.Info("ui-info-version",
+                    GameData.Version, 
+                    GameData.Areas.Count, GameData.Instances.Count, 
+                    GameData.Roulettes.Count, GameData.Fates.Count);
             }
         }
 
@@ -389,7 +401,7 @@ namespace ACT.DFAssist
             }
         }
 
-        private void ReadFates()
+        private void UpdateFates()
         {
             trvFates.Nodes.Clear();
 
@@ -402,7 +414,7 @@ namespace ACT.DFAssist
 
             _isLockFates = true;
 
-            foreach (var a in Data.Areas)
+            foreach (var a in GameData.Areas)
             {
                 var n = trvFates.Nodes.Add(a.Value.Name);
                 n.Tag = "AREA:" + a.Key;
@@ -431,6 +443,7 @@ namespace ACT.DFAssist
         {
             _srset.AddControlSetting(cboUiLanguage.Name, cboUiLanguage);
             _srset.AddControlSetting(cboGameLanguage.Name, cboGameLanguage);
+            _srset.AddControlSetting(cboLogBackground.Name, cboLogBackground);
             _srset.AddStringSetting("SelectedFates");
 
             if (File.Exists(_settingPath))
@@ -458,8 +471,8 @@ namespace ACT.DFAssist
                 }
             }
 
-            _selectedUiLanguage = (DataModel.Language)cboUiLanguage.SelectedItem;
-            _selectedGameLanguage= (DataModel.Language)cboGameLanguage.SelectedItem;
+            _selectedUiLanguage = (Localization.Language)cboUiLanguage.SelectedItem;
+            _selectedGameLanguage= (Localization.Language)cboGameLanguage.SelectedItem;
         }
 
         private void SaveSettings()
@@ -505,25 +518,25 @@ namespace ACT.DFAssist
 
         private static string GetInstanceName(int code)
         {
-            return Data.GetInstance(code).Name;
+            return GameData.GetInstance(code).Name;
         }
 
         private static string GetFateName(int code)
         {
-            return Data.GetFate(code).Name;
+            return GameData.GetFate(code).Name;
         }
 
         private static string GetAreaNameFromFate(int code)
         {
-            return Data.GetFate(code).Area.Name;
+            return GameData.GetFate(code).Area.Name;
         }
 
         private static string GetRouletteName(int code)
         {
-            return Data.GetRoulette(code).Name;
+            return GameData.GetRoulette(code).Name;
         }
 
-        private void trvFates_AfterCheck(object sender, TreeViewEventArgs e)
+        private void TrvFates_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (_isLockFates)
                 return;
@@ -557,24 +570,24 @@ namespace ACT.DFAssist
             _isLockFates = false;
         }
 
-        private void btnClearLogs_Click(object sender, EventArgs e)
+        private void BtnClearLogs_Click(object sender, EventArgs e)
         {
             rtxLogger.Clear();
         }
 
-        private void cboUiLanguage_SelectedValueChanged(object sender, EventArgs e)
+        private void CboUiLanguage_SelectedValueChanged(object sender, EventArgs e)
         {
             ReadLanguage();
             UpdateUiLanguage();
         }
 
-        private void cboGameLanguage_SelectedValueChanged(object sender, EventArgs e)
+        private void CboGameLanguage_SelectedValueChanged(object sender, EventArgs e)
         {
-            ReadInstanceData();
-            ReadFates();
+            ReadGameData();
+            UpdateFates();
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
@@ -585,6 +598,27 @@ namespace ACT.DFAssist
             {
 
             }
+        }
+
+        private void CboLogBackground_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Rectangle r = e.Bounds;
+
+            if (e.Index >= 0)
+            {
+                var n = ((ComboBox)sender).Items[e.Index].ToString();
+                var f = new Font("Sego UI", 9, FontStyle.Regular);
+                var c = Color.FromName(n);
+                var b = new SolidBrush(c);
+                g.FillRectangle(b, r.X + 4, r.Y + 3, r.X + 30, r.Height - 3);
+                g.DrawString(n, f, Brushes.Black, r.X+32, r.Top);
+            }
+        }
+
+        private void CboLogBackground_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
         }
     }
 }

@@ -34,12 +34,13 @@
             this.trvFates = new System.Windows.Forms.TreeView();
             this.splitBase = new System.Windows.Forms.SplitContainer();
             this.splitMenuFate = new System.Windows.Forms.SplitContainer();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.btnClearLogs = new System.Windows.Forms.Button();
             this.cboGameLanguage = new System.Windows.Forms.ComboBox();
             this.lblGameLanguage = new System.Windows.Forms.Label();
             this.cboUiLanguage = new System.Windows.Forms.ComboBox();
             this.lblUiLanguage = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.cboLogBackground = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitBase)).BeginInit();
             this.splitBase.Panel1.SuspendLayout();
             this.splitBase.Panel2.SuspendLayout();
@@ -62,7 +63,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(262, 32);
+            this.label2.Location = new System.Drawing.Point(326, 27);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 1;
@@ -72,13 +73,13 @@
             // 
             // rtxLogger
             // 
-            this.rtxLogger.BackColor = System.Drawing.SystemColors.Info;
+            this.rtxLogger.BackColor = System.Drawing.Color.Linen;
             this.rtxLogger.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtxLogger.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtxLogger.Location = new System.Drawing.Point(0, 0);
             this.rtxLogger.Name = "rtxLogger";
             this.rtxLogger.ReadOnly = true;
-            this.rtxLogger.Size = new System.Drawing.Size(512, 559);
+            this.rtxLogger.Size = new System.Drawing.Size(536, 559);
             this.rtxLogger.TabIndex = 2;
             this.rtxLogger.Text = "";
             // 
@@ -88,9 +89,9 @@
             this.trvFates.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trvFates.Location = new System.Drawing.Point(0, 0);
             this.trvFates.Name = "trvFates";
-            this.trvFates.Size = new System.Drawing.Size(396, 471);
+            this.trvFates.Size = new System.Drawing.Size(372, 471);
             this.trvFates.TabIndex = 3;
-            this.trvFates.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.trvFates_AfterCheck);
+            this.trvFates.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.TrvFates_AfterCheck);
             // 
             // splitBase
             // 
@@ -100,13 +101,13 @@
             // 
             // splitBase.Panel1
             // 
-            this.splitBase.Panel1.Controls.Add(this.rtxLogger);
+            this.splitBase.Panel1.Controls.Add(this.splitMenuFate);
             // 
             // splitBase.Panel2
             // 
-            this.splitBase.Panel2.Controls.Add(this.splitMenuFate);
+            this.splitBase.Panel2.Controls.Add(this.rtxLogger);
             this.splitBase.Size = new System.Drawing.Size(912, 559);
-            this.splitBase.SplitterDistance = 512;
+            this.splitBase.SplitterDistance = 372;
             this.splitBase.TabIndex = 4;
             // 
             // splitMenuFate
@@ -118,6 +119,7 @@
             // 
             // splitMenuFate.Panel1
             // 
+            this.splitMenuFate.Panel1.Controls.Add(this.cboLogBackground);
             this.splitMenuFate.Panel1.Controls.Add(this.linkLabel1);
             this.splitMenuFate.Panel1.Controls.Add(this.btnClearLogs);
             this.splitMenuFate.Panel1.Controls.Add(this.cboGameLanguage);
@@ -130,9 +132,20 @@
             // splitMenuFate.Panel2
             // 
             this.splitMenuFate.Panel2.Controls.Add(this.trvFates);
-            this.splitMenuFate.Size = new System.Drawing.Size(396, 559);
+            this.splitMenuFate.Size = new System.Drawing.Size(372, 559);
             this.splitMenuFate.SplitterDistance = 84;
             this.splitMenuFate.TabIndex = 0;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(105, 68);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(92, 13);
+            this.linkLabel1.TabIndex = 7;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Original by devunt";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
             // 
             // btnClearLogs
             // 
@@ -142,22 +155,22 @@
             this.btnClearLogs.TabIndex = 6;
             this.btnClearLogs.Text = "Clear Logs";
             this.btnClearLogs.UseVisualStyleBackColor = true;
-            this.btnClearLogs.Click += new System.EventHandler(this.btnClearLogs_Click);
+            this.btnClearLogs.Click += new System.EventHandler(this.BtnClearLogs_Click);
             // 
             // cboGameLanguage
             // 
             this.cboGameLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGameLanguage.FormattingEnabled = true;
-            this.cboGameLanguage.Location = new System.Drawing.Point(265, 3);
+            this.cboGameLanguage.Location = new System.Drawing.Point(273, 3);
             this.cboGameLanguage.Name = "cboGameLanguage";
             this.cboGameLanguage.Size = new System.Drawing.Size(96, 21);
             this.cboGameLanguage.TabIndex = 5;
-            this.cboGameLanguage.SelectedValueChanged += new System.EventHandler(this.cboGameLanguage_SelectedValueChanged);
+            this.cboGameLanguage.SelectedValueChanged += new System.EventHandler(this.CboGameLanguage_SelectedValueChanged);
             // 
             // lblGameLanguage
             // 
             this.lblGameLanguage.AutoSize = true;
-            this.lblGameLanguage.Location = new System.Drawing.Point(191, 6);
+            this.lblGameLanguage.Location = new System.Drawing.Point(198, 6);
             this.lblGameLanguage.Name = "lblGameLanguage";
             this.lblGameLanguage.Size = new System.Drawing.Size(47, 13);
             this.lblGameLanguage.TabIndex = 4;
@@ -171,7 +184,7 @@
             this.cboUiLanguage.Name = "cboUiLanguage";
             this.cboUiLanguage.Size = new System.Drawing.Size(96, 21);
             this.cboUiLanguage.TabIndex = 3;
-            this.cboUiLanguage.SelectedValueChanged += new System.EventHandler(this.cboUiLanguage_SelectedValueChanged);
+            this.cboUiLanguage.SelectedValueChanged += new System.EventHandler(this.CboUiLanguage_SelectedValueChanged);
             // 
             // lblUiLanguage
             // 
@@ -182,16 +195,17 @@
             this.lblUiLanguage.TabIndex = 2;
             this.lblUiLanguage.Text = "UI Language";
             // 
-            // linkLabel1
+            // cboLogBackground
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(105, 68);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(92, 13);
-            this.linkLabel1.TabIndex = 7;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Original by devunt";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.cboLogBackground.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cboLogBackground.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLogBackground.FormattingEnabled = true;
+            this.cboLogBackground.Location = new System.Drawing.Point(233, 61);
+            this.cboLogBackground.Name = "cboLogBackground";
+            this.cboLogBackground.Size = new System.Drawing.Size(136, 21);
+            this.cboLogBackground.TabIndex = 8;
+            this.cboLogBackground.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.CboLogBackground_DrawItem);
+            this.cboLogBackground.SelectionChangeCommitted += new System.EventHandler(this.CboLogBackground_SelectionChangeCommitted);
             // 
             // MainControl
             // 
@@ -227,5 +241,6 @@
         private System.Windows.Forms.Label lblUiLanguage;
         private System.Windows.Forms.Button btnClearLogs;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.ComboBox cboLogBackground;
     }
 }

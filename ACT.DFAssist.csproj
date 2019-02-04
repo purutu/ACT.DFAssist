@@ -51,20 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data.cs" />
-    <Compile Include="PacketAnalyzer.cs" />
+    <Compile Include="GameEvents.cs" />
+    <Compile Include="PacketFFXIV.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MsgLog.cs" />
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="Network.cs" />
-    <Compile Include="DataModel.cs" />
+    <Compile Include="GameData.cs" />
     <Compile Include="MainControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MainControl.Designer.cs">
       <DependentUpon>MainControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProCap.cs" />
+    <Compile Include="ProNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

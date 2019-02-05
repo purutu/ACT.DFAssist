@@ -95,6 +95,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="Resources\btn_del.png" />
   </ItemGroup>
   <ItemGroup>

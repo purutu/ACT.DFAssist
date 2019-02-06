@@ -6,7 +6,7 @@ namespace ACT.DFAssist
     static class Settings
     {
         public static string Path { get; set; }
-        public static readonly ConcurrentHashSet<int> SelectedFates = new ConcurrentHashSet<int>();
+        public static readonly ConcurrentHashSet<string> SelectedFates = new ConcurrentHashSet<string>();
 
 
         public static bool LoggingWholeFates { get; set; }

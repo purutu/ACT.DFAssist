@@ -38,6 +38,7 @@
             this.tabLeft = new System.Windows.Forms.TabControl();
             this.tabPageFates = new System.Windows.Forms.TabPage();
             this.tabPageSetting = new System.Windows.Forms.TabPage();
+            this.txtSelectedFates = new System.Windows.Forms.TextBox();
             this.chkWholeFates = new System.Windows.Forms.CheckBox();
             this.btnReconnect = new System.Windows.Forms.Button();
             this.lblBackColor = new System.Windows.Forms.Label();
@@ -150,6 +151,7 @@
             // 
             // tabPageSetting
             // 
+            this.tabPageSetting.Controls.Add(this.txtSelectedFates);
             this.tabPageSetting.Controls.Add(this.chkWholeFates);
             this.tabPageSetting.Controls.Add(this.btnReconnect);
             this.tabPageSetting.Controls.Add(this.lblBackColor);
@@ -167,6 +169,14 @@
             this.tabPageSetting.TabIndex = 1;
             this.tabPageSetting.Text = "Setting";
             this.tabPageSetting.UseVisualStyleBackColor = true;
+            // 
+            // txtSelectedFates
+            // 
+            this.txtSelectedFates.Location = new System.Drawing.Point(9, 378);
+            this.txtSelectedFates.Name = "txtSelectedFates";
+            this.txtSelectedFates.Size = new System.Drawing.Size(227, 25);
+            this.txtSelectedFates.TabIndex = 12;
+            this.txtSelectedFates.Visible = false;
             // 
             // chkWholeFates
             // 
@@ -363,5 +373,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ImageList ilTab;
         private System.Windows.Forms.CheckBox chkWholeFates;
+        private System.Windows.Forms.TextBox txtSelectedFates;
     }
 }

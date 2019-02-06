@@ -174,7 +174,7 @@ namespace ACT.DFAssist
                     {
                         var code = BitConverter.ToUInt16(data, 4);
 
-                        if (Settings.LoggingWholeFates || Settings.SelectedFates.Contains(code))
+                        if (Settings.LoggingWholeFates || Settings.SelectedFates.Contains(code.ToString()))
                         {
                             MsgLog.Info("l-fate-occured-info", GameData.GetFate(code).Name);
                             FireEvent(pid, GameEvents.FateBegin, new int[] { code });

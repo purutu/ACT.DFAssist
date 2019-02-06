@@ -32,9 +32,6 @@ namespace ACT.DFAssist
         private bool _isLockFates;
 
         //
-        private string _fatesLine;
-
-        //
         private Localization.Locale _localeUi;
         private Localization.Locale _localeGame;
 
@@ -422,22 +419,25 @@ namespace ACT.DFAssist
             }
         }
 
-        // 
-        private void InternalRecursiveSelectedFates(IEnumerable node)
+        //
+        private void InternalBuildSelectedFates(IEnumerable node)
         {
             foreach (TreeNode n in node)
             {
                 if (n.Checked)
-                    Settings.SelectedFates.Add(int.Parse((string)n.Tag));
-                InternalRecursiveSelectedFates(n.Nodes);
+                    Settings.SelectedFates.Add((string)n.Tag);
+                InternalBuildSelectedFates(n.Nodes);
             }
         }
 
         //
-        private void RebuildSelectedFates()
+        private void BuildSelectedFates(bool maketext = false)
         {
             Settings.SelectedFates.Clear();
-            InternalRecursiveSelectedFates(trvFates.Nodes);
+            InternalBuildSelectedFates(trvFates.Nodes);
+
+            if (maketext)
+                txtSelectedFates.Text = string.Join("|", Settings.SelectedFates);
         }
 
         //
@@ -445,11 +445,18 @@ namespace ACT.DFAssist
         {
             trvFates.Nodes.Clear();
 
-            var chks = new List<string>();
-            if (!string.IsNullOrEmpty(_fatesLine))
+            //
+            Settings.SelectedFates.Clear();
+
+            if (!string.IsNullOrWhiteSpace(txtSelectedFates.Text))
             {
-                var s = _fatesLine.Split('|');
-                chks.AddRange(s);
+                var ss = txtSelectedFates.Text.Split('|');
+                
+                foreach (var s in ss)
+                {
+                    if (!string.IsNullOrWhiteSpace(s))
+                        Settings.SelectedFates.Add(s);
+                }
             }
 
             _isLockFates = true;
@@ -459,7 +466,7 @@ namespace ACT.DFAssist
                 var n = trvFates.Nodes.Add(a.Value.Name);
                 n.Tag = "AREA:" + a.Key;
 
-                if (chks.Contains((string)n.Tag))
+                if (Settings.SelectedFates.Contains((string)n.Tag))
                     n.Checked = true;
 
                 foreach (var f in a.Value.Fates)
@@ -468,12 +475,12 @@ namespace ACT.DFAssist
                     var node = n.Nodes.Add(name);
                     node.Tag = f.Key.ToString();
 
-                    if (chks.Contains((string)node.Tag))
+                    if (Settings.SelectedFates.Contains((string)node.Tag))
                         node.Checked = true;
                 }
             }
 
-            RebuildSelectedFates();
+            BuildSelectedFates();
 
             _isLockFates = false;
         }
@@ -481,11 +488,11 @@ namespace ACT.DFAssist
         //
         private void ReadSettings()
         {
-            _srset.AddControlSetting(cboUiLanguage.Name, cboUiLanguage);
-            _srset.AddControlSetting(cboGameLanguage.Name, cboGameLanguage);
-            _srset.AddControlSetting(cboLogBackground.Name, cboLogBackground);
-            _srset.AddControlSetting(chkWholeFates.Name, chkWholeFates);
-            _srset.AddStringSetting("SelectedFates");
+            _srset.AddControlSetting("LocaleUi", cboUiLanguage);
+            _srset.AddControlSetting("LocaleGame", cboGameLanguage);
+            _srset.AddControlSetting("LogBackColor", cboLogBackground);
+            _srset.AddControlSetting("LoggingWholeFATEs", chkWholeFates);
+            _srset.AddControlSetting("SelectedFates", txtSelectedFates);
 
             if (File.Exists(Settings.Path))
             {
@@ -531,8 +538,6 @@ namespace ACT.DFAssist
         {
             try
             {
-                _fatesLine = string.Join("|", Settings.SelectedFates);
-
                 using (var fs = new FileStream(Settings.Path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                 using (var xw = new XmlTextWriter(fs, Encoding.UTF8) { Formatting = Formatting.Indented, Indentation = 1, IndentChar = '\t' })
                 {
@@ -604,7 +609,7 @@ namespace ACT.DFAssist
                 }
             }
 
-            RebuildSelectedFates();
+            BuildSelectedFates(true);
             SaveSettings();
 
             _isLockFates = false;

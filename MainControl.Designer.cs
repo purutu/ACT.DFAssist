@@ -38,6 +38,7 @@
             this.tabLeft = new System.Windows.Forms.TabControl();
             this.tabPageFates = new System.Windows.Forms.TabPage();
             this.tabPageSetting = new System.Windows.Forms.TabPage();
+            this.chkWholeFates = new System.Windows.Forms.CheckBox();
             this.btnReconnect = new System.Windows.Forms.Button();
             this.lblBackColor = new System.Windows.Forms.Label();
             this.cboLogBackground = new System.Windows.Forms.ComboBox();
@@ -149,6 +150,7 @@
             // 
             // tabPageSetting
             // 
+            this.tabPageSetting.Controls.Add(this.chkWholeFates);
             this.tabPageSetting.Controls.Add(this.btnReconnect);
             this.tabPageSetting.Controls.Add(this.lblBackColor);
             this.tabPageSetting.Controls.Add(this.cboLogBackground);
@@ -165,6 +167,17 @@
             this.tabPageSetting.TabIndex = 1;
             this.tabPageSetting.Text = "Setting";
             this.tabPageSetting.UseVisualStyleBackColor = true;
+            // 
+            // chkWholeFates
+            // 
+            this.chkWholeFates.AutoSize = true;
+            this.chkWholeFates.Location = new System.Drawing.Point(9, 92);
+            this.chkWholeFates.Name = "chkWholeFates";
+            this.chkWholeFates.Size = new System.Drawing.Size(149, 21);
+            this.chkWholeFates.TabIndex = 11;
+            this.chkWholeFates.Text = "Logging whole FATEs";
+            this.chkWholeFates.UseVisualStyleBackColor = true;
+            this.chkWholeFates.CheckedChanged += new System.EventHandler(this.ChkWholeFates_CheckedChanged);
             // 
             // btnReconnect
             // 
@@ -197,7 +210,7 @@
             this.cboLogBackground.Size = new System.Drawing.Size(141, 26);
             this.cboLogBackground.TabIndex = 8;
             this.cboLogBackground.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.CboLogBackground_DrawItem);
-            this.cboLogBackground.SelectionChangeCommitted += new System.EventHandler(this.CboLogBackground_SelectionChangeCommitted);
+            this.cboLogBackground.SelectedValueChanged += new System.EventHandler(this.cboLogBackground_SelectedValueChanged);
             // 
             // lblUiLanguage
             // 
@@ -349,5 +362,6 @@
         private System.Windows.Forms.Label lblBackColor;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ImageList ilTab;
+        private System.Windows.Forms.CheckBox chkWholeFates;
     }
 }

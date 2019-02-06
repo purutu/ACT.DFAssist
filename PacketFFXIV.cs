@@ -173,8 +173,12 @@ namespace ACT.DFAssist
                     else if (type == 0x74) // FATE 시작! 에이리어 이동해도 진행중인 것도 이걸로 처리됨
                     {
                         var code = BitConverter.ToUInt16(data, 4);
-                        MsgLog.Info("l-fate-occured-info", GameData.GetFate(code).Name);
-                        FireEvent(pid, GameEvents.FateBegin, new int[] { code });
+
+                        if (Settings.LoggingWholeFates || Settings.SelectedFates.Contains(code))
+                        {
+                            MsgLog.Info("l-fate-occured-info", GameData.GetFate(code).Name);
+                            FireEvent(pid, GameEvents.FateBegin, new int[] { code });
+                        }
                     }
                 }
                 else if (opcode == 0x0078) // Duties
@@ -260,10 +264,11 @@ namespace ACT.DFAssist
 #else
                     var instance = GameData.GetInstance(code);
 #endif
+                    var member = 0;
 
                     if (status == 1)
                     {
-                        var member = tank * 10000 + dps * 100 + healer;
+                        member = tank * 10000 + healer * 100 + dps;
 
                         if (state == State.Matched && _lastMember != member)
                         {
@@ -288,7 +293,8 @@ namespace ACT.DFAssist
                         // 매칭하고 파티 인원 상태
                     }
 
-                    MsgLog.Info("l-queue-updated", instance.Name, status, tank, instance.Tank, healer, instance.Healer, dps, instance.Dps);
+                    var memberinfo = $"{tank}/{instance.Tank}, {healer}/{instance.Healer}, {dps}/{instance.Dps} | {member}";
+                    MsgLog.Info("l-queue-updated", instance.Name, status, memberinfo);
                     FireEvent(pid, GameEvents.MatchStatus, new int[] { code, status, tank, healer, dps });
                 }
                 else if (opcode == 0x0080)
@@ -307,7 +313,8 @@ namespace ACT.DFAssist
 #if false
                 MsgLog.Exception(ex, "l-analyze-error-handle");
 #else
-                // 지역이동할때만 나타난다. 메시지를 출력하지 말자
+                // 에이리어 이동할때만 나타난다. 메시지를 출력하지 말자
+                // DFASSIST에서는 안나는데 플러그인은 이동만 하면 난다
                 var fmt = Localization.GetText("l-analyze-error-handle");
                 var msg = MsgLog.Escape(ex.Message);
                 System.Diagnostics.Debug.WriteLine($"{fmt}: {msg}");

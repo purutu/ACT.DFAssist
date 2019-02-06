@@ -63,7 +63,7 @@ namespace ACT.DFAssist
 
         public static void Initialize(string path, string lang)
         {
-            var file = string.Concat("data-", lang, ".json");
+            var file = string.Concat("gamedata-", lang, ".json");
             var name = Path.Combine(path, file);
 
             var json = File.ReadAllText(name, System.Text.Encoding.UTF8);

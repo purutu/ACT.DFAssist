@@ -1,6 +1,6 @@
 ﻿{
   // Version
-  "version": "201902051.3",
+  "version": "201902053.3",
 
   // 임무
   "instances": {
@@ -1368,13 +1368,13 @@
 
     // 4.5 Trials
     "637": {
-      "name": "청룡정혼전",
+      "name": "청룡 정혼전",
       "tank": "2",
       "healer": "2",
       "dps": "4"
     },
     "638": {
-      "name": "극청룡정혼전",
+      "name": "극 청룡 정혼전",
       "tank": "2",
       "healer": "2",
       "dps": "4"
@@ -1890,7 +1890,7 @@
     },
 
     //골드소서
-    "437": {
+    "195": {
       "name": "도전! 트리플 트라이어드",
       "tank": "0",
       "healer": "0",
@@ -2848,25 +2848,25 @@
     "998": {
       "name": "에우레카 파고스",
       "fates": {
-        "1351": "Eternity",
-        "1352": "Cows for Concern",
-        "1353": "Ash the Magic Dragon",
-        "1354": "Conqueror Worm",
-        "1355": "Melting Point",
-        "1356": "Disorder in the Court",
-        "1357": "Does It Have to Be a Snowman",
-        "1358": "Brothers",
-        "1359": "Eye of Horus",
-        "1360": "Morte Arthro",
-        "1361": "Apocalypse Cow",
-        "1362": "Third Impact",
-        "1363": "Eye Scream for Ice Cream",
-        "1364": "Louhi on Ice",
-        "1365": "Cassie and the Copycats",
-        "1366": "The Wobbler in Darkness",
-        "1367": "Down the Rabbit Hole",
-        "1368": "Curiouser and Curiouser",
-        "1369": "Cairn Blight 451"
+        "1351": "하얀 지배자",
+        "1352": "가축의 어머니",
+        "1353": "잿빛 비늘왕",
+        "1354": "지각 변동의 수수께끼",
+        "1355": "해빙의 화신",
+        "1356": "단단한 병마",
+        "1357": "움직이는 눈 동굴",
+        "1358": "순망치한",
+        "1359": "태양의 사자",
+        "1360": "원탁의 안개왕",
+        "1361": "야생 소의 구세주",
+        "1362": "번개구름의 마수",
+        "1363": "암안왕",
+        "1364": "푸른 얼음 칼날",
+        "1365": "모방범",
+        "1366": "오행안의 주인",
+        "1367": "눈 위의 행운토끼",
+        "1368": "보석을 노리는 행운토끼",
+        "1369": "부패한 독서가"
       }
     },
 

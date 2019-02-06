@@ -334,7 +334,8 @@ namespace ACT.DFAssist
                             var local = new IPEndPoint(row.localAddr, (ushort)IPAddress.NetworkToHostOrder((short)row.localPort));
                             var remote = new IPEndPoint(row.remoteAddr, (ushort)IPAddress.NetworkToHostOrder((short)row.remotePort));
 
-                            connections.Add(new Connection() { LocalEndPoint = local, RemoteEndPoint = remote });
+                            if (!IPAddress.IsLoopback(remote.Address))
+                                connections.Add(new Connection() { LocalEndPoint = local, RemoteEndPoint = remote });
                         }
 
                         rowPointer = new IntPtr(rowPointer.ToInt64() + Marshal.SizeOf(typeof(TcpRow)));

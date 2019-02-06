@@ -10,7 +10,7 @@ namespace ACT.DFAssist
 {
     class Localization
     {
-        public class Language
+        public class Locale
         {
             public string Name { get; set; }
             public string Code { get; set; }
@@ -20,7 +20,7 @@ namespace ACT.DFAssist
 
         public static void Initialize(string path, string lang)
         {
-            var file = string.Concat("lang-", lang, ".json");
+            var file = string.Concat("locale-", lang, ".json");
             var name = Path.Combine(path, file);
 
             var json = File.ReadAllText(name, System.Text.Encoding.UTF8);

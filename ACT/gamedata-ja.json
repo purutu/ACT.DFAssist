@@ -1,6 +1,6 @@
 ﻿{
   // Version
-  "version": "201902051.2",
+  "version": "201902052.2",
 
   // Duty
   "instances": {
@@ -1889,7 +1889,7 @@
     },
 
     //Gold saucer
-    "437": {
+    "195": {
       "name": "トリプルトライアド",
       "tank": "0",
       "healer": "0",

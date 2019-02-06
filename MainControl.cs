@@ -20,8 +20,6 @@ namespace ACT.DFAssist
 {
     public partial class MainControl : UserControl, IActPluginV1
     {
-        private static string PluginPath = "";
-
         private static readonly string[] Dependencies =
         {
             "Newtonsoft.Json.dll",
@@ -32,18 +30,24 @@ namespace ACT.DFAssist
         private bool _isInActInit;
         private bool _isPluginEnabled;
         private bool _isLockFates;
-        private string _selectedFates;
-        private Localization.Language _selectedUiLanguage;
-        private Localization.Language _selectedGameLanguage;
 
-        private readonly string _settingPath;
-        private readonly ConcurrentDictionary<int, ProNet> _pronets;
-        private readonly ConcurrentStack<string> _selectedFateStack;
+        //
+        private string _fatesLine;
+        private readonly Toolkits.ConcurrentHashSet<int> _fateset = new Toolkits.ConcurrentHashSet<int>();
 
+        //
+        private readonly ConcurrentDictionary<int, ProNet> _pronets = new ConcurrentDictionary<int, ProNet>();
+
+        //
         private Timer _timer;
         private ulong _tick_count;
 
+        //
         private SettingsSerializer _srset;
+
+        //
+        private Localization.Locale _localeUi;
+        private Localization.Locale _localeGame;
 
         //
         private Label _actLabelStatus;
@@ -56,6 +60,7 @@ namespace ACT.DFAssist
 
             InitializeComponent();
 
+            //
             ArrayList colors = new ArrayList();
             Type colortype = typeof(System.Drawing.Color);
             PropertyInfo[] pis = colortype.GetProperties(BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public);
@@ -64,10 +69,10 @@ namespace ACT.DFAssist
 
             cboLogBackground.SelectedValue = rtxLogger.BackColor.Name;
 
-            _settingPath = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config", "ACT.DFAssist.config.xml");
-            _pronets = new ConcurrentDictionary<int, ProNet>();
-            _selectedFateStack = new ConcurrentStack<string>();
+            //
+            Settings.Path = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config", "ACT.DFAssist.config.xml");
 
+            //
             foreach (var f in Application.OpenForms)
             {
                 if (f != ActGlobals.oFormActMain)
@@ -78,19 +83,20 @@ namespace ACT.DFAssist
             }
         }
 
+        //
         private static void RegisterActAssemblies()
         {
             var pub = new Publish();
 
             var pin = ActGlobals.oFormActMain.ActPlugins.FirstOrDefault(x => x.pluginFile.Name.Equals("ACT.DFAssist.dll"));
-            PluginPath = pin?.pluginFile.DirectoryName;
+            Settings.PluginPath = pin?.pluginFile.DirectoryName;
 
-            if (PluginPath == null)
+            if (Settings.PluginPath == null)
                 return;
 
             foreach (var d in Dependencies)
             {
-                var dll = Path.Combine(PluginPath, d);
+                var dll = Path.Combine(Settings.PluginPath, d);
                 try
                 {
                     pub.GacInstall(dll);
@@ -102,6 +108,7 @@ namespace ACT.DFAssist
             }
         }
 
+        //
         public void InitPlugin(TabPage pluginScreenSpace, Label pluginStatusText)
         {
             _actLabelStatus = pluginStatusText;
@@ -113,12 +120,14 @@ namespace ACT.DFAssist
                 ActGlobals.oFormActMain.Shown += OFormActMain_Shown;
         }
 
+        //
         private void OFormActMain_Shown(object sender, EventArgs e)
         {
             _isFormLoaded = true;
             ActInitialize();
         }
 
+        //
         private void ActInitialize()
         {
             if (_isInActInit)
@@ -129,30 +138,32 @@ namespace ACT.DFAssist
             MsgLog.SetTextBox(rtxLogger);
             ActGlobals.oFormActMain.Shown -= OFormActMain_Shown;
 
-            Localization.Language deflang = new Localization.Language { Name = "English", Code = "en" };
-            ReadLanguage(deflang);
+            Localization.Locale defaultlocale = new Localization.Locale { Name = "English", Code = "en" };
+            ReadLocale(defaultlocale);
 
-            //MsgLog.Info("ui-dbg-msg", System.Environment.CurrentDirectory);
-            //MsgLog.Info("ui-dbg-msg", PluginPath);
+#if DEBUG
+            MsgLog.Info("ui-dbg-msg", System.Environment.CurrentDirectory);
+            MsgLog.Info("ui-dbg-msg", PluginPath);
+#endif
 
-            ReadGameData(deflang);
+            ReadGameData(defaultlocale);
 
             _isPluginEnabled = true;
 
-            cboUiLanguage.DataSource = new Localization.Language[]
+            cboUiLanguage.DataSource = new Localization.Locale[]
             {
-                new Localization.Language{Name="English", Code="en"},
-                new Localization.Language{Name="にほんご", Code="ja"},
-                new Localization.Language{Name="한국말", Code="ko"},
+                new Localization.Locale{Name="English", Code="en"},
+                new Localization.Locale{Name="にほんご", Code="ja"},
+                new Localization.Locale{Name="한국말", Code="ko"},
             }; 
             cboUiLanguage.DisplayMember = "Name";
             cboUiLanguage.ValueMember = "Code";
 
-            cboGameLanguage.DataSource = new Localization.Language[]
+            cboGameLanguage.DataSource = new Localization.Locale[]
             {
-                new Localization.Language{Name="English", Code="en"},
-                new Localization.Language{Name="にほんご", Code="ja"},
-                new Localization.Language{Name="한국말", Code="ko"},
+                new Localization.Locale{Name="English", Code="en"},
+                new Localization.Locale{Name="にほんご", Code="ja"},
+                new Localization.Locale{Name="한국말", Code="ko"},
             };
             cboGameLanguage.DisplayMember = "Name";
             cboGameLanguage.ValueMember = "Code";
@@ -185,6 +196,7 @@ namespace ACT.DFAssist
             _isInActInit = false;
         }
 
+        //
         public void DeInitPlugin()
         {
             _isPluginEnabled = false;
@@ -207,6 +219,7 @@ namespace ACT.DFAssist
             MsgLog.SetTextBox(null);
         }
 
+        //
         private void _timer_Tick(object sender, EventArgs e)
         {
             if (!_isPluginEnabled)
@@ -220,6 +233,7 @@ namespace ACT.DFAssist
             UpdateProcesses();
         }
 
+        //
         private void UpdateUiLanguage()
         {
             lblUiLanguage.Text = Localization.GetText("ui-language-display-text");
@@ -227,13 +241,11 @@ namespace ACT.DFAssist
             lblBackColor.Text = Localization.GetText("ui-language-back-color");
             btnClearLogs.Text = Localization.GetText("ui-log-clear-display-text");
             btnReconnect.Text = Localization.GetText("ui-reconnect-display-text");
+            chkWholeFates.Text = Localization.GetText("ui-whole-fates-display-text");
             label1.Text= Localization.GetText("app-description");
-
-            // 색깔도 여기서...
-            if (!string.IsNullOrWhiteSpace(cboLogBackground.Text) && !cboLogBackground.Text.Equals(Color.Transparent.Name))
-                rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
         }
 
+        //
         private void UpdateProcesses()
         {
             var ps = new List<Process>();
@@ -290,6 +302,7 @@ namespace ACT.DFAssist
             }
         }
 
+        //
         private void ClearProcesses()
         {
             foreach (var e in _pronets)
@@ -301,6 +314,7 @@ namespace ACT.DFAssist
             _pronets.Clear();
         }
 
+        //
         private void PacketFFXIV_OnEventReceived(int pid, GameEvents gameevent, int[] args)
         {
 #if true
@@ -380,25 +394,27 @@ namespace ACT.DFAssist
             ActGlobals.oFormActMain.ParseRawLogLine(false, DateTime.Now, "00|" + DateTime.Now.ToString("O") + "|0048|F|" + text);
         }
 
-        private void ReadLanguage(Localization.Language uilang=null)
+        //
+        private void ReadLocale(Localization.Locale uilang=null)
         {
-            Localization.Language lang = uilang ?? (Localization.Language)cboUiLanguage.SelectedItem;
+            Localization.Locale lang = uilang ?? (Localization.Locale)cboUiLanguage.SelectedItem;
 
-            if (_selectedUiLanguage == null || !lang.Code.Equals(_selectedUiLanguage.Code))
+            if (_localeUi == null || !lang.Code.Equals(_localeUi.Code))
             {
-                _selectedUiLanguage = lang;
-                Localization.Initialize(PluginPath, lang.Code);
+                _localeUi = lang;
+                Localization.Initialize(Settings.PluginPath, lang.Code);
             }
         }
 
-        private void ReadGameData(Localization.Language gamelang=null)
+        //
+        private void ReadGameData(Localization.Locale gamelang=null)
         {
-            Localization.Language lang = gamelang ?? (Localization.Language)cboGameLanguage.SelectedItem;
+            Localization.Locale lang = gamelang ?? (Localization.Locale)cboGameLanguage.SelectedItem;
 
-            if (_selectedGameLanguage == null || !lang.Code.Equals(_selectedGameLanguage.Code))
+            if (_localeGame == null || !lang.Code.Equals(_localeGame.Code))
             {
-                _selectedGameLanguage = lang;
-                GameData.Initialize(PluginPath, lang.Code);
+                _localeGame = lang;
+                GameData.Initialize(Settings.PluginPath, lang.Code);
 
                 MsgLog.Info("ui-info-version",
                     GameData.Version, 
@@ -407,25 +423,33 @@ namespace ACT.DFAssist
             }
         }
 
-        private void UpdateSelectedFates(IEnumerable nodes)
+        // 
+        private void InternalRecursiveSelectedFates(IEnumerable node)
         {
-            foreach (TreeNode n in nodes)
+            foreach (TreeNode n in node)
             {
                 if (n.Checked)
-                    _selectedFateStack.Push((string)n.Tag);
-
-                UpdateSelectedFates(n.Nodes);
+                    _fateset.Add(int.Parse((string)n.Tag));
+                InternalRecursiveSelectedFates(n.Nodes);
             }
         }
 
+        //
+        private void RebuildSelectedFates()
+        {
+            _fateset.Clear();
+            InternalRecursiveSelectedFates(trvFates.Nodes);
+        }
+
+        //
         private void UpdateFates()
         {
             trvFates.Nodes.Clear();
 
             var chks = new List<string>();
-            if (!string.IsNullOrEmpty(_selectedFates))
+            if (!string.IsNullOrEmpty(_fatesLine))
             {
-                var s = _selectedFates.Split('|');
+                var s = _fatesLine.Split('|');
                 chks.AddRange(s);
             }
 
@@ -450,22 +474,23 @@ namespace ACT.DFAssist
                 }
             }
 
-            _selectedFateStack.Clear();
-            UpdateSelectedFates(trvFates.Nodes);
+            RebuildSelectedFates();
 
             _isLockFates = false;
         }
 
+        //
         private void ReadSettings()
         {
             _srset.AddControlSetting(cboUiLanguage.Name, cboUiLanguage);
             _srset.AddControlSetting(cboGameLanguage.Name, cboGameLanguage);
             _srset.AddControlSetting(cboLogBackground.Name, cboLogBackground);
+            _srset.AddControlSetting(chkWholeFates.Name, chkWholeFates);
             _srset.AddStringSetting("SelectedFates");
 
-            if (File.Exists(_settingPath))
+            if (File.Exists(Settings.Path))
             {
-                using (var fs = new FileStream(_settingPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var fs = new FileStream(Settings.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (var xr = new XmlTextReader(fs))
                 {
                     try
@@ -481,39 +506,35 @@ namespace ACT.DFAssist
                     }
                     catch(Exception ex)
                     {
-                        _actLabelStatus.Text = string.Format("Setting read fail: {0}", ex.Message);
+                        _actLabelStatus.Text = Localization.GetText("l-settings-load-error", ex.Message);
                     }
 
                     xr.Close();
                 }
             }
 
-            _selectedUiLanguage = (Localization.Language)cboUiLanguage.SelectedItem;
-            _selectedGameLanguage= (Localization.Language)cboGameLanguage.SelectedItem;
+            _localeUi = (Localization.Locale)cboUiLanguage.SelectedItem;
+            _localeGame= (Localization.Locale)cboGameLanguage.SelectedItem;
+
+            Settings.LoggingWholeFates = chkWholeFates.Checked;
+
+            // 색깔을 여기서
+            if (!string.IsNullOrWhiteSpace(cboLogBackground.Text))
+            {
+                Color c = Color.FromName(cboLogBackground.Text);
+                if (c.Equals(Color.Transparent))
+                    rtxLogger.BackColor = c;
+            }
         }
 
+        //
         private void SaveSettings()
         {
             try
             {
-                _selectedFates = string.Empty;
+                _fatesLine = string.Join("|", _fateset);
 
-                var fl = new List<string>();
-                foreach (TreeNode a in trvFates.Nodes)
-                {
-                    if (a.Checked)
-                        fl.Add((string)a.Tag);
-
-                    foreach (TreeNode f in a.Nodes)
-                    {
-                        if (f.Checked)
-                            fl.Add((string)f.Tag);
-                    }
-                }
-
-                _selectedFates = string.Join("|", fl);
-
-                using (var fs = new FileStream(_settingPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                using (var fs = new FileStream(Settings.Path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                 using (var xw = new XmlTextWriter(fs, Encoding.UTF8) { Formatting = Formatting.Indented, Indentation = 1, IndentChar = '\t' })
                 {
                     xw.WriteStartDocument(true);
@@ -533,26 +554,31 @@ namespace ACT.DFAssist
             }
         }
 
+        //
         private static string GetInstanceName(int code)
         {
             return GameData.GetInstance(code).Name;
         }
 
+        //
         private static string GetFateName(int code)
         {
             return GameData.GetFate(code).Name;
         }
 
+        //
         private static string GetAreaNameFromFate(int code)
         {
             return GameData.GetFate(code).Area.Name;
         }
 
+        //
         private static string GetRouletteName(int code)
         {
             return GameData.GetRoulette(code).Name;
         }
 
+        //
         private void TrvFates_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (_isLockFates)
@@ -579,31 +605,33 @@ namespace ACT.DFAssist
                 }
             }
 
-            _selectedFateStack.Clear();
-
-            UpdateSelectedFates(trvFates.Nodes);
+            RebuildSelectedFates();
             SaveSettings();
 
             _isLockFates = false;
         }
 
+        //
         private void BtnClearLogs_Click(object sender, EventArgs e)
         {
             rtxLogger.Clear();
         }
 
+        //
         private void CboUiLanguage_SelectedValueChanged(object sender, EventArgs e)
         {
-            ReadLanguage();
+            ReadLocale();
             UpdateUiLanguage();
         }
 
+        //
         private void CboGameLanguage_SelectedValueChanged(object sender, EventArgs e)
         {
             ReadGameData();
             UpdateFates();
         }
 
+        //
         private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
@@ -617,6 +645,7 @@ namespace ACT.DFAssist
             }
         }
 
+        //
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
@@ -630,6 +659,7 @@ namespace ACT.DFAssist
             }
         }
 
+        //
         private void CboLogBackground_DrawItem(object sender, DrawItemEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -646,12 +676,17 @@ namespace ACT.DFAssist
             }
         }
 
-        private void CboLogBackground_SelectionChangeCommitted(object sender, EventArgs e)
+        //
+        private void cboLogBackground_SelectedValueChanged(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(cboLogBackground.Text) && !cboLogBackground.Text.Equals(Color.Transparent.Name))
+            {
                 rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
+                MsgLog.Info("ui-color-select-text", cboLogBackground.Text);
+            }
         }
 
+        //
         private void BtnReconnect_Click(object sender, EventArgs e)
         {
             _timer.Enabled = false;
@@ -660,6 +695,12 @@ namespace ACT.DFAssist
             UpdateProcesses();
 
             _timer.Enabled = true;
+        }
+
+        //
+        private void ChkWholeFates_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.LoggingWholeFates = chkWholeFates.Checked;
         }
     }
 }

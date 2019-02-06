@@ -33,17 +33,6 @@ namespace ACT.DFAssist
 
         //
         private string _fatesLine;
-        private readonly Toolkits.ConcurrentHashSet<int> _fateset = new Toolkits.ConcurrentHashSet<int>();
-
-        //
-        private readonly ConcurrentDictionary<int, ProNet> _pronets = new ConcurrentDictionary<int, ProNet>();
-
-        //
-        private Timer _timer;
-        private ulong _tick_count;
-
-        //
-        private SettingsSerializer _srset;
 
         //
         private Localization.Locale _localeUi;
@@ -52,6 +41,16 @@ namespace ACT.DFAssist
         //
         private Label _actLabelStatus;
         private TabPage _actTabPage;
+
+        //
+        private SettingsSerializer _srset;
+
+        //
+        private readonly ConcurrentDictionary<int, ProNet> _pronets = new ConcurrentDictionary<int, ProNet>();
+
+        //
+        private Timer _timer;
+        private ulong _tick_count;
 
         //
         public MainControl()
@@ -429,7 +428,7 @@ namespace ACT.DFAssist
             foreach (TreeNode n in node)
             {
                 if (n.Checked)
-                    _fateset.Add(int.Parse((string)n.Tag));
+                    Settings.SelectedFates.Add(int.Parse((string)n.Tag));
                 InternalRecursiveSelectedFates(n.Nodes);
             }
         }
@@ -437,7 +436,7 @@ namespace ACT.DFAssist
         //
         private void RebuildSelectedFates()
         {
-            _fateset.Clear();
+            Settings.SelectedFates.Clear();
             InternalRecursiveSelectedFates(trvFates.Nodes);
         }
 
@@ -532,7 +531,7 @@ namespace ACT.DFAssist
         {
             try
             {
-                _fatesLine = string.Join("|", _fateset);
+                _fatesLine = string.Join("|", Settings.SelectedFates);
 
                 using (var fs = new FileStream(Settings.Path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                 using (var xw = new XmlTextWriter(fs, Encoding.UTF8) { Formatting = Formatting.Indented, Indentation = 1, IndentChar = '\t' })
@@ -677,7 +676,7 @@ namespace ACT.DFAssist
         }
 
         //
-        private void cboLogBackground_SelectedValueChanged(object sender, EventArgs e)
+        private void CboLogBackground_SelectedValueChanged(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(cboLogBackground.Text) && !cboLogBackground.Text.Equals(Color.Transparent.Name))
             {

@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using ACT.DFAssist.Toolkits;
 
 namespace ACT.DFAssist
 {
     static class Settings
     {
         public static string Path { get; set; }
-        public static HashSet<int> SelectedFates { get; set; } = new HashSet<int>();
+        public static readonly ConcurrentHashSet<int> SelectedFates = new ConcurrentHashSet<int>();
+
 
         public static bool LoggingWholeFates { get; set; }
 

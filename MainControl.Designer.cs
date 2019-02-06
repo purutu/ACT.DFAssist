@@ -210,7 +210,7 @@
             this.cboLogBackground.Size = new System.Drawing.Size(141, 26);
             this.cboLogBackground.TabIndex = 8;
             this.cboLogBackground.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.CboLogBackground_DrawItem);
-            this.cboLogBackground.SelectedValueChanged += new System.EventHandler(this.cboLogBackground_SelectedValueChanged);
+            this.cboLogBackground.SelectedValueChanged += new System.EventHandler(this.CboLogBackground_SelectedValueChanged);
             // 
             // lblUiLanguage
             // 

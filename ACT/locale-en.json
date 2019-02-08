@@ -36,7 +36,7 @@
   "l-queue-entered": "Queue: Entered instance area",
   "l-queue-matched": "Queue: Matched [{0}]",
   "l-queue-started-general": "Queue: Start maching [{0}]",
-  "l-queue-started-roulette": "Queue: Start rouleete matching [{0}]",
+  "l-queue-started-roulette": "Queue: Start roulette matching [{0}]",
   "l-queue-stopped": "Queue: Matching stopped",
   "l-queue-updated": "Queue: Maching updated [{0}, {1}, {2}]",
   "l-settings-load-error": "Error on reading settings: {0}",
@@ -51,10 +51,12 @@
   "ui-dbg-msg": "Debug: {0}",
   "ui-language-display-text": "UI Language",
   "ui-language-game-text": "In Game",
-  "ui-language-back-color": "Back Color",
+  "ui-back-color-display-text": "Back Color",
   "ui-log-clear-display-text": "Clear logs",
   "ui-reconnect-display-text": "Reconnect",
   "ui-whole-fates-display-text": "Logging whole FATEs",
   "ui-info-version": "Info: Using data version {0} (A:{1}/I:{2}/R:{3}/F:{4})",
-  "ui-color-select-text": "Info: Selected color is {0}"
+  "ui-color-select-text": "Info: Selected color is {0}",
+  "ui-use-overlay-display-text": "Enable overlay",
+  "ov-duties-wait": "Duty waiting {0}"
 }

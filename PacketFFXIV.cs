@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ACT.DFAssist
 {
-    static class PacketFFXIV
+    internal static class PacketFFXIV
     {
         public delegate void EventHandler(int pid, GameEvents gameevent, int[] args);
         public static event EventHandler OnEventReceived;
@@ -246,11 +246,29 @@ namespace ACT.DFAssist
                 }
                 else if (opcode == 0x006F)
                 {
-                    // DFASSIST 깜빡임용
+                    var status = data[0];
+
+                    if (status == 0)
+                    {
+                        // 플레이어가 매칭 참가 확인 창에서 취소를 누르거나 참가 확인 제한 시간이 초과됨
+                        // 매칭 중단을 알리기 위해 상단 2DB status 3 패킷이 연이어 옴
+                    }
+                    if (status == 1)
+                    {
+                        // 플레이어가 매칭 참가 확인 창에서 확인을 누름
+                        // 다른 매칭 인원들도 전부 확인을 눌렀을 경우 입장을 위해 상단 2DB status 6 패킷이 옴
+                        FireEvent(pid, GameEvents.MatchCancel, new int[] { status });
+                    }
                 }
-                else if (opcode == 0x0121)
+                else if (opcode == 0x0121)  // 글로벌 깜빡
                 {
-                    // DFASSIST 깜박임 중지용. 글로벌용이라고 함
+                    var status = data[5];
+
+                    if (status == 128)
+                    {
+                        // 매칭 참가 신청 확인 창에서 확인을 누름, 그러니깐 표시 안하도됨
+                        FireEvent(pid, GameEvents.MatchCancel, new int[] { status });
+                    }
                 }
                 else if (opcode == 0x0079) // 매치 상태
                 {
@@ -272,13 +290,21 @@ namespace ACT.DFAssist
 
                         if (state == State.Matched && _lastMember != member)
                         {
-                            // 마지막 정보와 다름
+                            // 마지막 정보와 다름, 다른 사람에 의한 취소... 인데 이거 되나??!!!
                             state = State.Queued;
+                            FireEvent(pid, GameEvents.MatchCancel, new int[] { code, status, tank, healer, dps });
+
                         }
                         else if (state == State.Idle)
                         {
                             // 매칭 중간에 플러그리인이 시작됨
                             state = State.Queued;
+                            FireEvent(pid, GameEvents.MatchCount, new int[] { -1 });
+                            FireEvent(pid, GameEvents.MatchStatus, new int[] { code, status, tank, healer, dps });
+                        }
+                        else if (state == State.Queued)
+                        {
+                            FireEvent(pid, GameEvents.MatchStatus, new int[] { code, status, tank, healer, dps });
                         }
 
                         _lastMember = member;
@@ -286,16 +312,24 @@ namespace ACT.DFAssist
                     else if (status == 2)
                     {
                         // 매칭 파티의 인원 정보
+                        // 이벤트 바꿔야함... 멤머 숫자로만
+                        FireEvent(pid, GameEvents.MatchStatus, new int[] { code, status, tank, healer, dps });
                         return;
                     }
                     else if (status == 4)
                     {
                         // 매칭하고 파티 인원 상태
+                        // 이벤트 바꿔야함... 컨펌 상태로만
+                        FireEvent(pid, GameEvents.MatchStatus, new int[] { code, status, tank, healer, dps });
+                    }
+                    else
+                    {
+                        // 다른거땜에 오버레이가 지워질 수도 있음... ㅠㅠ
+                        FireEvent(pid, GameEvents.MatchStatus, new int[] { code, status, tank, healer, dps });
                     }
 
                     var memberinfo = $"{tank}/{instance.Tank}, {healer}/{instance.Healer}, {dps}/{instance.Dps} | {member}";
                     MsgLog.Info("l-queue-updated", instance.Name, status, memberinfo);
-                    FireEvent(pid, GameEvents.MatchStatus, new int[] { code, status, tank, healer, dps });
                 }
                 else if (opcode == 0x0080)
                 {
@@ -303,9 +337,9 @@ namespace ACT.DFAssist
                     var code = BitConverter.ToUInt16(data, 4);
 
                     state = State.Matched;
+                    FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
 
                     MsgLog.Success("l-queue-matched ", code);
-                    FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
                 }
             }
             catch (Exception ex)
@@ -318,6 +352,9 @@ namespace ACT.DFAssist
                 var fmt = Localization.GetText("l-analyze-error-handle");
                 var msg = MsgLog.Escape(ex.Message);
                 System.Diagnostics.Debug.WriteLine($"{fmt}: {msg}");
+
+                // 오버레이는 지워버리는게 좋겠다
+                //FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
 #endif
             }
         }

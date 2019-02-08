@@ -50,6 +50,9 @@ namespace ACT.DFAssist
         private ulong _tick_count;
 
         //
+        private OverlayForm _frmOverlay;
+
+        //
         public MainControl()
         {
             RegisterActAssemblies();
@@ -77,6 +80,9 @@ namespace ACT.DFAssist
                 _isFormLoaded = true;
                 break;
             }
+
+            //
+            _frmOverlay = new OverlayForm();
         }
 
         //
@@ -139,7 +145,7 @@ namespace ACT.DFAssist
 
 #if DEBUG
             MsgLog.Info("ui-dbg-msg", System.Environment.CurrentDirectory);
-            MsgLog.Info("ui-dbg-msg", PluginPath);
+            MsgLog.Info("ui-dbg-msg", Settings.PluginPath);
 #endif
 
             ReadGameData(defaultlocale);
@@ -197,6 +203,9 @@ namespace ACT.DFAssist
         {
             _isPluginEnabled = false;
 
+            _frmOverlay.Hide();
+            _frmOverlay = null;
+
             SaveSettings();
 
             _actTabPage = null;
@@ -234,11 +243,13 @@ namespace ACT.DFAssist
         {
             lblUiLanguage.Text = Localization.GetText("ui-language-display-text");
             lblGameLanguage.Text = Localization.GetText("ui-language-game-text");
-            lblBackColor.Text = Localization.GetText("ui-language-back-color");
+            lblBackColor.Text = Localization.GetText("ui-back-color-display-text");
             btnClearLogs.Text = Localization.GetText("ui-log-clear-display-text");
             btnReconnect.Text = Localization.GetText("ui-reconnect-display-text");
             chkWholeFates.Text = Localization.GetText("ui-whole-fates-display-text");
+            chkUseOverlay.Text = Localization.GetText("ui-use-overlay-display-text");
             label1.Text= Localization.GetText("app-description");
+            _frmOverlay.SetInfoText("app-description");
         }
 
         //
@@ -331,9 +342,21 @@ namespace ACT.DFAssist
                         text += GetInstanceName(args[0]) + "|";
                         pos++;
                     }
+
+                    _frmOverlay.EventNone();
+
                     break;
 
                 case GameEvents.FateBegin:
+                    isFate = true;
+                    text += GetFateName(args[0]) + "|" + GetAreaNameFromFate(args[0]) + "|";
+                    pos++;
+
+                    if (Settings.SelectedFates.Contains(args[0].ToString()))    // 모든 페이트를 골라도 목록에 있는것만 알려줌
+                        _frmOverlay.EventFate(GameData.GetFate(args[0]));
+
+                    break;
+
                 case GameEvents.FateProgress:
                 case GameEvents.FateEnd:
                     isFate = true;
@@ -349,6 +372,9 @@ namespace ACT.DFAssist
                         case MatchType.Roulette:
                             text += GetRouletteName(args[1]) + "|";
                             pos++;
+
+                            _frmOverlay.EventRoulette(GameData.GetRoulette(args[1]));
+
                             break;
 
                         case MatchType.Assignment:
@@ -360,6 +386,9 @@ namespace ACT.DFAssist
                                 text += GetInstanceName(args[i]) + "|";
                                 pos++;
                             }
+
+                            _frmOverlay.EventDuties(args[1]);
+
                             break;
                     }
                     break;
@@ -367,11 +396,28 @@ namespace ACT.DFAssist
                 case GameEvents.MatchEnd:
                     text += (MatchResult)args[0] + "|";
                     pos++;
+
+#if false
+                    if (Settings.UseOverlay)
+                    {
+                        var mres = (MatchResult)args[0];
+                        if (mres == MatchResult.Enter)
+                            _frmOverlay.Hide();
+                        else
+                            _frmOverlay.Show();
+                    }
+#endif
+                            
+                    _frmOverlay.EventNone();
+
                     break;
 
                 case GameEvents.MatchStatus:
                     text += GetInstanceName(args[0]) + "|";
                     pos++;
+
+                    _frmOverlay.EventStatus(GameData.GetInstance(args[0]), (byte)args[2], (byte)args[3], (byte)args[4]);
+
                     break;
 
                 case GameEvents.MatchDone:
@@ -379,6 +425,17 @@ namespace ACT.DFAssist
                     pos++;
                     text += GetInstanceName(args[1]) + "|";
                     pos++;
+
+                    _frmOverlay.EventMatch(GameData.GetInstance(args[1]));
+
+                    break;
+
+                case GameEvents.MatchCancel:
+                    _frmOverlay.StopBlink();
+                    break;
+
+                case GameEvents.MatchCount:
+                    _frmOverlay.EventDuties(args[0]);
                     break;
             }
 
@@ -492,6 +549,8 @@ namespace ACT.DFAssist
             _srset.AddControlSetting("LocaleGame", cboGameLanguage);
             _srset.AddControlSetting("LogBackColor", cboLogBackground);
             _srset.AddControlSetting("LoggingWholeFATEs", chkWholeFates);
+            _srset.AddControlSetting("UseOverlay", chkUseOverlay);
+            _srset.AddControlSetting("OverlayLocation", txtOverayLocation);
             _srset.AddControlSetting("SelectedFates", txtSelectedFates);
 
             if (File.Exists(Settings.Path))
@@ -524,6 +583,26 @@ namespace ACT.DFAssist
 
             Settings.LoggingWholeFates = chkWholeFates.Checked;
 
+            var ss = txtOverayLocation.Text.Split(',');
+            if (ss.Length == 2)
+            {
+                try
+                {
+                    Settings.OverlayLocation = new Point(int.Parse(ss[0].Trim()), int.Parse(ss[1].Trim()));
+                    _frmOverlay.Location = Settings.OverlayLocation;
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            if (chkUseOverlay.Checked)
+                _frmOverlay.Show();
+            else
+                _frmOverlay.Hide();
+
+            Settings.UseOverlay = chkUseOverlay.Checked;
+
             // 색깔을 여기서
             if (!string.IsNullOrWhiteSpace(cboLogBackground.Text))
             {
@@ -536,6 +615,8 @@ namespace ACT.DFAssist
         //
         private void SaveSettings()
         {
+            txtOverayLocation.Text = $"{Settings.OverlayLocation.X},{Settings.OverlayLocation.Y}";
+
             try
             {
                 using (var fs = new FileStream(Settings.Path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
@@ -705,6 +786,16 @@ namespace ACT.DFAssist
         private void ChkWholeFates_CheckedChanged(object sender, EventArgs e)
         {
             Settings.LoggingWholeFates = chkWholeFates.Checked;
+        }
+
+        private void ChkUseOverlay_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkUseOverlay.Checked)
+                _frmOverlay.Show();
+            else
+                _frmOverlay.Hide();
+
+            Settings.UseOverlay = chkUseOverlay.Checked;
         }
     }
 }

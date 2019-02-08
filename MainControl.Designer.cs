@@ -38,6 +38,8 @@
             this.tabLeft = new System.Windows.Forms.TabControl();
             this.tabPageFates = new System.Windows.Forms.TabPage();
             this.tabPageSetting = new System.Windows.Forms.TabPage();
+            this.txtOverayLocation = new System.Windows.Forms.TextBox();
+            this.chkUseOverlay = new System.Windows.Forms.CheckBox();
             this.txtSelectedFates = new System.Windows.Forms.TextBox();
             this.chkWholeFates = new System.Windows.Forms.CheckBox();
             this.btnReconnect = new System.Windows.Forms.Button();
@@ -53,6 +55,8 @@
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.ilTab = new System.Windows.Forms.ImageList(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.splitBase)).BeginInit();
             this.splitBase.Panel1.SuspendLayout();
             this.splitBase.Panel2.SuspendLayout();
@@ -61,6 +65,8 @@
             this.tabPageFates.SuspendLayout();
             this.tabPageSetting.SuspendLayout();
             this.tabPageInformation.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -151,14 +157,15 @@
             // 
             // tabPageSetting
             // 
+            this.tabPageSetting.Controls.Add(this.panel2);
+            this.tabPageSetting.Controls.Add(this.panel1);
+            this.tabPageSetting.Controls.Add(this.txtOverayLocation);
             this.tabPageSetting.Controls.Add(this.txtSelectedFates);
-            this.tabPageSetting.Controls.Add(this.chkWholeFates);
             this.tabPageSetting.Controls.Add(this.btnReconnect);
             this.tabPageSetting.Controls.Add(this.lblBackColor);
             this.tabPageSetting.Controls.Add(this.cboLogBackground);
             this.tabPageSetting.Controls.Add(this.lblUiLanguage);
             this.tabPageSetting.Controls.Add(this.cboUiLanguage);
-            this.tabPageSetting.Controls.Add(this.btnClearLogs);
             this.tabPageSetting.Controls.Add(this.cboGameLanguage);
             this.tabPageSetting.Controls.Add(this.lblGameLanguage);
             this.tabPageSetting.ImageIndex = 1;
@@ -170,9 +177,29 @@
             this.tabPageSetting.Text = "Setting";
             this.tabPageSetting.UseVisualStyleBackColor = true;
             // 
+            // txtOverayLocation
+            // 
+            this.txtOverayLocation.Location = new System.Drawing.Point(6, 470);
+            this.txtOverayLocation.Name = "txtOverayLocation";
+            this.txtOverayLocation.Size = new System.Drawing.Size(227, 25);
+            this.txtOverayLocation.TabIndex = 15;
+            this.txtOverayLocation.Text = "0,0";
+            this.txtOverayLocation.Visible = false;
+            // 
+            // chkUseOverlay
+            // 
+            this.chkUseOverlay.AutoSize = true;
+            this.chkUseOverlay.Location = new System.Drawing.Point(2, 3);
+            this.chkUseOverlay.Name = "chkUseOverlay";
+            this.chkUseOverlay.Size = new System.Drawing.Size(95, 21);
+            this.chkUseOverlay.TabIndex = 14;
+            this.chkUseOverlay.Text = "Use overlay";
+            this.chkUseOverlay.UseVisualStyleBackColor = true;
+            this.chkUseOverlay.CheckedChanged += new System.EventHandler(this.ChkUseOverlay_CheckedChanged);
+            // 
             // txtSelectedFates
             // 
-            this.txtSelectedFates.Location = new System.Drawing.Point(9, 378);
+            this.txtSelectedFates.Location = new System.Drawing.Point(6, 439);
             this.txtSelectedFates.Name = "txtSelectedFates";
             this.txtSelectedFates.Size = new System.Drawing.Size(227, 25);
             this.txtSelectedFates.TabIndex = 12;
@@ -181,7 +208,7 @@
             // chkWholeFates
             // 
             this.chkWholeFates.AutoSize = true;
-            this.chkWholeFates.Location = new System.Drawing.Point(9, 92);
+            this.chkWholeFates.Location = new System.Drawing.Point(2, 3);
             this.chkWholeFates.Name = "chkWholeFates";
             this.chkWholeFates.Size = new System.Drawing.Size(149, 21);
             this.chkWholeFates.TabIndex = 11;
@@ -192,7 +219,7 @@
             // btnReconnect
             // 
             this.btnReconnect.Image = global::ACT.DFAssist.Properties.Resources.Player2_Icon;
-            this.btnReconnect.Location = new System.Drawing.Point(6, 253);
+            this.btnReconnect.Location = new System.Drawing.Point(6, 387);
             this.btnReconnect.Name = "btnReconnect";
             this.btnReconnect.Size = new System.Drawing.Size(230, 46);
             this.btnReconnect.TabIndex = 10;
@@ -244,9 +271,9 @@
             // btnClearLogs
             // 
             this.btnClearLogs.Image = global::ACT.DFAssist.Properties.Resources.btn_del;
-            this.btnClearLogs.Location = new System.Drawing.Point(6, 190);
+            this.btnClearLogs.Location = new System.Drawing.Point(91, 27);
             this.btnClearLogs.Name = "btnClearLogs";
-            this.btnClearLogs.Size = new System.Drawing.Size(230, 44);
+            this.btnClearLogs.Size = new System.Drawing.Size(137, 44);
             this.btnClearLogs.TabIndex = 6;
             this.btnClearLogs.Text = "Clear Logs";
             this.btnClearLogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -328,6 +355,25 @@
             this.ilTab.Images.SetKeyName(3, "Player2_Icon.png");
             this.ilTab.Images.SetKeyName(4, "Player12_Icon.png");
             // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.chkWholeFates);
+            this.panel1.Controls.Add(this.btnClearLogs);
+            this.panel1.Location = new System.Drawing.Point(3, 108);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(233, 76);
+            this.panel1.TabIndex = 16;
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.chkUseOverlay);
+            this.panel2.Location = new System.Drawing.Point(3, 190);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(233, 30);
+            this.panel2.TabIndex = 17;
+            // 
             // MainControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -345,6 +391,10 @@
             this.tabPageSetting.PerformLayout();
             this.tabPageInformation.ResumeLayout(false);
             this.tabPageInformation.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -374,5 +424,9 @@
         private System.Windows.Forms.ImageList ilTab;
         private System.Windows.Forms.CheckBox chkWholeFates;
         private System.Windows.Forms.TextBox txtSelectedFates;
+        private System.Windows.Forms.CheckBox chkUseOverlay;
+        private System.Windows.Forms.TextBox txtOverayLocation;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
     }
 }

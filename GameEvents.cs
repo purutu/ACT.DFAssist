@@ -20,6 +20,9 @@ namespace ACT.DFAssist
         MatchStatus,   // [0] = instance code, [1] = status, [2] = tank, [3] = healer, [4] = dps
         MatchDone,     // [0] = roulette code, [1] = instance code
         MatchEnd,      // [0] = end reason <MatchEndType>
+
+        MatchCancel,
+        MatchCount,    // [0] = count
     }
 
     public enum MatchResult

@@ -58,5 +58,8 @@
   "ui-info-version": "Info: Using data version {0} (A:{1}/I:{2}/R:{3}/F:{4})",
   "ui-color-select-text": "Info: Selected color is {0}",
   "ui-use-overlay-display-text": "Enable overlay",
+  "ui-use-sound-display-text": "Enable sound",
+  "ui-select-sound-display-text": "Find",
+  "ui-sound-dialog-title-display-text": "Select sound file",
   "ov-duties-wait": "Duty waiting {0}"
 }

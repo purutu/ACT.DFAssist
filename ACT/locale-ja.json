@@ -58,5 +58,8 @@
   "ui-info-version": "Info: データ(バージョン{0})を読みました (A:{1}/I:{2}/R:{3}/F:{4})",
   "ui-color-select-text": "Info: 選択した色は{0}です",
   "ui-use-overlay-display-text": "オーバーレイ使用",
+  "ui-use-sound-display-text": "サウンド使用",
+  "ui-select-sound-display-text": "検索",
+  "ui-sound-dialog-title-display-text": "サウンドファイルを選んでください",
   "ov-duties-wait": "コンテンツを待っています {0}"
 }

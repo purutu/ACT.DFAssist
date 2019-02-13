@@ -58,5 +58,8 @@
   "ui-info-version": "Info: 데이터(버전{0})를 읽었습니다 (A:{1}/I:{2}/R:{3}/F:{4})",
   "ui-color-select-text": "Info: 선택한 색깔은 {0}입니다",
   "ui-use-overlay-display-text": "오버레이 사용",
+  "ui-use-sound-display-text": "소리 사용",
+  "ui-select-sound-display-text": "찾기",
+  "ui-sound-dialog-title-display-text": "소리 파일을 선택해주세요",
   "ov-duties-wait": "임무를 기다립니다 {0}"
 }

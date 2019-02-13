@@ -1,20 +1,18 @@
-﻿using System;
+﻿using Advanced_Combat_Tracker;
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Advanced_Combat_Tracker;
 using System.EnterpriseServices.Internal;
 using System.IO;
-using System.Collections.Concurrent;
-using System.Collections;
-using System.Xml;
-using System.Diagnostics;
+using System.Linq;
+using System.Media;
 using System.Reflection;
+using System.Text;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace ACT.DFAssist
 {
@@ -48,6 +46,8 @@ namespace ACT.DFAssist
         //
         private Timer _timer;
         private ulong _tick_count;
+
+        private long _last_sound;
 
         //
         private OverlayForm _frmOverlay;
@@ -157,7 +157,7 @@ namespace ACT.DFAssist
                 new Localization.Locale{Name="English", Code="en"},
                 new Localization.Locale{Name="にほんご", Code="ja"},
                 new Localization.Locale{Name="한국말", Code="ko"},
-            }; 
+            };
             cboUiLanguage.DisplayMember = "Name";
             cboUiLanguage.ValueMember = "Code";
 
@@ -187,7 +187,7 @@ namespace ACT.DFAssist
 
             UpdateProcesses();
 
-            if (_timer==null)
+            if (_timer == null)
             {
                 _timer = new Timer { Interval = 10000 };
                 _timer.Tick += _timer_Tick;
@@ -210,7 +210,7 @@ namespace ACT.DFAssist
 
             _actTabPage = null;
 
-            if (_actLabelStatus!=null)
+            if (_actLabelStatus != null)
             {
                 _actLabelStatus.Text = Localization.GetText("l-plugin-stopped");
                 _actLabelStatus = null;
@@ -248,7 +248,9 @@ namespace ACT.DFAssist
             btnReconnect.Text = Localization.GetText("ui-reconnect-display-text");
             chkWholeFates.Text = Localization.GetText("ui-whole-fates-display-text");
             chkUseOverlay.Text = Localization.GetText("ui-use-overlay-display-text");
-            label1.Text= Localization.GetText("app-description");
+            chkUseSound.Text = Localization.GetText("ui-use-sound-display-text");
+            btnSelectSound.Text = Localization.GetText("ui-select-sound-display-text");
+            label1.Text = Localization.GetText("app-description");
             _frmOverlay.SetInfoText("app-description");
         }
 
@@ -353,7 +355,10 @@ namespace ACT.DFAssist
                     pos++;
 
                     if (Settings.SelectedFates.Contains(args[0].ToString()))    // 모든 페이트를 골라도 목록에 있는것만 알려줌
+                    {
                         _frmOverlay.EventFate(GameData.GetFate(args[0]));
+                        PlayEffectSound();
+                    }
 
                     break;
 
@@ -407,7 +412,7 @@ namespace ACT.DFAssist
                             _frmOverlay.Show();
                     }
 #endif
-                            
+
                     _frmOverlay.EventNone();
 
                     break;
@@ -427,6 +432,7 @@ namespace ACT.DFAssist
                     pos++;
 
                     _frmOverlay.EventMatch(GameData.GetInstance(args[1]));
+                    PlayEffectSound();
 
                     break;
 
@@ -448,7 +454,7 @@ namespace ACT.DFAssist
         }
 
         //
-        private void ReadLocale(Localization.Locale uilang=null)
+        private void ReadLocale(Localization.Locale uilang = null)
         {
             Localization.Locale lang = uilang ?? (Localization.Locale)cboUiLanguage.SelectedItem;
 
@@ -460,7 +466,7 @@ namespace ACT.DFAssist
         }
 
         //
-        private void ReadGameData(Localization.Locale gamelang=null)
+        private void ReadGameData(Localization.Locale gamelang = null)
         {
             Localization.Locale lang = gamelang ?? (Localization.Locale)cboGameLanguage.SelectedItem;
 
@@ -470,8 +476,8 @@ namespace ACT.DFAssist
                 GameData.Initialize(Settings.PluginPath, lang.Code);
 
                 MsgLog.Info("ui-info-version",
-                    GameData.Version, 
-                    GameData.Areas.Count, GameData.Instances.Count, 
+                    GameData.Version,
+                    GameData.Areas.Count, GameData.Instances.Count,
                     GameData.Roulettes.Count, GameData.Fates.Count);
             }
         }
@@ -508,7 +514,7 @@ namespace ACT.DFAssist
             if (!string.IsNullOrWhiteSpace(txtSelectedFates.Text))
             {
                 var ss = txtSelectedFates.Text.Split('|');
-                
+
                 foreach (var s in ss)
                 {
                     if (!string.IsNullOrWhiteSpace(s))
@@ -524,7 +530,10 @@ namespace ACT.DFAssist
                 n.Tag = "AREA:" + a.Key;
 
                 if (Settings.SelectedFates.Contains((string)n.Tag))
+                {
                     n.Checked = true;
+                    n.Expand();
+                }
 
                 foreach (var f in a.Value.Fates)
                 {
@@ -533,7 +542,12 @@ namespace ACT.DFAssist
                     node.Tag = f.Key.ToString();
 
                     if (Settings.SelectedFates.Contains((string)node.Tag))
+                    {
                         node.Checked = true;
+
+                        if (!n.IsExpanded)
+                            n.Expand();
+                    }
                 }
             }
 
@@ -552,6 +566,8 @@ namespace ACT.DFAssist
             _srset.AddControlSetting("UseOverlay", chkUseOverlay);
             _srset.AddControlSetting("OverlayLocation", txtOverayLocation);
             _srset.AddControlSetting("SelectedFates", txtSelectedFates);
+            _srset.AddControlSetting("UseSound", chkUseSound);
+            _srset.AddControlSetting("SoundFile", txtSoundFile);
 
             if (File.Exists(Settings.Path))
             {
@@ -569,7 +585,7 @@ namespace ACT.DFAssist
                                 _srset.ImportFromXml(xr);
                         }
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         _actLabelStatus.Text = Localization.GetText("l-settings-load-error", ex.Message);
                     }
@@ -579,7 +595,7 @@ namespace ACT.DFAssist
             }
 
             _localeUi = (Localization.Locale)cboUiLanguage.SelectedItem;
-            _localeGame= (Localization.Locale)cboGameLanguage.SelectedItem;
+            _localeGame = (Localization.Locale)cboGameLanguage.SelectedItem;
 
             Settings.LoggingWholeFates = chkWholeFates.Checked;
 
@@ -610,6 +626,8 @@ namespace ACT.DFAssist
                 if (c.Equals(Color.Transparent))
                     rtxLogger.BackColor = c;
             }
+
+            CheckSoundEnable();
         }
 
         //
@@ -757,7 +775,7 @@ namespace ACT.DFAssist
                 var c = Color.FromName(n);
                 var b = new SolidBrush(c);
                 g.FillRectangle(b, r.X + 4, r.Y + 3, r.X + 30, r.Height - 3);
-                g.DrawString(n, f, Brushes.Black, r.X+32, r.Top);
+                g.DrawString(n, f, Brushes.Black, r.X + 32, r.Top);
             }
         }
 
@@ -796,6 +814,60 @@ namespace ACT.DFAssist
                 _frmOverlay.Hide();
 
             Settings.UseOverlay = chkUseOverlay.Checked;
+        }
+
+        private void ChkUseSound_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckSoundEnable();
+        }
+
+        private void CheckSoundEnable()
+        {
+            txtSoundFile.Enabled = chkUseSound.Checked;
+            btnSelectSound.Enabled = chkUseSound.Checked;
+        }
+
+        private void PlayEffectSound()
+        {
+            if (!chkUseSound.Checked)
+                return;
+
+            if (string.IsNullOrWhiteSpace(txtSoundFile.Text) || !File.Exists(txtSoundFile.Text))
+                return;
+
+            long now = DateTime.Now.Ticks;
+
+            if ((now - _last_sound) > 1000)
+            {
+                _last_sound = now;
+
+                try
+                {
+                    using (var sp = new SoundPlayer(txtSoundFile.Text))
+                        sp.Play();
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
+        private void BtnTest_Click(object sender, EventArgs e)
+        {
+            PlayEffectSound();
+        }
+
+        private void BtnSelectSound_Click(object sender, EventArgs e)
+        {
+            var dg = new OpenFileDialog();
+            dg.Title = Localization.GetText("ui-sound-dialog-title-display-text");
+            dg.DefaultExt = "wav";
+            dg.Filter = "Wave (*.wav)|*.wav|All (*.*)|*.*";
+
+            if (dg.ShowDialog()== DialogResult.OK)
+            {
+                txtSoundFile.Text = dg.FileName;
+            }
         }
     }
 }

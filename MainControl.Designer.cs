@@ -38,16 +38,23 @@
             this.tabLeft = new System.Windows.Forms.TabControl();
             this.tabPageFates = new System.Windows.Forms.TabPage();
             this.tabPageSetting = new System.Windows.Forms.TabPage();
-            this.txtOverayLocation = new System.Windows.Forms.TextBox();
+            this.btnTest = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.txtSoundFile = new System.Windows.Forms.TextBox();
+            this.btnSelectSound = new System.Windows.Forms.Button();
+            this.chkUseSound = new System.Windows.Forms.CheckBox();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.chkUseOverlay = new System.Windows.Forms.CheckBox();
-            this.txtSelectedFates = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.chkWholeFates = new System.Windows.Forms.CheckBox();
+            this.btnClearLogs = new System.Windows.Forms.Button();
+            this.txtOverayLocation = new System.Windows.Forms.TextBox();
+            this.txtSelectedFates = new System.Windows.Forms.TextBox();
             this.btnReconnect = new System.Windows.Forms.Button();
             this.lblBackColor = new System.Windows.Forms.Label();
             this.cboLogBackground = new System.Windows.Forms.ComboBox();
             this.lblUiLanguage = new System.Windows.Forms.Label();
             this.cboUiLanguage = new System.Windows.Forms.ComboBox();
-            this.btnClearLogs = new System.Windows.Forms.Button();
             this.cboGameLanguage = new System.Windows.Forms.ComboBox();
             this.lblGameLanguage = new System.Windows.Forms.Label();
             this.tabPageInformation = new System.Windows.Forms.TabPage();
@@ -55,8 +62,6 @@
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.ilTab = new System.Windows.Forms.ImageList(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.splitBase)).BeginInit();
             this.splitBase.Panel1.SuspendLayout();
             this.splitBase.Panel2.SuspendLayout();
@@ -64,9 +69,10 @@
             this.tabLeft.SuspendLayout();
             this.tabPageFates.SuspendLayout();
             this.tabPageSetting.SuspendLayout();
-            this.tabPageInformation.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.tabPageInformation.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -157,6 +163,8 @@
             // 
             // tabPageSetting
             // 
+            this.tabPageSetting.Controls.Add(this.btnTest);
+            this.tabPageSetting.Controls.Add(this.panel3);
             this.tabPageSetting.Controls.Add(this.panel2);
             this.tabPageSetting.Controls.Add(this.panel1);
             this.tabPageSetting.Controls.Add(this.txtOverayLocation);
@@ -177,14 +185,64 @@
             this.tabPageSetting.Text = "Setting";
             this.tabPageSetting.UseVisualStyleBackColor = true;
             // 
-            // txtOverayLocation
+            // btnTest
             // 
-            this.txtOverayLocation.Location = new System.Drawing.Point(6, 470);
-            this.txtOverayLocation.Name = "txtOverayLocation";
-            this.txtOverayLocation.Size = new System.Drawing.Size(227, 25);
-            this.txtOverayLocation.TabIndex = 15;
-            this.txtOverayLocation.Text = "0,0";
-            this.txtOverayLocation.Visible = false;
+            this.btnTest.Location = new System.Drawing.Point(135, 375);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(101, 26);
+            this.btnTest.TabIndex = 19;
+            this.btnTest.Text = "TEST!!!";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Visible = false;
+            this.btnTest.Click += new System.EventHandler(this.BtnTest_Click);
+            // 
+            // panel3
+            // 
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.txtSoundFile);
+            this.panel3.Controls.Add(this.btnSelectSound);
+            this.panel3.Controls.Add(this.chkUseSound);
+            this.panel3.Location = new System.Drawing.Point(3, 190);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(233, 60);
+            this.panel3.TabIndex = 18;
+            // 
+            // txtSoundFile
+            // 
+            this.txtSoundFile.Location = new System.Drawing.Point(60, 28);
+            this.txtSoundFile.Name = "txtSoundFile";
+            this.txtSoundFile.Size = new System.Drawing.Size(168, 25);
+            this.txtSoundFile.TabIndex = 16;
+            // 
+            // btnSelectSound
+            // 
+            this.btnSelectSound.Location = new System.Drawing.Point(3, 30);
+            this.btnSelectSound.Name = "btnSelectSound";
+            this.btnSelectSound.Size = new System.Drawing.Size(51, 23);
+            this.btnSelectSound.TabIndex = 15;
+            this.btnSelectSound.Text = "Find";
+            this.btnSelectSound.UseVisualStyleBackColor = true;
+            this.btnSelectSound.Click += new System.EventHandler(this.BtnSelectSound_Click);
+            // 
+            // chkUseSound
+            // 
+            this.chkUseSound.AutoSize = true;
+            this.chkUseSound.Location = new System.Drawing.Point(2, 3);
+            this.chkUseSound.Name = "chkUseSound";
+            this.chkUseSound.Size = new System.Drawing.Size(89, 21);
+            this.chkUseSound.TabIndex = 14;
+            this.chkUseSound.Text = "Use sound";
+            this.chkUseSound.UseVisualStyleBackColor = true;
+            this.chkUseSound.CheckedChanged += new System.EventHandler(this.ChkUseSound_CheckedChanged);
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.chkUseOverlay);
+            this.panel2.Location = new System.Drawing.Point(3, 256);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(233, 30);
+            this.panel2.TabIndex = 17;
             // 
             // chkUseOverlay
             // 
@@ -197,13 +255,15 @@
             this.chkUseOverlay.UseVisualStyleBackColor = true;
             this.chkUseOverlay.CheckedChanged += new System.EventHandler(this.ChkUseOverlay_CheckedChanged);
             // 
-            // txtSelectedFates
+            // panel1
             // 
-            this.txtSelectedFates.Location = new System.Drawing.Point(6, 439);
-            this.txtSelectedFates.Name = "txtSelectedFates";
-            this.txtSelectedFates.Size = new System.Drawing.Size(227, 25);
-            this.txtSelectedFates.TabIndex = 12;
-            this.txtSelectedFates.Visible = false;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.chkWholeFates);
+            this.panel1.Controls.Add(this.btnClearLogs);
+            this.panel1.Location = new System.Drawing.Point(3, 108);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(233, 76);
+            this.panel1.TabIndex = 16;
             // 
             // chkWholeFates
             // 
@@ -216,10 +276,39 @@
             this.chkWholeFates.UseVisualStyleBackColor = true;
             this.chkWholeFates.CheckedChanged += new System.EventHandler(this.ChkWholeFates_CheckedChanged);
             // 
+            // btnClearLogs
+            // 
+            this.btnClearLogs.Image = global::ACT.DFAssist.Properties.Resources.btn_del;
+            this.btnClearLogs.Location = new System.Drawing.Point(91, 27);
+            this.btnClearLogs.Name = "btnClearLogs";
+            this.btnClearLogs.Size = new System.Drawing.Size(137, 44);
+            this.btnClearLogs.TabIndex = 6;
+            this.btnClearLogs.Text = "Clear Logs";
+            this.btnClearLogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnClearLogs.UseVisualStyleBackColor = true;
+            this.btnClearLogs.Click += new System.EventHandler(this.BtnClearLogs_Click);
+            // 
+            // txtOverayLocation
+            // 
+            this.txtOverayLocation.Location = new System.Drawing.Point(179, 470);
+            this.txtOverayLocation.Name = "txtOverayLocation";
+            this.txtOverayLocation.Size = new System.Drawing.Size(54, 25);
+            this.txtOverayLocation.TabIndex = 15;
+            this.txtOverayLocation.Text = "0,0";
+            this.txtOverayLocation.Visible = false;
+            // 
+            // txtSelectedFates
+            // 
+            this.txtSelectedFates.Location = new System.Drawing.Point(121, 470);
+            this.txtSelectedFates.Name = "txtSelectedFates";
+            this.txtSelectedFates.Size = new System.Drawing.Size(52, 25);
+            this.txtSelectedFates.TabIndex = 12;
+            this.txtSelectedFates.Visible = false;
+            // 
             // btnReconnect
             // 
             this.btnReconnect.Image = global::ACT.DFAssist.Properties.Resources.Player2_Icon;
-            this.btnReconnect.Location = new System.Drawing.Point(6, 387);
+            this.btnReconnect.Location = new System.Drawing.Point(6, 407);
             this.btnReconnect.Name = "btnReconnect";
             this.btnReconnect.Size = new System.Drawing.Size(230, 46);
             this.btnReconnect.TabIndex = 10;
@@ -267,18 +356,6 @@
             this.cboUiLanguage.Size = new System.Drawing.Size(141, 25);
             this.cboUiLanguage.TabIndex = 3;
             this.cboUiLanguage.SelectedValueChanged += new System.EventHandler(this.CboUiLanguage_SelectedValueChanged);
-            // 
-            // btnClearLogs
-            // 
-            this.btnClearLogs.Image = global::ACT.DFAssist.Properties.Resources.btn_del;
-            this.btnClearLogs.Location = new System.Drawing.Point(91, 27);
-            this.btnClearLogs.Name = "btnClearLogs";
-            this.btnClearLogs.Size = new System.Drawing.Size(137, 44);
-            this.btnClearLogs.TabIndex = 6;
-            this.btnClearLogs.Text = "Clear Logs";
-            this.btnClearLogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnClearLogs.UseVisualStyleBackColor = true;
-            this.btnClearLogs.Click += new System.EventHandler(this.BtnClearLogs_Click);
             // 
             // cboGameLanguage
             // 
@@ -355,25 +432,6 @@
             this.ilTab.Images.SetKeyName(3, "Player2_Icon.png");
             this.ilTab.Images.SetKeyName(4, "Player12_Icon.png");
             // 
-            // panel1
-            // 
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.chkWholeFates);
-            this.panel1.Controls.Add(this.btnClearLogs);
-            this.panel1.Location = new System.Drawing.Point(3, 108);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(233, 76);
-            this.panel1.TabIndex = 16;
-            // 
-            // panel2
-            // 
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.chkUseOverlay);
-            this.panel2.Location = new System.Drawing.Point(3, 190);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(233, 30);
-            this.panel2.TabIndex = 17;
-            // 
             // MainControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -389,12 +447,14 @@
             this.tabPageFates.ResumeLayout(false);
             this.tabPageSetting.ResumeLayout(false);
             this.tabPageSetting.PerformLayout();
-            this.tabPageInformation.ResumeLayout(false);
-            this.tabPageInformation.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.tabPageInformation.ResumeLayout(false);
+            this.tabPageInformation.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -428,5 +488,10 @@
         private System.Windows.Forms.TextBox txtOverayLocation;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.TextBox txtSoundFile;
+        private System.Windows.Forms.Button btnSelectSound;
+        private System.Windows.Forms.CheckBox chkUseSound;
+        private System.Windows.Forms.Button btnTest;
     }
 }

@@ -15,4 +15,4 @@ Extract downloaded file to your plugin directory. Then add this plugin to "Plugi
 
 
 ## Game data
-Version 4.5 update included
+Most of 4.55 updates were included

@@ -133,5 +133,11 @@
   <ItemGroup>
     <None Include="Resources\Player12_Icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\magnifyingglassicon_114513-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

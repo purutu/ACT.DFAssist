@@ -93,6 +93,16 @@ namespace ACT.DFAssist.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap magnifyingglassicon_114513_22 {
+            get {
+                object obj = ResourceManager.GetObject("magnifyingglassicon_114513-22", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Main_Command_52_Icon {
             get {
                 object obj = ResourceManager.GetObject("Main_Command_52_Icon", resourceCulture);
@@ -106,6 +116,16 @@ namespace ACT.DFAssist.Properties {
         internal static System.Drawing.Bitmap Map64_Icon {
             get {
                 object obj = ResourceManager.GetObject("Map64_Icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap play {
+            get {
+                object obj = ResourceManager.GetObject("play", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

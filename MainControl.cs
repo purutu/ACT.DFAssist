@@ -241,17 +241,23 @@ namespace ACT.DFAssist
         //
         private void UpdateUiLanguage()
         {
+            tabPageFates.Text = Localization.GetText("ui-tab-1-text");
+            tabPageSetting.Text = Localization.GetText("ui-tab-2-text");
+            tabPageInformation.Text = Localization.GetText("ui-tab-3-text");
             lblUiLanguage.Text = Localization.GetText("ui-language-display-text");
             lblGameLanguage.Text = Localization.GetText("ui-language-game-text");
-            lblBackColor.Text = Localization.GetText("ui-back-color-display-text");
-            btnClearLogs.Text = Localization.GetText("ui-log-clear-display-text");
-            btnReconnect.Text = Localization.GetText("ui-reconnect-display-text");
-            chkWholeFates.Text = Localization.GetText("ui-whole-fates-display-text");
-            chkUseOverlay.Text = Localization.GetText("ui-use-overlay-display-text");
-            chkUseSound.Text = Localization.GetText("ui-use-sound-display-text");
-            btnSelectSound.Text = Localization.GetText("ui-select-sound-display-text");
+            lblBackColor.Text = Localization.GetText("ui-log-back-color-text");
+            lblDisplayFont.Text= Localization.GetText("ui-log-display-font-text");
+            btnClearLogs.Text = Localization.GetText("ui-log-clear-text");
+            btnReconnect.Text = Localization.GetText("ui-reconnect-text");
+            chkWholeFates.Text = Localization.GetText("ui-log-whole-fates-text");
+            chkUseOverlay.Text = Localization.GetText("ui-overlay-use-text");
+            chkUseSound.Text = Localization.GetText("ui-sound-use-text");
+            //btnSelectSound.Text = Localization.GetText("ui-sound-select-text");
             label1.Text = Localization.GetText("app-description");
             _frmOverlay.SetInfoText("app-description");
+
+            btnLogFont.Text = $"{rtxLogger.Font.Name}, {rtxLogger.Font.Size}";
         }
 
         //
@@ -475,7 +481,7 @@ namespace ACT.DFAssist
                 _localeGame = lang;
                 GameData.Initialize(Settings.PluginPath, lang.Code);
 
-                MsgLog.Info("ui-info-version",
+                MsgLog.Info("l-info-version",
                     GameData.Version,
                     GameData.Areas.Count, GameData.Instances.Count,
                     GameData.Roulettes.Count, GameData.Fates.Count);
@@ -568,6 +574,7 @@ namespace ACT.DFAssist
             _srset.AddControlSetting("SelectedFates", txtSelectedFates);
             _srset.AddControlSetting("UseSound", chkUseSound);
             _srset.AddControlSetting("SoundFile", txtSoundFile);
+            _srset.AddControlSetting("LogFont", txtLogFont);
 
             if (File.Exists(Settings.Path))
             {
@@ -599,17 +606,18 @@ namespace ACT.DFAssist
 
             Settings.LoggingWholeFates = chkWholeFates.Checked;
 
-            var ss = txtOverayLocation.Text.Split(',');
-            if (ss.Length == 2)
+            try
             {
-                try
+                var ss = txtOverayLocation.Text.Split(',');
+                if (ss.Length == 2)
                 {
+
                     Settings.OverlayLocation = new Point(int.Parse(ss[0].Trim()), int.Parse(ss[1].Trim()));
                     _frmOverlay.Location = Settings.OverlayLocation;
                 }
-                catch (Exception)
-                {
-                }
+            }
+            catch (Exception)
+            {
             }
 
             if (chkUseOverlay.Checked)
@@ -627,7 +635,27 @@ namespace ACT.DFAssist
                     rtxLogger.BackColor = c;
             }
 
+            //
             CheckSoundEnable();
+
+            //
+            try
+            {
+                var ss = txtLogFont.Text.Split(',');
+                if (ss.Length==2)
+                {
+                    var font = new Font(ss[0], float.Parse(ss[1]), FontStyle.Regular, GraphicsUnit.Point);
+                    if (font != null)
+                        rtxLogger.Font = font;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                btnLogFont.Text = $"{rtxLogger.Font.Name}, {rtxLogger.Font.Size}";
+            }
         }
 
         //
@@ -785,7 +813,7 @@ namespace ACT.DFAssist
             if (!string.IsNullOrWhiteSpace(cboLogBackground.Text) && !cboLogBackground.Text.Equals(Color.Transparent.Name))
             {
                 rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
-                MsgLog.Info("ui-color-select-text", cboLogBackground.Text);
+                MsgLog.Info("l-info-back-color", cboLogBackground.Text);
             }
         }
 
@@ -827,9 +855,9 @@ namespace ACT.DFAssist
             btnSelectSound.Enabled = chkUseSound.Checked;
         }
 
-        private void PlayEffectSound()
+        private void PlayEffectSound(bool force = false)
         {
-            if (!chkUseSound.Checked)
+            if (!force && !chkUseSound.Checked)
                 return;
 
             if (string.IsNullOrWhiteSpace(txtSoundFile.Text) || !File.Exists(txtSoundFile.Text))
@@ -860,13 +888,39 @@ namespace ACT.DFAssist
         private void BtnSelectSound_Click(object sender, EventArgs e)
         {
             var dg = new OpenFileDialog();
-            dg.Title = Localization.GetText("ui-sound-dialog-title-display-text");
+            dg.Title = Localization.GetText("ui-sound-dialog-title-text");
             dg.DefaultExt = "wav";
             dg.Filter = "Wave (*.wav)|*.wav|All (*.*)|*.*";
 
-            if (dg.ShowDialog()== DialogResult.OK)
+            if (dg.ShowDialog() == DialogResult.OK)
             {
                 txtSoundFile.Text = dg.FileName;
+
+                SaveSettings();
+            }
+        }
+
+        private void BtnSoundPlay_Click(object sender, EventArgs e)
+        {
+            PlayEffectSound(true);
+        }
+
+        private void BtnLogFont_Click(object sender, EventArgs e)
+        {
+            FontDialog dg = new FontDialog();
+            dg.Font = rtxLogger.Font;
+            dg.FontMustExist = true;
+            dg.AllowVerticalFonts = false;
+            
+            if (dg.ShowDialog()== DialogResult.OK)
+            {
+                rtxLogger.Font = dg.Font;
+
+                var s= $"{rtxLogger.Font.Name}, {rtxLogger.Font.Size}";
+                txtLogFont.Text = s;
+                btnLogFont.Text = s;
+
+                SaveSettings();
             }
         }
     }

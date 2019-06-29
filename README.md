@@ -4,6 +4,8 @@ Final Fantasy XIV DFAssist forked plug-in for ACT3
 
 Based on DFASSIST(https://devunt.github.io/DFAssist/) and ACTFate(https://github.com/lalafellsleep/ACTFate)
 
+Shadowbringers data from Jaehyuk-Lee/DFASSIST(https://jaehyuk-lee.github.io/DFAssist)
+
 Binary download: https://github.com/purutu/ACT.DFAssist/releases
 
 
@@ -15,9 +17,6 @@ Extract downloaded file to your plugin directory. Then add this plugin to "Plugi
 
 
 ## Game data
-Most of 4.55 updates were included
+Updated version 5.0 Shadowbringers instances and FATEs
 
 
-
-## 한국어판
-2019-2-15 테스트 결과 잘됩니다

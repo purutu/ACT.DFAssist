@@ -3,8 +3,7 @@
 Final Fantasy XIV DFAssist forked plug-in for ACT3
 
 Based on DFASSIST(https://devunt.github.io/DFAssist/) and ACTFate(https://github.com/lalafellsleep/ACTFate)
-
-Shadowbringers data from Jaehyuk-Lee/DFASSIST(https://jaehyuk-lee.github.io/DFAssist)
+Referred Shadowbringers instance data from Jaehyuk-Lee/DFASSIST(https://jaehyuk-lee.github.io/DFAssist)
 
 Binary download: https://github.com/purutu/ACT.DFAssist/releases
 
@@ -17,6 +16,9 @@ Extract downloaded file to your plugin directory. Then add this plugin to "Plugi
 
 
 ## Game data
-Updated version 5.0 Shadowbringers instances and FATEs
+Updated version 5.01 Eden's Gate
+
+Not included German and French data since I cannot read and write both of them.
+
 
 

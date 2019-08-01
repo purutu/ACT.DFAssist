@@ -19,9 +19,7 @@ Screenshot
 
 
 ## Game data
-Updated version 5.01 Eden's Gate
-
-Not included German and French data since I cannot read and write both of them.
+Updated version 5.05 Eden's Gate Savage
 
 
 

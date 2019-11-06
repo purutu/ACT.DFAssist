@@ -446,8 +446,11 @@ namespace ACT.DFAssist
                     _frmOverlay.StopBlink();
                     break;
 
-                case GameEvents.MatchCount:
-                    _frmOverlay.EventDuties(args[0]);
+                case GameEvents.MatchOrder:
+                    if (args[0] > 0)
+                        _frmOverlay.EventDuties(args[0]);
+                    else
+                        _frmOverlay.EventDuties(args[1], args[2], args[3], args[4], args[5], args[6]);
                     break;
             }
 

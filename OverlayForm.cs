@@ -204,10 +204,21 @@ namespace ACT.DFAssist
 
         internal void EventDuties(int count)
         {
-            if (count < 0)
-                _current = Localization.GetText("ov-duties-wait", string.Empty);
-            else
-                _current = Localization.GetText("ov-duties-wait", count);
+            var msg = count < 0 ? string.Empty : $"#{count}";
+
+            _current = Localization.GetText("ov-duties-wait", msg);
+
+            this.Invoke((MethodInvoker)(() =>
+            {
+                lblInfo.Text = _current;
+            }));
+        }
+
+        internal void EventDuties(int tank, int maxtank, int healer, int maxhealer, int dps, int maxdps)
+        {
+            var merge = $@"{tank}/{maxtank} {healer}/{maxhealer} {dps}/{maxdps}";
+
+            _current = Localization.GetText("ov-duties-wait", merge);
 
             this.Invoke((MethodInvoker)(() =>
             {

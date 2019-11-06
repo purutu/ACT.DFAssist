@@ -1,6 +1,6 @@
 ﻿{
   // Version
-  "version": "201908011.1",
+  "version": "201911031.1",
 
   // Duty
   "instances": {
@@ -1522,6 +1522,26 @@
       "tank": "2",
       "healer": "2",
       "dps": "4"
+    },
+
+    // 5.1  Vows of Virtue, Deeds of Cruelty
+    "692": {
+      "name": "The Grand Cosmos",
+      "tank": "1",
+      "healer": "1",
+      "dps": "2"
+    },
+    "693": {
+      "name": "The Minstrel's Ballad: Hades's Elegy",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
+    "700": {
+      "name": "The Copied Factory",
+      "tank": "3",
+      "healer": "6",
+      "dps": "15"
     },
 
     // Guildhests

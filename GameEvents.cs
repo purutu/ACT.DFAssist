@@ -22,7 +22,7 @@ namespace ACT.DFAssist
         MatchEnd,      // [0] = end reason <MatchEndType>
 
         MatchCancel,
-        MatchCount,    // [0] = count
+        MatchOrder,    // [0] = order, [1] = tank, [2] = maxtank, [3] = healer, [4] = maxhealer, [5] = dps, [6] = maxdps
     }
 
     public enum MatchResult

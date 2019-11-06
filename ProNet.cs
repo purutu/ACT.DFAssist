@@ -2,7 +2,7 @@
 
 namespace ACT.DFAssist
 {
-    class ProNet
+    internal class ProNet
     {
         public Process Process { get; }
         public Network Network { get; }

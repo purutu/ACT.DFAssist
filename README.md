@@ -2,11 +2,14 @@
 
 Final Fantasy XIV DFAssist forked plug-in for ACT3
 
-Based on DFASSIST(https://devunt.github.io/DFAssist/) and ACTFate(https://github.com/lalafellsleep/ACTFate)
-
-Referred Shadowbringers instance data from Jaehyuk-Lee/DFASSIST(https://jaehyuk-lee.github.io/DFAssist)
+Based on 
+* lalafellsleep/ACTFate(https://github.com/lalafellsleep/ACTFate)
+* Jaehyuk-Lee/DFASSIST(https://jaehyuk-lee.github.io/DFAssist)
+* Devunt/DFASSIST(https://devunt.github.io/DFAssist/) 
 
 Binary download: https://github.com/purutu/ACT.DFAssist/releases
+
+Game data support: Version 5.1
 
 
 ## How to use
@@ -15,11 +18,3 @@ Extract downloaded file to your plugin directory. Then add this plugin to "Plugi
 
 Screenshot
 ![Screen](https://github.com/purutu/ACT.DFAssist/blob/master/doc/screen-1.png)
-
-
-
-## Game data
-Updated version 5.05 Eden's Gate Savage
-
-
-

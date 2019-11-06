@@ -38,7 +38,7 @@ namespace ACT.DFAssist
             if (_logbox == null || _logbox.IsDisposed)
                 return;
 
-            var formatted = format ?? "(null)";
+            var formatted = format ?? "(empty string)";
 
             try
             {

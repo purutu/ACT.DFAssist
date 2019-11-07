@@ -14,5 +14,7 @@ namespace ACT.DFAssist
         public static Point OverlayLocation { get; set; } = new Point(0, 0);
 
         public static string PluginPath { get; set; } = "";
+
+        public static bool AutoHideOverlay { get; set; }
     }
 }

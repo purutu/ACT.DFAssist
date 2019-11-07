@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ACT.DFAssist
+﻿namespace ACT.DFAssist
 {
     public enum GameEvents
     {
         None,
-        InstanceEnter, // [0] = instance code
-        InstanceLeave, // [0] = instance code
 
-        FateBegin,     // [0] = fate code
-        FateProgress,  // [0] = fate code, [1] = progress
-        FateEnd,       // [0] = fate code, [1] = status(?)
+        InstanceEnter,  // [0] = instance code
+        InstanceLeave,  // [0] = instance code
 
-        MatchBegin,    // [0] = match type(0,1), [1] = roulette code or instance count, [...] = instance
-        MatchStatus,   // [0] = instance code, [1] = status, [2] = tank, [3] = healer, [4] = dps
-        MatchDone,     // [0] = roulette code, [1] = instance code
-        MatchEnd,      // [0] = end reason <MatchEndType>
+        FateBegin,      // [0] = fate code
+        FateProgress,   // [0] = fate code, [1] = progress
+        FateEnd,        // [0] = fate code, [1] = status(?)
 
+        MatchBegin,     // [0] = match type(0,1), [1] = roulette code or instance count, [...] = instance
+        MatchOrder,     // [0] = order
+        MatchStatus,    // [0] = match type(2,3), [1] = instance code, [2] = status 
+                        //  Deprecate   [3] = tank, [4] = healer, [5] = dps
+                        //  Current     [6] = maxtank, [7] = maxhealer, [8] = maxdps
+        MatchDone,      // [0] = roulette code, [1] = instance code
+        MatchEnd,       // [0] = end reason <MatchEndType>
         MatchCancel,
-        MatchOrder,    // [0] = order, [1] = tank, [2] = maxtank, [3] = healer, [4] = maxhealer, [5] = dps, [6] = maxdps
     }
 
     public enum MatchResult
@@ -35,12 +31,22 @@ namespace ACT.DFAssist
     {
         Roulette = 0,
         Assignment = 1,
+
+        ShortStatus = 2,    // 사실상 5.1 이전 정보 Deprecated
+        LongStatus = 3,     // 사실상 5.1 부터 정보 Current
     }
 
-    public enum State
+    public enum MatchStatus
     {
         Idle,
         Queued,
         Matched,
+    }
+
+    public enum ClientType
+    {
+        Global,
+        Korea,
+        China,
     }
 }

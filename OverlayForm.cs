@@ -35,7 +35,7 @@ namespace ACT.DFAssist
         private Color _accent_color;
 
         private string _current = string.Empty;
-        private byte[] _members = null;
+        private int[] _members = null;
 
         //
         public OverlayForm()
@@ -161,12 +161,18 @@ namespace ACT.DFAssist
             }));
         }
 
-        internal void EventStatus(GameData.Instance instance, byte tank, byte healer, byte dps)
+        public void SetMembers(int tank, int healer, int dps)
+        {
+            _members = new int[] { tank, healer, dps };
+        }
+
+        // 인스턴스 주어진 상태
+        internal void EventStatus(GameData.Instance instance, int tank, int healer, int dps)
         {
             _current = instance.Name;
 
             if (_members == null)
-                _members = new byte[] { instance.Tank, instance.Healer, instance.Dps };
+                _members = new int[] { instance.Tank, instance.Healer, instance.Dps };
 
             this.Invoke((MethodInvoker)(() =>
             {
@@ -174,9 +180,30 @@ namespace ACT.DFAssist
             }));
         }
 
-        public void SetMembers(byte tank, byte healer, byte dps)
+        // 5.1 이후 숫자만 있는 상태
+        internal void EventStatus(int tank, int healer, int dps, int maxtank, int maxhealer, int maxdps)
         {
-            _members = new byte[] { tank, healer, dps };
+            var merge = $@"{tank}/{maxtank} {healer}/{maxhealer} {dps}/{maxdps}";
+
+            _current = Localization.GetText("ov-duties-wait", merge);
+
+            this.Invoke((MethodInvoker)(() =>
+            {
+                lblInfo.Text = _current;
+            }));
+        }
+
+        // 듀티 큐 상태
+        internal void EventStatus(int queue)
+        {
+            var msg = queue < 0 ? string.Empty : $"#{queue}";
+
+            _current = Localization.GetText("ov-duties-wait", msg);
+
+            this.Invoke((MethodInvoker)(() =>
+            {
+                lblInfo.Text = _current;
+            }));
         }
 
         internal void EventMatch(GameData.Instance instance)
@@ -195,30 +222,6 @@ namespace ACT.DFAssist
         {
             _members = null;
             _current = roulette.Name;
-
-            this.Invoke((MethodInvoker)(() =>
-            {
-                lblInfo.Text = _current;
-            }));
-        }
-
-        internal void EventDuties(int count)
-        {
-            var msg = count < 0 ? string.Empty : $"#{count}";
-
-            _current = Localization.GetText("ov-duties-wait", msg);
-
-            this.Invoke((MethodInvoker)(() =>
-            {
-                lblInfo.Text = _current;
-            }));
-        }
-
-        internal void EventDuties(int tank, int maxtank, int healer, int maxhealer, int dps, int maxdps)
-        {
-            var merge = $@"{tank}/{maxtank} {healer}/{maxhealer} {dps}/{maxdps}";
-
-            _current = Localization.GetText("ov-duties-wait", merge);
 
             this.Invoke((MethodInvoker)(() =>
             {

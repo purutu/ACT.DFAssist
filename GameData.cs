@@ -128,5 +128,25 @@ namespace ACT.DFAssist
         {
             return Fates.ContainsKey(code) ? Fates[code] : new Fate { Name = Localization.GetText("l-unknown-fate", code) };
         }
+
+        public static string GetInstanceName(int code)
+        {
+            return GetInstance(code).Name;
+        }
+
+        public static string GetFateName(int code)
+        {
+            return GetFate(code).Name;
+        }
+
+        public static string GetAreaNameFromFate(int code)
+        {
+            return GetFate(code).Area.Name;
+        }
+
+        public static string GetRouletteName(int code)
+        {
+            return GetRoulette(code).Name;
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace ACT.DFAssist
         private readonly string _exePath;
         private int _pid;
 
-        private State _state;
+        private MatchStatus _state;
         private List<Connection> _connections;
 
         private Socket _socket;
@@ -57,7 +57,7 @@ namespace ACT.DFAssist
         {
             _exePath = Process.GetCurrentProcess().MainModule.FileName;
 
-            _state = State.Idle;
+            _state = MatchStatus.Idle;
             _connections = new List<Connection>();
 
             _lockAnalyse = new object();

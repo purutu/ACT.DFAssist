@@ -16,6 +16,17 @@ namespace ACT.DFAssist
             public string Code { get; set; }
         }
 
+        public static readonly Locale[] Locales = new Locale[]
+        {
+            new Locale{Name="English", Code="en"},
+            new Locale{Name="にほんご", Code="ja"},
+            new Locale{Name="Deutsch", Code="de"},
+            new Locale{Name="Le français", Code="fr"},
+            new Locale{Name="한국말", Code="ko"},
+        };
+
+        public static readonly Locale DefaultLocale = new Locale { Name = "English", Code = "en" };
+
         private static Dictionary<string, string> _map;
 
         public static void Initialize(string path, string lang)
@@ -24,7 +35,7 @@ namespace ACT.DFAssist
             var name = Path.Combine(path, file);
 
             var json = File.ReadAllText(name, System.Text.Encoding.UTF8);
-            _map =string.IsNullOrWhiteSpace(json) ? new Dictionary<string, string>() : JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            _map = string.IsNullOrWhiteSpace(json) ? new Dictionary<string, string>() : JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
         }
 
         public static string GetText(string key, params object[] args)

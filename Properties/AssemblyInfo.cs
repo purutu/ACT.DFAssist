@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ACT.DFAssist")]
-[assembly: AssemblyDescription("DFAssist plugin for ACT3")]
+[assembly: AssemblyDescription("Final Fantasy XIV Duty Finder Assist plugin for ACT3")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("DFAssist constributors")]
 [assembly: AssemblyProduct("ACT.DFAssist")]
-[assembly: AssemblyCopyright("Copyright © Wana 2017, Carlo Ruggiero 2018, Puru 2019")]
+[assembly: AssemblyCopyright("Copyright © Purutu 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("16.0.0.0")]
+[assembly: AssemblyFileVersion("16.0.0.0")]

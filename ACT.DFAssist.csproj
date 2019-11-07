@@ -80,10 +80,14 @@
     <Compile Include="Toolkits\ConcurrentHashSet.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ACT\gamedata-de.json" />
     <None Include="ACT\gamedata-en.json" />
+    <None Include="ACT\gamedata-fr.json" />
     <None Include="ACT\gamedata-ja.json" />
     <None Include="ACT\gamedata-ko.json" />
+    <None Include="ACT\locale-de.json" />
     <None Include="ACT\locale-en.json" />
+    <None Include="ACT\locale-fr.json" />
     <None Include="ACT\locale-ja.json" />
     <None Include="ACT\locale-ko.json" />
   </ItemGroup>

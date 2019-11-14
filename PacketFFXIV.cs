@@ -127,19 +127,27 @@ namespace ACT.DFAssist
                 var opcode = BitConverter.ToUInt16(message, 18);
 
 #if !DEBUG
-                if (opcode != 0x006C &&
+                if (
                     opcode != 0x006F &&
                     opcode != 0x0078 &&
                     opcode != 0x0079 &&
                     opcode != 0x0080 &&
-                    opcode != 0x008F &&
-                    opcode != 0x00B3 &&
-                    opcode != 0x00AE &&
                     opcode != 0x0121 &&
                     opcode != 0x0143 &&
-                    opcode != 0x015E &&
                     opcode != 0x022F &&
-                    opcode != 0x0304)
+                    // 5.1
+                    opcode != 0x008F &&
+                    opcode != 0x00AE &&
+                    opcode != 0x00B3 &&
+                    opcode != 0x015E &&
+                    opcode != 0x0304 &&
+                    // 5.11
+                    opcode != 0x0002 &&
+                    opcode != 0x0164 &&
+                    opcode != 0x0339 &&
+                    opcode != 0x032D &&
+                    opcode != 0x032F &&
+                    opcode != 0x03CF)
                     return;
 #endif
 
@@ -417,7 +425,7 @@ namespace ACT.DFAssist
                         FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
                     }
                 } // 15E
-                else if (opcode == 0x0304)  // 5.1 상태 (opcode = 0x0078, status = 1)
+                else if (opcode == 0x0304)  // 5.1, 5.11 상태 (opcode = 0x0078, status = 1)
                 {
                     var order = data[6];
                     var wait = data[7];
@@ -466,6 +474,108 @@ namespace ACT.DFAssist
                     FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, 0, tank, healer, dps });
                 } // AE
                 #endregion  // 5.1 추가
+                #region 5.11 추가
+                else if (opcode == 0x0339) // 5.11 인스턴스 들어오고 나가기
+                {
+                    var code = BitConverter.ToInt16(data, 4);
+
+                    if (code == 0)
+                        return;
+
+                    var type = data[8];
+
+                    if (type == 0x0B)
+                    {
+                        // 들어옴
+                        MsgLog.Info("l-field-instance-entered", GameData.GetInstanceName(code));
+                        FireEvent(pid, GameEvents.InstanceEnter, new int[] { code });
+                    }
+                    else if (type == 0x0C)
+                    {
+                        // 나감
+                        MsgLog.Info("l-field-instance-left");
+                        FireEvent(pid, GameEvents.InstanceLeave, new int[] { code });
+                    }
+                } // 339
+                else if (opcode == 0x0164)    // 5.11 큐
+                {
+                    var status = data[0];
+                    var reason = data[4];
+
+                    state = MatchStatus.Queued;
+
+                    _rouletteCode = data[8];
+
+                    if (_rouletteCode != 0 && (data[15] == 0 || data[15] == 64))
+                    {
+                        MsgLog.Info("l-queue-started-roulette", GameData.GetRouletteName(_rouletteCode));
+                        FireEvent(pid, GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
+                    }
+                    else // 듀티 지정 큐 (Dungeon/Trial/Raid)
+                    {
+                        _rouletteCode = 0;
+
+                        var instances = new List<int>();
+
+                        for (var i = 0; i < 5; i++)
+                        {
+                            var code = BitConverter.ToUInt16(data, 12 + (i * 4));
+                            if (code == 0)
+                                break;
+                        }
+
+                        if (!instances.Any())
+                            return;
+
+                        var args = new List<int> { (int)MatchType.Assignment, instances.Count };
+                        foreach (var item in instances)
+                            args.Add(item);
+
+                        MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
+                        FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
+                    }
+                } // 164
+                else if (opcode == 0x032D)    // 5.11 매칭
+                {
+                    //var roulette = BitConverter.ToUInt16(data, 2);
+                    var code = BitConverter.ToUInt16(data, 20);
+
+                    state = MatchStatus.Matched;
+
+                    MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
+                    FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
+                } // 32D
+                else if (opcode == 0x03CF)    // 5.11 듀티 상태
+                {
+                    var status = data[0];
+
+                    if (status == 0x73) // 매칭 취소
+                    {
+                        state = MatchStatus.Idle;
+                        MsgLog.Info("l-queue-stopped");
+                        FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
+                    }
+                    else if (status == 0x81)    // 매칭 넣었음
+                    {
+                        //state = MatchStatus.Idle;
+                        //FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Enter });
+                    }
+                } // 3CF
+                else if (opcode == 0x032F)  // 5.11 매칭하고 파티 인원
+                {
+                    var code = BitConverter.ToUInt16(data, 8);
+                    var tank = data[12];
+                    var healer = data[14];
+                    var dps = data[16];
+
+                    FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, 0, tank, healer, dps });
+                } // 32F
+                else if (opcode == 0x0002)  // 5.11 매칭 완료
+                {
+                    // 딱히 할건없음
+                    //FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
+                } // 2
+                #endregion  // 5.11 추가
             }
             catch (Exception ex)
             {

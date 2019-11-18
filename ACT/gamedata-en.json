@@ -1544,6 +1544,14 @@
       "dps": "15"
     },
 
+    // 5.11
+    "694": {
+      "name": "The Epic of Alexander (Ultimate)",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
+
     // Guildhests
     "43": {
       "name": "Under the Armor",

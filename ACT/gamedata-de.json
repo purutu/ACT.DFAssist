@@ -1549,6 +1549,14 @@
       "dps": "2"
     },
 
+    // 5.11
+    "694": {
+      "name": "Alexander (fatal)",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
+
     // Guildhests
     "43": {
       "name": "Bockmanns Gefolge",

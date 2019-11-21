@@ -327,7 +327,7 @@ namespace ACT.DFAssist
 							if (_rouletteCode > 0 || (tank == 0 && healer == 0 && dps == 0))
 								FireEvent(pid, GameEvents.MatchOrder, new int[] { order });
 							else
-								FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, status, tank, healer, dps });
+								FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
 						}
 
 						_lastMember = member;
@@ -336,14 +336,14 @@ namespace ACT.DFAssist
 					else if (status == 2)
 					{
 						// 매칭 파티의 인원 정보
-						FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, status, tank, healer, dps });
+						FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
 						return; // 이건 로그를 안뿌린다
 					}
 					else //if (status == 4)
 					{
 						// 매칭하고 파티 인원 상태
 						// 추가로: 다른거땜에 오버레이가 지워질 수도 있음... ㅠㅠ
-						FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, status, tank, healer, dps });
+						FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
 
 						if (status != 4)
 						{
@@ -452,12 +452,12 @@ namespace ACT.DFAssist
 							state = MatchStatus.Queued;
 						}
 
-						if (_rouletteCode > 0 || 
+						if (_rouletteCode > 0 ||
 							(tank == 0 && healer == 0 && dps == 0) ||
 							(tank > maxtank || healer > maxhealer || dps > maxdps))
 							FireEvent(pid, GameEvents.MatchOrder, new int[] { order });
 						else
-							FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.LongStatus, 0, order, tank, healer, dps, maxtank, maxhealer, maxdps });
+							FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusLong, 0, order, tank, healer, dps, maxtank, maxhealer, maxdps });
 					}
 
 					_lastMember = member;
@@ -473,7 +473,7 @@ namespace ACT.DFAssist
 					var healer = data[14];
 					var dps = data[16];
 
-					FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, 0, tank, healer, dps });
+					FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, 0, tank, healer, dps });
 				} // AE
 				#endregion  // 5.1 추가
 				#region 5.11 추가
@@ -539,7 +539,7 @@ namespace ACT.DFAssist
 				} // 164
 				else if (opcode == 0x032D)    // 5.11 매칭
 				{
-					//var roulette = BitConverter.ToUInt16(data, 2);
+					_rouletteCode = BitConverter.ToUInt16(data, 2);
 					var code = BitConverter.ToUInt16(data, 20);
 
 					state = MatchStatus.Matched;
@@ -573,12 +573,30 @@ namespace ACT.DFAssist
 					var dps = data[16];
 					var maxdps = data[17];
 
-					if (tank > maxtank || healer > maxhealer || dps > maxdps)
-						FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
+					var instance = GameData.GetInstance(code);
+
+					if (instance.PvP ||
+						tank > maxtank || healer > maxhealer || dps > maxdps ||
+						tank > instance.Tank || healer > instance.Healer || dps > instance.Dps)
+					{
+						// 이거하면 계속 울려서 안된다..
+						//FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
+						FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusCode, code, 0 });
+					}
 					else
 					{
-						//FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, 0, tank, healer, dps });
-						FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.LongStatus, code, 0, tank, healer, dps, maxtank, maxhealer, maxdps });
+						if ((tank == maxtank && healer == maxhealer && dps == maxdps) ||
+							(tank == instance.Tank && healer == instance.Healer && dps == instance.Dps))
+						{
+							// 입장으로 간주한다
+							//MsgLog.Info("l-field-instance-entered", GameData.GetInstanceName(code));
+							FireEvent(pid, GameEvents.InstanceEnter, new int[] { code });
+						}
+						else
+						{
+							//FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, 0, tank, healer, dps });
+							FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusLong, code, 0, tank, healer, dps, maxtank, maxhealer, maxdps });
+						}
 					}
 				} // 32F
 				else if (opcode == 0x0002)  // 5.11 매칭 완료

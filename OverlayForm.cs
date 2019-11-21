@@ -193,8 +193,19 @@ namespace ACT.DFAssist
             }));
         }
 
-        // 듀티 큐 상태
-        internal void EventStatus(int queue)
+		// 5.11 매칭인데 인원수 이상으로 이름만 표시
+		internal void EventStatus(GameData.Instance instance)
+		{
+			_current = instance.Name;
+
+			this.Invoke((MethodInvoker)(() =>
+			{
+				lblInfo.Text = _current;
+			}));
+		}
+
+		// 듀티 큐 상태
+		internal void EventStatus(int queue)
         {
             var msg = queue < 0 ? string.Empty : $"#{queue}";
 

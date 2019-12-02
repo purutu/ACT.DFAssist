@@ -1,4 +1,10 @@
-﻿using System;
+﻿#define COMPAT_4_5
+#define COMPAT_5_0
+#define COMPAT_5_1
+#define COMPAT_5_1_1
+#define COMPAT_5_1_1_HF_20191126
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -128,26 +134,37 @@ namespace ACT.DFAssist
 
 #if !DEBUG
 				if (
+#if COMPAT_4_5 || COMPAT_5_0
 					opcode != 0x006F &&
 					opcode != 0x0078 &&
 					opcode != 0x0079 &&
 					opcode != 0x0080 &&
 					opcode != 0x0121 &&
 					opcode != 0x0143 &&
-					opcode != 0x022F &&
+#endif
+#if COMPAT_5_1
 					// 5.1
 					opcode != 0x008F &&
 					opcode != 0x00AE &&
 					opcode != 0x00B3 &&
 					opcode != 0x015E &&
-					opcode != 0x0304 &&
+#endif
+#if COMPAT_5_1_1
 					// 5.11
 					opcode != 0x0002 &&
 					opcode != 0x0164 &&
 					opcode != 0x0339 &&
 					opcode != 0x032D &&
 					opcode != 0x032F &&
-					opcode != 0x03CF)
+					opcode != 0x03CF &&
+#endif
+#if COMPAT_5_1 || COMPAT_5_1_1
+					opcode != 0x0304 &&
+#endif
+#if COMPAT_5_1_1_HF_20191126
+					opcode != 0x02B0 &&
+#endif
+					opcode != 0x022F)
 					return;
 #endif
 
@@ -175,6 +192,7 @@ namespace ACT.DFAssist
 						FireEvent(pid, GameEvents.InstanceLeave, new int[] { code });
 					}
 				} // 22F
+#if COMPAT_4_5 || COMPAT_5_0
 				else if (opcode == 0x0143) // FATE 관련
 				{
 #if false
@@ -366,6 +384,8 @@ namespace ACT.DFAssist
 
 					MsgLog.Success("l-queue-matched ", code);
 				} // 80
+#endif
+#if COMPAT_5_1
 				#region 5.1 추가
 				else if (opcode == 0x008F)    // 5.1 큐 (opcode = 0x0078, status = 0)
 				{
@@ -425,47 +445,6 @@ namespace ACT.DFAssist
 						FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
 					}
 				} // 15E
-				else if (opcode == 0x0304)  // 5.1, 5.11 상태 (opcode = 0x0078, status = 1)
-				{
-					var order = data[6];
-					var wait = data[7];
-					var tank = data[8];
-					var maxtank = data[9];
-					var healer = data[10];
-					var maxhealer = data[11];
-					var dps = data[12];
-					var maxdps = data[13];
-					var member = tank * 10000 + healer * 100 + dps;
-
-					if (state == MatchStatus.Matched && _lastMember != member)
-					{
-						// 마지막 정보와 다름, 다른 사람에 의한 취소... 인데 이거 되나??!!!
-						state = MatchStatus.Queued;
-						FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
-
-					}
-					else if (state == MatchStatus.Idle || state == MatchStatus.Queued)
-					{
-						if (state == MatchStatus.Idle)
-						{
-							// 매칭 중간에 플러그인 시작
-							state = MatchStatus.Queued;
-						}
-
-						if (_rouletteCode > 0 ||
-							(tank == 0 && healer == 0 && dps == 0) ||
-							(tank > maxtank || healer > maxhealer || dps > maxdps))
-							FireEvent(pid, GameEvents.MatchOrder, new int[] { order });
-						else
-							FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusLong, 0, order, tank, healer, dps, maxtank, maxhealer, maxdps });
-					}
-
-					_lastMember = member;
-					_lastOrder = order;
-
-					var memberinfo = $"{tank}/{maxtank}, {healer}/{maxhealer}, {dps}/{maxdps}";
-					MsgLog.Info("l-queue-updated", $"#{order}", wait, memberinfo);
-				} // 304
 				else if (opcode == 0x00AE)  // 5.1 매칭하고 파티 인원 (opcode = 0x0078, status = 4)
 				{
 					var code = BitConverter.ToUInt16(data, 8);
@@ -476,6 +455,8 @@ namespace ACT.DFAssist
 					FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, 0, tank, healer, dps });
 				} // AE
 				#endregion  // 5.1 추가
+#endif
+#if COMPAT_5_1_1
 				#region 5.11 추가
 				else if (opcode == 0x0339) // 5.11 인스턴스 들어오고 나가기
 				{
@@ -605,6 +586,66 @@ namespace ACT.DFAssist
 					//FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
 				} // 2
 				#endregion  // 5.11 추가
+#endif
+#if COMPAT_5_1 || COMPAT_5_1_1
+				#region 5.1 & 5.11
+				else if (opcode == 0x0304)  // 5.1, 5.11 상태 (opcode = 0x0078, status = 1)
+				{
+					var order = data[6];
+					var wait = data[7];
+					var tank = data[8];
+					var maxtank = data[9];
+					var healer = data[10];
+					var maxhealer = data[11];
+					var dps = data[12];
+					var maxdps = data[13];
+					var member = tank * 10000 + healer * 100 + dps;
+
+					if (state == MatchStatus.Matched && _lastMember != member)
+					{
+						// 마지막 정보와 다름, 다른 사람에 의한 취소... 인데 이거 되나??!!!
+						state = MatchStatus.Queued;
+						FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
+
+					}
+					else if (state == MatchStatus.Idle || state == MatchStatus.Queued)
+					{
+						if (state == MatchStatus.Idle)
+						{
+							// 매칭 중간에 플러그인 시작
+							state = MatchStatus.Queued;
+						}
+
+						if (_rouletteCode > 0 ||
+							(tank == 0 && healer == 0 && dps == 0) ||
+							(tank > maxtank || healer > maxhealer || dps > maxdps))
+							FireEvent(pid, GameEvents.MatchOrder, new int[] { order });
+						else
+							FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusLong, 0, order, tank, healer, dps, maxtank, maxhealer, maxdps });
+					}
+
+					_lastMember = member;
+					_lastOrder = order;
+
+					var memberinfo = $"{tank}/{maxtank}, {healer}/{maxhealer}, {dps}/{maxdps}";
+					MsgLog.Info("l-queue-updated", $"#{order}", wait, memberinfo);
+				} // 304
+				#endregion
+#endif
+#if COMPAT_5_1_1_HF_20191126
+				#region 5.11 Hotfix 11/26/2019
+				else if (opcode== 0x02B0)
+				{
+					_rouletteCode = BitConverter.ToUInt16(data, 2);
+					var code = BitConverter.ToUInt16(data, 20);
+
+					state = MatchStatus.Matched;
+
+					MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
+					FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
+				}
+				#endregion
+#endif
 			}
 			catch (Exception ex)
 			{

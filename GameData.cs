@@ -7,8 +7,23 @@ using System.Linq;
 namespace ACT.DFAssist
 {
     static class GameData
-    {
-        public class Instance
+	{
+		public class ClientVersion
+		{
+			public string Name { get; set; }
+			public string Value { get; set; }
+		}
+
+		public static readonly ClientVersion[] ClientVersions = new ClientVersion[]
+		{
+			new ClientVersion{Name="5.15", Value="0"},
+			new ClientVersion{Name="5.11HF", Value="4"},
+			new ClientVersion{Name="5.11", Value="3"},
+			new ClientVersion{Name="5.1", Value="2"},
+			new ClientVersion{Name="<= 5.0", Value="1"},
+		};
+
+		public class Instance
         {
             public int Id { get; set; }
             public string Name { get; set; }

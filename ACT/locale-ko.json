@@ -65,5 +65,6 @@
   "ui-tab-1-text": "돌발",
   "ui-tab-2-text": "설정",
   "ui-tab-3-text": "정보",
+  "ui-client-version": "게임버전",
   "ov-duties-wait": "임무를 기다립니다 {0}"
 }

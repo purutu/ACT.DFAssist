@@ -65,5 +65,6 @@
   "ui-tab-1-text": "FATEs",
   "ui-tab-2-text": "Setting",
   "ui-tab-3-text": "Info",
+  "ui-client-version": "Version",
   "ov-duties-wait": "Duty waiting {0}"
 }

@@ -1,6 +1,6 @@
 ﻿{
   // Version
-  "version": "201911031.1",
+  "version": "201912161.1",
 
   // Duty
   "instances": {
@@ -1835,6 +1835,12 @@
       "healer": "0",
       "dps": "0"
     },
+    "701": {
+      "name": "Onsal Hakair (Danshig Naadam)",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
 
 
     // Deep Dungeons
@@ -2292,6 +2298,38 @@
     },
     "635": {
       "name": "Dirty Rotten Azulmagia",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+
+    // Blue Mage 5.15
+    "695": {
+      "name": "Papa Mia",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "696": {
+      "name": "Lock up Your Snorters",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "697": {
+      "name": "Dangerous When Dead",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "698": {
+      "name": "Red, Fraught, and Blue",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "699": {
+      "name": "The Catch of the Siegfried",
       "tank": "0",
       "healer": "0",
       "dps": "0"

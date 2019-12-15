@@ -16,5 +16,7 @@ namespace ACT.DFAssist
         public static string PluginPath { get; set; } = "";
 
         public static bool AutoHideOverlay { get; set; }
+
+		public static int ClientVersion { get; set; } = 0;
     }
 }

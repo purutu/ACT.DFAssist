@@ -1,7 +1,7 @@
 ﻿{
   // Data from Jaehyuk-Lee/DFASSIST
   // Version
-  "version": "201911031.4",
+  "version": "201912161.4",
 
   // Duty
   "instances": {
@@ -1795,6 +1795,38 @@
       "dps": "0"
     },
 
+    // Blue Mage 5.15 (ENG)
+    "695": {
+      "name": "Papa Mia",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "696": {
+      "name": "Lock up Your Snorters",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "697": {
+      "name": "Dangerous When Dead",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "698": {
+      "name": "Red, Fraught, and Blue",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "699": {
+      "name": "The Catch of the Siegfried",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+
 
     // Novice Training
     "151": {
@@ -1988,6 +2020,12 @@
     },
     "599": {
       "name": "Verborgene Schlucht",
+      "tank": "0",
+      "healer": "0",
+      "dps": "0"
+    },
+    "701": {
+      "name": "Onsal Hakair (Danshig Naadam)",
       "tank": "0",
       "healer": "0",
       "dps": "0"

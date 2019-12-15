@@ -31,6 +31,7 @@ namespace ACT.DFAssist
 		private bool _isInActInit;
 		private bool _isPluginEnabled;
 		private bool _isLockFates;
+		private bool _isInitSetting;
 
 		//
 		private Localization.Locale _localeUi;
@@ -87,6 +88,10 @@ namespace ACT.DFAssist
 
 			//
 			_frmOverlay = new OverlayForm();
+
+			// 페이트 안되게하자
+			tabLeft.TabPages.Remove(tabPageFates);
+			chkWholeFates.Enabled = false;
 		}
 		#endregion
 
@@ -166,6 +171,12 @@ namespace ACT.DFAssist
 			cboGameLanguage.DisplayMember = "Name";
 			cboGameLanguage.ValueMember = "Code";
 
+			cboClientVersion.DataSource = GameData.ClientVersions.Clone();
+			cboClientVersion.DisplayMember = "Name";
+			cboClientVersion.ValueMember = "Value";
+			cboClientVersion.SelectedIndex = 0;
+			cboClientVersion.Enabled = false;
+
 			Dock = DockStyle.Fill;
 
 			_actLabelStatus.Text = "Initializing...";
@@ -203,6 +214,8 @@ namespace ACT.DFAssist
 			_frmOverlay = null;
 
 			SaveSettings();
+
+			_isInitSetting = false;
 
 			_actTabPage = null;
 
@@ -242,6 +255,7 @@ namespace ACT.DFAssist
 			tabPageFates.Text = Localization.GetText("ui-tab-1-text");
 			tabPageSetting.Text = Localization.GetText("ui-tab-2-text");
 			tabPageInformation.Text = Localization.GetText("ui-tab-3-text");
+			lblClientVersion.Text = Localization.GetText("ui-client-version");
 			lblUiLanguage.Text = Localization.GetText("ui-language-display-text");
 			lblGameLanguage.Text = Localization.GetText("ui-language-game-text");
 			lblBackColor.Text = Localization.GetText("ui-log-back-color-text");
@@ -309,6 +323,29 @@ namespace ACT.DFAssist
 		{
 			ReadGameData();
 			UpdateFates();
+		}
+
+		//
+		private void cboClientVersion_SelectedValueChanged(object sender, EventArgs e)
+		{
+			var n = cboClientVersion.SelectedIndex;
+
+			if (n >= 0 && n < GameData.ClientVersions.Length)
+			{
+				try
+				{
+					var v = GameData.ClientVersions[n];
+
+					Settings.ClientVersion = int.Parse(v.Value);
+					txtClientVersion.Text = v.Value;
+
+					SaveSettings();
+				}
+				catch (Exception)
+				{
+
+				}
+			}
 		}
 
 		//
@@ -487,6 +524,7 @@ namespace ACT.DFAssist
 			_srset.AddControlSetting("UseSound", chkUseSound);
 			_srset.AddControlSetting("SoundFile", txtSoundFile);
 			_srset.AddControlSetting("LogFont", txtLogFont);
+			_srset.AddControlSetting("ClientVersion", txtClientVersion);
 
 			if (File.Exists(Settings.Path))
 			{
@@ -568,11 +606,17 @@ namespace ACT.DFAssist
 			{
 				btnLogFont.Text = $"{rtxLogger.Font.Name}, {rtxLogger.Font.Size}";
 			}
+
+			//
+			_isInitSetting = true;
 		}
 
 		//
 		private void SaveSettings()
 		{
+			if (!_isInitSetting)
+				return;
+
 			txtOverayLocation.Text = $"{Settings.OverlayLocation.X},{Settings.OverlayLocation.Y}";
 
 			try

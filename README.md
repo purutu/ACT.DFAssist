@@ -2,7 +2,7 @@
 
 Final Fantasy XIV DFAssist forked plug-in for ACT3
 
-Game data support: Version 5.11
+Game data support: Version 5.15
 
 Based on 
 * lalafellsleep/ACTFate(https://github.com/lalafellsleep/ACTFate)

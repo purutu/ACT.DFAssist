@@ -13,8 +13,8 @@ namespace ACT.DFAssist
 			var opcode = BitConverter.ToUInt16(message, 18);
 
 #if !DEBUG
-			if (opcode != 0x0135 &&
-				opcode != 0x0193 &&
+			if (opcode != 0x01F8 &&
+				opcode != 0x0228 &&
 				opcode != 0x022F)
 				return;
 #endif
@@ -40,7 +40,7 @@ namespace ACT.DFAssist
 					FireEvent(pid, GameEvents.InstanceLeave, new int[] { code });
 				}
 			} // 22F
-			else if (opcode == 0x0193)      // 5.15 듀티 큐
+			else if (opcode == 0x0228)      // 5.18 듀티 큐
 			{
 				var status = data[0];
 				var reason = data[4];
@@ -75,7 +75,7 @@ namespace ACT.DFAssist
 					FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
 				}
 			} // 193
-			else if (opcode == 0x0135)		// 5.15 매칭
+			else if (opcode == 0x01F8)		// 5.18 매칭
 			{
 				var roulette = BitConverter.ToUInt16(data, 2);
 				var code = BitConverter.ToUInt16(data, 20);

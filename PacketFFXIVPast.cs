@@ -3,6 +3,7 @@
 #define COMPAT_5_1
 #define COMPAT_5_1_1
 #define COMPAT_5_1_1_HF_20191126
+#define COMPAT_5_1_5
 
 using System;
 using System.Collections.Generic;
@@ -43,12 +44,16 @@ namespace ACT.DFAssist
 				opcode != 0x03CF &&
 #endif
 #if COMPAT_5_1 || COMPAT_5_1_1
-					opcode != 0x0304 &&
+				opcode != 0x0304 &&
 #endif
 #if COMPAT_5_1_1_HF_20191126
-					opcode != 0x02B0 &&
+				opcode != 0x02B0 &&
 #endif
-					opcode != 0x022F)
+#if COMPAT_5_1_5
+				opcode != 0x0135 &&
+				opcode != 0x0193 &&
+#endif
+				opcode != 0x022F)
 				return;
 #endif
 
@@ -528,6 +533,55 @@ namespace ACT.DFAssist
 				MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
 				FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
 			}
+			#endregion
+#endif
+#if COMPAT_5_1_5
+			#region 5.15
+			else if (opcode == 0x0193)      // 5.15 듀티 큐
+			{
+				var status = data[0];
+				var reason = data[4];
+				var roulette = data[8];
+
+				state = MatchStatus.Queued;
+
+				if (_rouletteCode != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
+				{
+					MsgLog.Info("l-queue-started-roulette", GameData.GetRouletteName(_rouletteCode));
+					FireEvent(pid, GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
+				}
+				else // 골라놓은 듀티 큐 (Dungeon/Trial/Raid)
+				{
+					var instances = new List<int>();
+
+					for (var i = 0; i < 5; i++)
+					{
+						var code = BitConverter.ToUInt16(data, 12 + (i * 4));
+						if (code == 0)
+							break;
+					}
+
+					if (!instances.Any())
+						return;
+
+					var args = new List<int> { (int)MatchType.Assignment, instances.Count };
+					foreach (var item in instances)
+						args.Add(item);
+
+					MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
+					FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
+				}
+			} // 193
+			else if (opcode == 0x0135)      // 5.15 매칭
+			{
+				var roulette = BitConverter.ToUInt16(data, 2);
+				var code = BitConverter.ToUInt16(data, 20);
+
+				state = MatchStatus.Matched;
+
+				MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
+				FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
+			} // 135
 			#endregion
 #endif
 		}

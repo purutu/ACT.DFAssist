@@ -17,7 +17,7 @@ Screenshot
 ![Screen](https://github.com/purutu/ACT.DFAssist/blob/master/doc/screen-1.png)
 
 
-## Thanks for
+## Thanks to
 * lalafellsleep/ACTFate(https://github.com/lalafellsleep/ACTFate)
 * Jaehyuk-Lee/DFASSIST(https://jaehyuk-lee.github.io/DFAssist)
 * Devunt/DFASSIST(https://devunt.github.io/DFAssist/) 

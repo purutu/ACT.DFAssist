@@ -13,7 +13,8 @@ namespace ACT.DFAssist
 			var opcode = BitConverter.ToUInt16(message, 18);
 
 #if !DEBUG
-			if (opcode != 0x01F8 &&
+			if (opcode != 0x00E3 &&
+				opcode != 0x01F8 &&
 				opcode != 0x0228 &&
 				opcode != 0x022F)
 				return;
@@ -21,7 +22,34 @@ namespace ACT.DFAssist
 
 			var data = message.Skip(32).ToArray();
 
-			if (opcode == 0x022F)           // 인스턴스 들어오고 나가기
+			if (opcode == 0x00E3) // FATE 관련
+			{
+				var type = data[0];
+
+				if (type == 0x9B)
+                {
+                    var code = BitConverter.ToUInt16(data, 4);
+                    var progress = data[8];
+                    FireEvent(pid, GameEvents.FateProgress, new int[] { code, progress });
+                }
+                else if (type == 0x79) // FATE 끗
+                {
+                    var code = BitConverter.ToUInt16(data, 4);
+                    var status = BitConverter.ToUInt16(data, 28);
+                    FireEvent(pid, GameEvents.FateEnd, new int[] { code, status });
+                }
+                else if (type == 0x74) // FATE 시작! 에이리어 이동해도 진행중인 것도 이걸로 처리됨
+                {
+                    var code = BitConverter.ToUInt16(data, 4);
+
+                    if (Settings.LoggingWholeFates || Settings.SelectedFates.Contains(code.ToString()))
+                    {
+                        MsgLog.Info("l-fate-occured-info", GameData.GetFate(code).Name);
+                        FireEvent(pid, GameEvents.FateBegin, new int[] { code });
+                    }
+                }
+			} // E3
+			else if (opcode == 0x022F)           // 인스턴스 들어오고 나가기
 			{
 				// [12/15/2019] 이거 동작 안하는듯 
 				var code = BitConverter.ToInt16(data, 4);

@@ -16,7 +16,8 @@ namespace ACT.DFAssist
 
 		public static readonly ClientVersion[] ClientVersions = new ClientVersion[]
 		{
-			new ClientVersion{Name="5.15", Value="0"},
+			new ClientVersion{Name="5.18", Value="0"},
+			new ClientVersion{Name="5.15", Value="5"},
 			new ClientVersion{Name="5.11HF", Value="4"},
 			new ClientVersion{Name="5.11", Value="3"},
 			new ClientVersion{Name="5.1", Value="2"},

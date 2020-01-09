@@ -89,9 +89,10 @@ namespace ACT.DFAssist
 			//
 			_frmOverlay = new OverlayForm();
 
-			// 페이트 안되게하자
-			tabLeft.TabPages.Remove(tabPageFates);
-			chkWholeFates.Enabled = false;
+			// 페이트 안되게하자 
+			// 2020-1-10 페이트 찾았다
+			//tabLeft.TabPages.Remove(tabPageFates);
+			//chkWholeFates.Enabled = false;
 		}
 		#endregion
 

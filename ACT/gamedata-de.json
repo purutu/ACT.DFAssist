@@ -1,7 +1,7 @@
 ﻿{
   // Data from Jaehyuk-Lee/DFASSIST
   // Version
-  "version": "201912161.4",
+  "version": "202001101.4",
 
   // Duty
   "instances": {
@@ -2394,7 +2394,8 @@
         "237": "Gekenterte Existenzen",
         "238": "Blut geleckt",
         "239": "Frischer Fisch frisst Fischers Fische",
-        "240": "Salziger Regen"
+        "240": "Salziger Regen",
+        "1387": "It's Aliiive"
       }
     },
     "135": {

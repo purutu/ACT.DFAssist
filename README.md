@@ -2,7 +2,8 @@
 
 Final Fantasy XIV DFAssist forked plug-in for ACT3
 
-Game data support: Version 5.18
+* Supported game data: Version 5.18
+* Supported game language: En, Ja, Ko(Partial), De(Partial), Fr(Partial)
 
 **FATEs work again!**
 
@@ -14,7 +15,7 @@ Extract downloaded file to your plugin directory. Then add this plugin to "Plugi
 ![ACT3 plugin add image](https://user-images.githubusercontent.com/47320226/52210588-db581b00-28ca-11e9-8c60-4d4d1fc21fa4.png)
 
 Screenshot
-![Screen](https://github.com/purutu/ACT.DFAssist/blob/master/doc/screen-1.png)
+![Screen](https://user-images.githubusercontent.com/47320226/72213510-9f462500-3533-11ea-95cc-bc99d841cca0.png)
 
 
 ## Thanks to

@@ -11,11 +11,13 @@ using System.Linq;
 
 namespace ACT.DFAssist
 {
-	internal static partial class PacketFFXIV
+	internal static partial class PacketWorker
 	{
-		private static void HandleMessage_0511_HF(int pid, byte[] message, ref MatchStatus state)
+		private static void HandleMessage_0511_HF(byte[] message)
 		{
 			var opcode = BitConverter.ToUInt16(message, 18);
+
+#if false
 
 #if !DEBUG
 			if (
@@ -71,14 +73,14 @@ namespace ACT.DFAssist
 				if (type == 0x0B)
 				{
 					// 들어옴
-					MsgLog.Info("l-field-instance-entered", GameData.GetInstanceName(code));
-					FireEvent(pid, GameEvents.InstanceEnter, new int[] { code });
+					MsgLog.Info("l-instance-field-enter", GameData.GetInstanceName(code));
+					FireEvent(GameEvents.InstanceEnter, new int[] { code });
 				}
 				else if (type == 0x0C)
 				{
 					// 나감
-					MsgLog.Info("l-field-instance-left");
-					FireEvent(pid, GameEvents.InstanceLeave, new int[] { code });
+					MsgLog.Info("l-instance-field-left");
+					FireEvent(GameEvents.InstanceLeave, new int[] { code });
 				}
 			} // 22F
 #if COMPAT_4_5 || COMPAT_5_0
@@ -92,13 +94,13 @@ namespace ACT.DFAssist
                     {
                         var code = BitConverter.ToUInt16(data, 4);
                         var progress = data[8];
-                        FireEvent(pid, GameEvents.FateProgress, new int[] { code, progress });
+                        FireEvent(GameEvents.FateProgress, new int[] { code, progress });
                     }
                     else if (type == 0x79) // FATE 끗
                     {
                         var code = BitConverter.ToUInt16(data, 4);
                         var status = BitConverter.ToUInt16(data, 28);
-                        FireEvent(pid, GameEvents.FateEnd, new int[] { code, status });
+                        FireEvent(GameEvents.FateEnd, new int[] { code, status });
                     }
                     else if (type == 0x74) // FATE 시작! 에이리어 이동해도 진행중인 것도 이걸로 처리됨
                     {
@@ -107,7 +109,7 @@ namespace ACT.DFAssist
                         if (Settings.LoggingWholeFates || Settings.SelectedFates.Contains(code.ToString()))
                         {
                             MsgLog.Info("l-fate-occured-info", GameData.GetFate(code).Name);
-                            FireEvent(pid, GameEvents.FateBegin, new int[] { code });
+                            FireEvent(GameEvents.FateBegin, new int[] { code });
                         }
                     }
 #endif
@@ -125,8 +127,8 @@ namespace ACT.DFAssist
 
 					if (_rouletteCode != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
 					{
-						MsgLog.Info("l-queue-started-roulette", GameData.GetRouletteName(_rouletteCode));
-						FireEvent(pid, GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
+						MsgLog.Info("i-queue-roulette", GameData.GetRouletteName(_rouletteCode));
+						FireEvent(GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
 					}
 					else // 듀티 지정 큐 (Dungeon/Trial/Raid)
 					{
@@ -150,21 +152,21 @@ namespace ACT.DFAssist
 						foreach (var item in instances)
 							args.Add(item);
 
-						MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
-						FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
+						MsgLog.Info("i-queue-instance", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
+						FireEvent(GameEvents.MatchBegin, args.ToArray());
 					}
 				}
 				else if (status == 3) // 취소
 				{
 					state = reason == 8 ? MatchStatus.Queued : MatchStatus.Idle;
 					MsgLog.Info("l-queue-stopped");
-					FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
+					FireEvent(GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
 				}
 				else if (status == 6) // 들어가기
 				{
 					state = MatchStatus.Idle;
 					MsgLog.Info("l-queue-entered");
-					FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Enter });
+					FireEvent(GameEvents.MatchEnd, new[] { (int)MatchResult.Enter });
 				}
 				else if (status == 4) // 매치
 				{
@@ -173,8 +175,8 @@ namespace ACT.DFAssist
 
 					state = MatchStatus.Matched;
 
-					MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
-					FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
+					MsgLog.Info("i-matched", GameData.GetInstanceName(code));
+					FireEvent(GameEvents.MatchDone, new int[] { roulette, code });
 				}
 			} // 78
 			else if (opcode == 0x006F)
@@ -190,7 +192,7 @@ namespace ACT.DFAssist
 				{
 					// 플레이어가 매칭 참가 확인 창에서 확인을 누름
 					// 다른 매칭 인원들도 전부 확인을 눌렀을 경우 입장을 위해 상단 2DB status 6 패킷이 옴
-					FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
+					FireEvent(GameEvents.MatchCancel, new int[] { -1 });
 				}
 			} // 6F
 			else if (opcode == 0x0121)  // 글로벌 깜빡
@@ -200,7 +202,7 @@ namespace ACT.DFAssist
 				if (status == 128)
 				{
 					// 매칭 참가 신청 확인 창에서 확인을 누름, 그러니깐 표시 안하도됨
-					FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
+					FireEvent(GameEvents.MatchCancel, new int[] { -1 });
 				}
 			} // 121
 			else if (opcode == 0x0079) // 매치 상태
@@ -220,7 +222,7 @@ namespace ACT.DFAssist
 					{
 						// 마지막 정보와 다름, 다른 사람에 의한 취소... 인데 이거 되나??!!!
 						state = MatchStatus.Queued;
-						FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
+						FireEvent(GameEvents.MatchCancel, new int[] { -1 });
 
 					}
 					else if (state == MatchStatus.Idle || state == MatchStatus.Queued)
@@ -232,9 +234,9 @@ namespace ACT.DFAssist
 						}
 
 						if (_rouletteCode > 0 || (tank == 0 && healer == 0 && dps == 0))
-							FireEvent(pid, GameEvents.MatchOrder, new int[] { order });
+							FireEvent(GameEvents.MatchOrder, new int[] { order });
 						else
-							FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
+							FireEvent(GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
 					}
 
 					_lastMember = member;
@@ -243,14 +245,14 @@ namespace ACT.DFAssist
 				else if (status == 2)
 				{
 					// 매칭 파티의 인원 정보
-					FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
+					FireEvent(GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
 					return; // 이건 로그를 안뿌린다
 				}
 				else //if (status == 4)
 				{
 					// 매칭하고 파티 인원 상태
 					// 추가로: 다른거땜에 오버레이가 지워질 수도 있음... ㅠㅠ
-					FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
+					FireEvent(GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, status, tank, healer, dps });
 
 					if (status != 4)
 					{
@@ -269,13 +271,13 @@ namespace ACT.DFAssist
 				var code = BitConverter.ToUInt16(data, 4);
 
 				state = MatchStatus.Matched;
-				FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
+				FireEvent(GameEvents.MatchDone, new int[] { roulette, code });
 
-				MsgLog.Success("l-queue-matched ", code);
+				MsgLog.Success("i-matched ", code);
 			} // 80
 #endif
 #if COMPAT_5_1
-			#region 5.1 추가
+#region 5.1 추가
 			else if (opcode == 0x008F)    // 5.1 큐 (opcode = 0x0078, status = 0)
 			{
 				var status = data[0];
@@ -287,8 +289,8 @@ namespace ACT.DFAssist
 
 				if (_rouletteCode != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
 				{
-					MsgLog.Info("l-queue-started-roulette", GameData.GetRouletteName(_rouletteCode));
-					FireEvent(pid, GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
+					MsgLog.Info("i-queue-roulette", GameData.GetRouletteName(_rouletteCode));
+					FireEvent(GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
 				}
 				else // 듀티 지정 큐 (Dungeon/Trial/Raid)
 				{
@@ -310,8 +312,8 @@ namespace ACT.DFAssist
 					foreach (var item in instances)
 						args.Add(item);
 
-					MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
-					FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
+					MsgLog.Info("i-queue-instance", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
+					FireEvent(GameEvents.MatchBegin, args.ToArray());
 				}
 			} // 8F
 			else if (opcode == 0x00B3)    // 5.1 매칭 (opcode = 0x0078, status = 4)
@@ -320,8 +322,8 @@ namespace ACT.DFAssist
 
 				state = MatchStatus.Matched;
 
-				MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
-				FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
+				MsgLog.Info("i-matched", GameData.GetInstanceName(code));
+				FireEvent(GameEvents.MatchDone, new int[] { _rouletteCode, code });
 			} // B3
 			else if (opcode == 0x015E)    // 5.1 캔슬 (opcode = 0x0078, status = 3)
 			{
@@ -331,7 +333,7 @@ namespace ACT.DFAssist
 				{
 					state = MatchStatus.Idle;
 					MsgLog.Info("l-queue-stopped");
-					FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
+					FireEvent(GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
 				}
 			} // 15E
 			else if (opcode == 0x00AE)  // 5.1 매칭하고 파티 인원 (opcode = 0x0078, status = 4)
@@ -341,12 +343,12 @@ namespace ACT.DFAssist
 				var healer = data[14];
 				var dps = data[16];
 
-				FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, 0, tank, healer, dps });
+				FireEvent(GameEvents.MatchStatus, new int[] { (int)MatchType.StatusShort, code, 0, tank, healer, dps });
 			} // AE
-			#endregion  // 5.1 추가
+#endregion  // 5.1 추가
 #endif
 #if COMPAT_5_1_1
-			#region 5.11 추가
+#region 5.11 추가
 			else if (opcode == 0x0339) // 5.11 인스턴스 들어오고 나가기
 			{
 				var code = BitConverter.ToInt16(data, 4);
@@ -359,14 +361,14 @@ namespace ACT.DFAssist
 				if (type == 0x0B)
 				{
 					// 들어옴
-					MsgLog.Info("l-field-instance-entered", GameData.GetInstanceName(code));
-					FireEvent(pid, GameEvents.InstanceEnter, new int[] { code });
+					MsgLog.Info("l-instance-field-enter", GameData.GetInstanceName(code));
+					FireEvent(GameEvents.InstanceEnter, new int[] { code });
 				}
 				else if (type == 0x0C)
 				{
 					// 나감
-					MsgLog.Info("l-field-instance-left");
-					FireEvent(pid, GameEvents.InstanceLeave, new int[] { code });
+					MsgLog.Info("l-instance-field-left");
+					FireEvent(GameEvents.InstanceLeave, new int[] { code });
 				}
 			} // 339
 			else if (opcode == 0x0164)    // 5.11 큐
@@ -380,8 +382,8 @@ namespace ACT.DFAssist
 
 				if (_rouletteCode != 0 && (data[15] == 0 || data[15] == 64))
 				{
-					MsgLog.Info("l-queue-started-roulette", GameData.GetRouletteName(_rouletteCode));
-					FireEvent(pid, GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
+					MsgLog.Info("i-queue-roulette", GameData.GetRouletteName(_rouletteCode));
+					FireEvent(GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
 				}
 				else // 듀티 지정 큐 (Dungeon/Trial/Raid)
 				{
@@ -403,8 +405,8 @@ namespace ACT.DFAssist
 					foreach (var item in instances)
 						args.Add(item);
 
-					MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
-					FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
+					MsgLog.Info("i-queue-instance", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
+					FireEvent(GameEvents.MatchBegin, args.ToArray());
 				}
 			} // 164
 			else if (opcode == 0x032D)    // 5.11 매칭
@@ -414,8 +416,8 @@ namespace ACT.DFAssist
 
 				state = MatchStatus.Matched;
 
-				MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
-				FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
+				MsgLog.Info("i-matched", GameData.GetInstanceName(code));
+				FireEvent(GameEvents.MatchDone, new int[] { _rouletteCode, code });
 			} // 32D
 			else if (opcode == 0x03CF)    // 5.11 듀티 상태
 			{
@@ -425,12 +427,12 @@ namespace ACT.DFAssist
 				{
 					state = MatchStatus.Idle;
 					MsgLog.Info("l-queue-stopped");
-					FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
+					FireEvent(GameEvents.MatchEnd, new[] { (int)MatchResult.Cancel });
 				}
 				else if (status == 0x81)    // 매칭 넣었음
 				{
 					//state = MatchStatus.Idle;
-					//FireEvent(pid, GameEvents.MatchEnd, new[] { (int)MatchResult.Enter });
+					//FireEvent(GameEvents.MatchEnd, new[] { (int)MatchResult.Enter });
 				}
 			} // 3CF
 			else if (opcode == 0x032F)  // 5.11 매칭하고 파티 인원
@@ -450,8 +452,8 @@ namespace ACT.DFAssist
 					tank > instance.Tank || healer > instance.Healer || dps > instance.Dps)
 				{
 					// 이거하면 계속 울려서 안된다..
-					//FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
-					FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusCode, code, 0 });
+					//FireEvent(GameEvents.MatchDone, new int[] { _rouletteCode, code });
+					FireEvent(GameEvents.MatchStatus, new int[] { (int)MatchType.StatusCode, code, 0 });
 				}
 				else
 				{
@@ -459,25 +461,25 @@ namespace ACT.DFAssist
 						(tank == instance.Tank && healer == instance.Healer && dps == instance.Dps))
 					{
 						// 입장으로 간주한다
-						//MsgLog.Info("l-field-instance-entered", GameData.GetInstanceName(code));
-						FireEvent(pid, GameEvents.InstanceEnter, new int[] { code });
+						//MsgLog.Info("l-instance-field-enter", GameData.GetInstanceName(code));
+						FireEvent(GameEvents.InstanceEnter, new int[] { code });
 					}
 					else
 					{
-						//FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, 0, tank, healer, dps });
-						FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusLong, code, 0, tank, healer, dps, maxtank, maxhealer, maxdps });
+						//FireEvent(GameEvents.MatchStatus, new int[] { (int)MatchType.ShortStatus, code, 0, tank, healer, dps });
+						FireEvent(GameEvents.MatchStatus, new int[] { (int)MatchType.StatusLong, code, 0, tank, healer, dps, maxtank, maxhealer, maxdps });
 					}
 				}
 			} // 32F
 			else if (opcode == 0x0002)  // 5.11 매칭 완료
 			{
 				// 딱히 할건없음
-				//FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
+				//FireEvent(GameEvents.MatchCancel, new int[] { -1 });
 			} // 2
-			#endregion  // 5.11 추가
+#endregion  // 5.11 추가
 #endif
 #if COMPAT_5_1 || COMPAT_5_1_1
-			#region 5.1 & 5.11
+#region 5.1 & 5.11
 			else if (opcode == 0x0304)  // 5.1, 5.11 상태 (opcode = 0x0078, status = 1)
 			{
 				var order = data[6];
@@ -494,7 +496,7 @@ namespace ACT.DFAssist
 				{
 					// 마지막 정보와 다름, 다른 사람에 의한 취소... 인데 이거 되나??!!!
 					state = MatchStatus.Queued;
-					FireEvent(pid, GameEvents.MatchCancel, new int[] { -1 });
+					FireEvent(GameEvents.MatchCancel, new int[] { -1 });
 
 				}
 				else if (state == MatchStatus.Idle || state == MatchStatus.Queued)
@@ -508,9 +510,9 @@ namespace ACT.DFAssist
 					if (_rouletteCode > 0 ||
 						(tank == 0 && healer == 0 && dps == 0) ||
 						(tank > maxtank || healer > maxhealer || dps > maxdps))
-						FireEvent(pid, GameEvents.MatchOrder, new int[] { order });
+						FireEvent(GameEvents.MatchOrder, new int[] { order });
 					else
-						FireEvent(pid, GameEvents.MatchStatus, new int[] { (int)MatchType.StatusLong, 0, order, tank, healer, dps, maxtank, maxhealer, maxdps });
+						FireEvent(GameEvents.MatchStatus, new int[] { (int)MatchType.StatusLong, 0, order, tank, healer, dps, maxtank, maxhealer, maxdps });
 				}
 
 				_lastMember = member;
@@ -519,10 +521,10 @@ namespace ACT.DFAssist
 				var memberinfo = $"{tank}/{maxtank}, {healer}/{maxhealer}, {dps}/{maxdps}";
 				MsgLog.Info("l-queue-updated", $"#{order}", wait, memberinfo);
 			} // 304
-			#endregion
+#endregion
 #endif
 #if COMPAT_5_1_1_HF_20191126
-			#region 5.11 Hotfix 11/26/2019
+#region 5.11 Hotfix 11/26/2019
 			else if (opcode == 0x02B0)
 			{
 				_rouletteCode = BitConverter.ToUInt16(data, 2);
@@ -530,13 +532,13 @@ namespace ACT.DFAssist
 
 				state = MatchStatus.Matched;
 
-				MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
-				FireEvent(pid, GameEvents.MatchDone, new int[] { _rouletteCode, code });
+				MsgLog.Info("i-matched", GameData.GetInstanceName(code));
+				FireEvent(GameEvents.MatchDone, new int[] { _rouletteCode, code });
 			}
-			#endregion
+#endregion
 #endif
 #if COMPAT_5_1_5
-			#region 5.15
+#region 5.15
 			else if (opcode == 0x0193)      // 5.15 듀티 큐
 			{
 				var status = data[0];
@@ -547,8 +549,8 @@ namespace ACT.DFAssist
 
 				if (_rouletteCode != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
 				{
-					MsgLog.Info("l-queue-started-roulette", GameData.GetRouletteName(_rouletteCode));
-					FireEvent(pid, GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
+					MsgLog.Info("i-queue-roulette", GameData.GetRouletteName(_rouletteCode));
+					FireEvent(GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
 				}
 				else // 골라놓은 듀티 큐 (Dungeon/Trial/Raid)
 				{
@@ -568,8 +570,8 @@ namespace ACT.DFAssist
 					foreach (var item in instances)
 						args.Add(item);
 
-					MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
-					FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
+					MsgLog.Info("i-queue-instance", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
+					FireEvent(GameEvents.MatchBegin, args.ToArray());
 				}
 			} // 193
 			else if (opcode == 0x0135)      // 5.15 매칭
@@ -579,10 +581,12 @@ namespace ACT.DFAssist
 
 				state = MatchStatus.Matched;
 
-				MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
-				FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
+				MsgLog.Info("i-matched", GameData.GetInstanceName(code));
+				FireEvent(GameEvents.MatchDone, new int[] { roulette, code });
 			} // 135
-			#endregion
+#endregion
+#endif
+
 #endif
 		}
 	}

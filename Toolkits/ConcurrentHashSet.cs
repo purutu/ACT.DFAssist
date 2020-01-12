@@ -6,6 +6,7 @@ using System.Threading;
 
 namespace ACT.DFAssist.Toolkits
 {
+    [Serializable]
     public class ConcurrentHashSet<T> : IDisposable, ICollection<T>, ISet<T>, ISerializable, IDeserializationCallback
     {
         private readonly HashSet<T> _hs = new HashSet<T>();

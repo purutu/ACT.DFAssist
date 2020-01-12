@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS0162: 접근할 수 없는 코드가 있습니다.
+dotnet_diagnostic.CS0162.severity = none

@@ -1,9 +1,8 @@
-﻿using Advanced_Combat_Tracker;
+﻿#define ENABLE_FATE
+
+using Advanced_Combat_Tracker;
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.EnterpriseServices.Internal;
 using System.IO;
@@ -18,12 +17,7 @@ namespace ACT.DFAssist
 {
 	public partial class MainControl : UserControl, IActPluginV1
 	{
-		#region ACT 의존성
-		private static readonly string[] Dependencies =
-		{
-			"Newtonsoft.Json.dll",
-		};
-		#endregion
+		private const bool NOFATE = false;
 
 		#region 변수
 		//
@@ -34,10 +28,6 @@ namespace ACT.DFAssist
 		private bool _isInitSetting;
 
 		//
-		private Localization.Locale _localeUi;
-		private Localization.Locale _localeGame;
-
-		//
 		private Label _actLabelStatus;
 		private TabPage _actTabPage;
 
@@ -45,11 +35,8 @@ namespace ACT.DFAssist
 		private SettingsSerializer _srset;
 
 		//
-		private readonly ConcurrentDictionary<int, ProNet> _pronets = new ConcurrentDictionary<int, ProNet>();
-
-		//
-		private Timer _timer;
-		private ulong _tick_count;
+		private Localization.Locale _localeUi;
+		private Localization.Locale _localeGame;
 
 		private long _last_sound;
 
@@ -91,8 +78,11 @@ namespace ACT.DFAssist
 
 			// 페이트 안되게하자 
 			// 2020-1-10 페이트 찾았다
-			//tabLeft.TabPages.Remove(tabPageFates);
-			//chkWholeFates.Enabled = false;
+			if (NOFATE)
+			{
+				tabLeft.TabPages.Remove(tabPageFates);
+				chkWholeFates.Enabled = false;
+			}
 		}
 		#endregion
 
@@ -104,22 +94,6 @@ namespace ACT.DFAssist
 
 			var pin = ActGlobals.oFormActMain.ActPlugins.FirstOrDefault(x => x.pluginFile.Name.Equals("ACT.DFAssist.dll"));
 			Settings.PluginPath = pin?.pluginFile.DirectoryName;
-
-			if (Settings.PluginPath == null)
-				return;
-
-			foreach (var d in Dependencies)
-			{
-				var dll = Path.Combine(Settings.PluginPath, d);
-				try
-				{
-					pub.GacInstall(dll);
-				}
-				catch (Exception ex)
-				{
-					ActGlobals.oFormActMain.WriteExceptionLog(ex, "ACT.DFAssist: cannot registry dependency dll");
-				}
-			}
 		}
 
 		//
@@ -155,9 +129,9 @@ namespace ACT.DFAssist
 			Localization.Locale defaultlocale = Localization.DefaultLocale;
 			ReadLocale(defaultlocale);
 
-#if DEBUG
-            MsgLog.Info("ui-dbg-msg", System.Environment.CurrentDirectory);
-            MsgLog.Info("ui-dbg-msg", Settings.PluginPath);
+#if DEBUG && false
+            MsgLog.D("ui-dbg", System.Environment.CurrentDirectory);
+            MsgLog.D("ui-dbg", Settings.PluginPath);
 #endif
 
 			ReadGameData(defaultlocale);
@@ -193,15 +167,9 @@ namespace ACT.DFAssist
 
 			UpdateFates();
 
-			UpdateProcesses();
-
-			if (_timer == null)
-			{
-				_timer = new Timer { Interval = 10000 };
-				_timer.Tick += _timer_Tick;
-			}
-
-			_timer.Enabled = true;
+			//
+			PacketWorker.OnEventReceived += PacketWorker_OnEventReceived;
+			PacketWorker.BeginMachina();
 
 			_isInActInit = false;
 		}
@@ -226,26 +194,9 @@ namespace ACT.DFAssist
 				_actLabelStatus = null;
 			}
 
-			foreach (var e in _pronets)
-				e.Value.Network.StopCapture();
-
-			_timer.Enabled = false;
+			PacketWorker.EndMachina();
 
 			MsgLog.SetTextBox(null);
-		}
-
-		//
-		private void _timer_Tick(object sender, EventArgs e)
-		{
-			if (!_isPluginEnabled)
-				return;
-
-			TimeSpan time = TimeSpan.FromSeconds(_tick_count * 10);
-			label2.Text = string.Format("Running : {0}", time.ToString(@"hh\:mm\:ss\:fff"));
-
-			_tick_count++;
-
-			UpdateProcesses();
 		}
 		#endregion
 
@@ -257,16 +208,16 @@ namespace ACT.DFAssist
 			tabPageSetting.Text = Localization.GetText("ui-tab-2-text");
 			tabPageInformation.Text = Localization.GetText("ui-tab-3-text");
 			lblClientVersion.Text = Localization.GetText("ui-client-version");
-			lblUiLanguage.Text = Localization.GetText("ui-language-display-text");
-			lblGameLanguage.Text = Localization.GetText("ui-language-game-text");
-			lblBackColor.Text = Localization.GetText("ui-log-back-color-text");
-			lblDisplayFont.Text = Localization.GetText("ui-log-display-font-text");
-			btnClearLogs.Text = Localization.GetText("ui-log-clear-text");
-			btnReconnect.Text = Localization.GetText("ui-reconnect-text");
-			chkWholeFates.Text = Localization.GetText("ui-log-whole-fates-text");
-			chkUseOverlay.Text = Localization.GetText("ui-overlay-use-text");
-			chkUseSound.Text = Localization.GetText("ui-sound-use-text");
-			//btnSelectSound.Text = Localization.GetText("ui-sound-select-text");
+			lblUiLanguage.Text = Localization.GetText("ui-language");
+			lblGameLanguage.Text = Localization.GetText("ui-in-game");
+			lblBackColor.Text = Localization.GetText("ui-back-color");
+			lblDisplayFont.Text = Localization.GetText("ui-display-font");
+			btnClearLogs.Text = Localization.GetText("ui-clear-logs");
+			btnReconnect.Text = Localization.GetText("ui-reconnect");
+			chkWholeFates.Text = Localization.GetText("ui-log-whole-fate");
+			chkUseOverlay.Text = Localization.GetText("ui-enable-overlay");
+			chkUseSound.Text = Localization.GetText("ui-enable-sound");
+			//btnSelectSound.Text = Localization.GetText("ui-find");
 			label1.Text = Localization.GetText("app-description");
 			_frmOverlay.SetInfoText("app-description");
 
@@ -350,34 +301,6 @@ namespace ACT.DFAssist
 		}
 
 		//
-		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			try
-			{
-				linkLabel1.LinkVisited = true;
-				System.Diagnostics.Process.Start("https://devunt.github.io/DFAssist/");
-			}
-			catch (Exception)
-			{
-
-			}
-		}
-
-		//
-		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			try
-			{
-				linkLabel2.LinkVisited = true;
-				System.Diagnostics.Process.Start("https://github.com/lalafellsleep/ACTFate/");
-			}
-			catch (Exception)
-			{
-
-			}
-		}
-
-		//
 		private void CboLogBackground_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			Graphics g = e.Graphics;
@@ -400,19 +323,14 @@ namespace ACT.DFAssist
 			if (!string.IsNullOrWhiteSpace(cboLogBackground.Text) && !cboLogBackground.Text.Equals(Color.Transparent.Name))
 			{
 				rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
-				MsgLog.Info("l-info-back-color", cboLogBackground.Text);
+				MsgLog.I("i-selected-color", cboLogBackground.Text);
 			}
 		}
 
 		//
 		private void BtnReconnect_Click(object sender, EventArgs e)
 		{
-			_timer.Enabled = false;
-
-			ClearProcesses();
-			UpdateProcesses();
-
-			_timer.Enabled = true;
+			PacketWorker.BeginMachina();
 		}
 
 		//
@@ -424,9 +342,15 @@ namespace ACT.DFAssist
 		private void ChkUseOverlay_CheckedChanged(object sender, EventArgs e)
 		{
 			if (chkUseOverlay.Checked)
+			{
 				_frmOverlay.Show();
+				btnBlinkOverlay.Enabled = true;
+			}
 			else
+			{
 				_frmOverlay.Hide();
+				btnBlinkOverlay.Enabled = false;
+			}
 
 			Settings.UseOverlay = chkUseOverlay.Checked;
 		}
@@ -434,6 +358,11 @@ namespace ACT.DFAssist
 		private void ChkUseSound_CheckedChanged(object sender, EventArgs e)
 		{
 			CheckSoundEnable();
+		}
+
+		private void BtnBlinkOverlay_Click(object sender, EventArgs e)
+		{
+			_frmOverlay.StartBlink();
 		}
 
 		private void BtnTest_Click(object sender, EventArgs e)
@@ -444,7 +373,7 @@ namespace ACT.DFAssist
 		private void BtnSelectSound_Click(object sender, EventArgs e)
 		{
 			var dg = new OpenFileDialog();
-			dg.Title = Localization.GetText("ui-sound-dialog-title-text");
+			dg.Title = Localization.GetText("ui-select-sound");
 			dg.DefaultExt = "wav";
 			dg.Filter = "Wave (*.wav)|*.wav|All (*.*)|*.*";
 
@@ -483,6 +412,13 @@ namespace ACT.DFAssist
 
 		#region 자료 처리
 		//
+		private string GetLocaleJsonString(string hdr, string code)
+		{
+			string s = string.Format("{0}_{1}", hdr, code);
+			return Properties.Resources.ResourceManager.GetObject(s) as string;
+		}
+
+		//
 		private void ReadLocale(Localization.Locale uilang = null)
 		{
 			Localization.Locale lang = uilang ?? (Localization.Locale)cboUiLanguage.SelectedItem;
@@ -490,7 +426,15 @@ namespace ACT.DFAssist
 			if (_localeUi == null || !lang.Code.Equals(_localeUi.Code))
 			{
 				_localeUi = lang;
-				Localization.Initialize(Settings.PluginPath, lang.Code);
+
+				string json;
+				switch (lang.Index)
+				{
+					case 1: json = Properties.Resources.locale_ja; break;
+					case 4: json = Properties.Resources.locale_ko; break;
+					default: json = Properties.Resources.locale_en; break;
+				}
+				Localization.Initialize(json);				
 			}
 		}
 
@@ -502,9 +446,19 @@ namespace ACT.DFAssist
 			if (_localeGame == null || !lang.Code.Equals(_localeGame.Code))
 			{
 				_localeGame = lang;
-				GameData.Initialize(Settings.PluginPath, lang.Code);
 
-				MsgLog.Info("l-info-version",
+				string json;
+				switch (lang.Index)
+				{
+					case 1: json = Properties.Resources.gamedata_ja; break;
+					case 2: json = Properties.Resources.gamedata_de; break;
+					case 3: json = Properties.Resources.gamedata_fr; break;
+					case 4: json = Properties.Resources.gamedata_ko; break;
+					default: json = Properties.Resources.gamedata_en; break;
+				}
+				GameData.Initialize(json);
+
+				MsgLog.I("i-data-version",
 					GameData.Version,
 					GameData.Areas.Count, GameData.Instances.Count,
 					GameData.Roulettes.Count, GameData.Fates.Count);
@@ -545,7 +499,7 @@ namespace ACT.DFAssist
 					}
 					catch (Exception ex)
 					{
-						_actLabelStatus.Text = Localization.GetText("l-settings-load-error", ex.Message);
+						_actLabelStatus.Text = Localization.GetText("e-setting-load", ex.Message);
 					}
 
 					xr.Close();
@@ -638,7 +592,7 @@ namespace ACT.DFAssist
 			}
 			catch (Exception ex)
 			{
-				MsgLog.Exception(ex, "Exception: save setting failed");
+				MsgLog.Ex(ex, "Exception: save setting failed");
 			}
 		}
 		#endregion
@@ -754,86 +708,17 @@ namespace ACT.DFAssist
 		#endregion
 
 		#region 게임 프로시져
-		//
-		private void UpdateProcesses()
-		{
-			var ps = new List<Process>();
-			ps.AddRange(Process.GetProcessesByName("ffxiv"));
-			ps.AddRange(Process.GetProcessesByName("ffxiv_dx11"));
-
-			foreach (var p in ps)
-			{
-				try
-				{
-					if (_pronets.ContainsKey(p.Id))
-						continue;
-
-					var pn = new ProNet(p, new Network());
-					PacketFFXIV.OnEventReceived += PacketFFXIV_OnEventReceived;
-
-					_pronets.TryAdd(p.Id, pn);
-					MsgLog.Success("l-process-set-success", p.Id);
-				}
-				catch (Exception e)
-				{
-					MsgLog.Exception(e, "l-process-set-failed");
-				}
-			}
-
-			var dels = new List<int>();
-			foreach (var e in _pronets)
-			{
-				if (e.Value.Process.HasExited)
-				{
-					e.Value.Network.StopCapture();
-					dels.Add(e.Key);
-				}
-				else
-				{
-					if (e.Value.Network.IsRunning)
-						e.Value.Network.UpdateGameConnections(e.Value.Process);
-					else
-						e.Value.Network.StartCapture(e.Value.Process);
-				}
-			}
-
-			foreach (var u in dels)
-			{
-				try
-				{
-					_pronets.TryRemove(u, out var _);
-					PacketFFXIV.OnEventReceived -= PacketFFXIV_OnEventReceived;
-				}
-				catch (Exception e)
-				{
-					MsgLog.Exception(e, "l-process-remove-failed");
-				}
-			}
-		}
-
-		//
-		private void ClearProcesses()
-		{
-			foreach (var e in _pronets)
-			{
-				e.Value.Network.StopCapture();
-				PacketFFXIV.OnEventReceived -= PacketFFXIV_OnEventReceived;
-			}
-
-			_pronets.Clear();
-		}
-
 		// 실제 데이터 처리 하는 곳
-		private void PacketFFXIV_OnEventReceived(int pid, GameEvents gameevent, int[] args)
+		private void PacketWorker_OnEventReceived(string pid, GameEvents gameevent, int[] args)
 		{
-			var clienttype = _pronets[pid].ClientType;
-			var text = pid + "|" + clienttype + "|" + gameevent + "|";
+			var text = pid + "|" + gameevent + "|";
 			var pos = 0;
-			var isFate = false;
+
+			var isfate = false;
 
 			switch (gameevent)
 			{
-				case GameEvents.InstanceEnter:      // [0] = instance code
+				case GameEvents.InstanceEnter:		// [0] = instance code
 				case GameEvents.InstanceLeave:
 					{
 						if (args.Length > 0)
@@ -846,39 +731,31 @@ namespace ACT.DFAssist
 					}
 					break;
 
-				case GameEvents.FateBegin:          // [0] = fate code
+				case GameEvents.FateOccur:			// [0] = fate code
 					{
 						var fate = GameData.GetFate(args[0]);
-
-						isFate = true;
 						text += fate.Name + "|" + fate.Area.Name + "|";
 						pos++;
 
-						if (Settings.SelectedFates.Contains(args[0].ToString()))    // 모든 페이트를 골라도 목록에 있는것만 알려줌
+						// 모든 페이트를 골라도 목록에 있는것만 알려줌
+						if (Settings.SelectedFates.Contains(args[0].ToString()))    
 						{
-							_frmOverlay.EventFate(GameData.GetFate(args[0]));
+							_frmOverlay.EventFate(fate);
 							PlayEffectSound();
 						}
+
+						isfate = true;
 					}
 					break;
 
-				case GameEvents.FateProgress:       // [0] = fate code, [1] = progress
-				case GameEvents.FateEnd:            // [0] = fate code, [1] = status(?)
+				case GameEvents.MatchQueue:         // [0] = MatchType, [1] = code, [...] = instances
 					{
-						var fate = GameData.GetFate(args[0]);
+						var type = (MatchType)args[0];
 
-						isFate = true;
-						text += fate.Name + "|" + fate.Area.Name + "|";
-						pos++;
-					}
-					break;
-
-				case GameEvents.MatchBegin:         // [0] = match type(0,1), [1] = roulette code or instance count, [...] = instance
-					{
-						text += (MatchType)args[0] + "|";
+						text += type + "|";
 						pos++;
 
-						switch ((MatchType)args[0])
+						switch (type)
 						{
 							case MatchType.Roulette:
 								var roulette = GameData.GetRoulette(args[1]);
@@ -908,62 +785,7 @@ namespace ACT.DFAssist
 					}
 					break;
 
-				case GameEvents.MatchEnd:           // [0] = end reason <MatchEndType>
-					{
-						text += (MatchResult)args[0] + "|";
-						pos++;
-
-#if false
-                        if (Settings.UseOverlay)
-                        {
-                            var mres = (MatchResult)args[0];
-                            if (mres == MatchResult.Enter)
-                                _frmOverlay.Hide();
-                            else
-                                _frmOverlay.Show();
-                        }
-#endif
-
-						_frmOverlay.EventNone();
-					}
-					break;
-
-				case GameEvents.MatchOrder:         // [0] = order
-					_frmOverlay.EventStatus(args[0]);
-					break;
-
-				case GameEvents.MatchStatus:        // [0] = match type(2,3), [1] = instance code, [2] = status 
-													// [3] = tank, [4] = healer, [5] = dps
-					{
-						var instance = GameData.GetInstance(args[1]);
-						text += instance.Name + "|";
-						pos++;
-
-						switch ((MatchType)args[0])
-						{
-							case MatchType.StatusShort:
-								// 5.1 이전
-								_frmOverlay.EventStatus(instance, args[3], args[4], args[5]);
-								break;
-
-							case MatchType.StatusLong:
-								// 5.1 부터   [6] = maxtank, [7] = maxhealer, [8] = maxdps
-								_frmOverlay.EventStatus(args[3], args[4], args[5], args[6], args[7], args[8]);
-								break;
-
-							case MatchType.StatusCode:
-								// 5.11 코드만
-								_frmOverlay.EventStatus(instance);
-								break;
-
-							default:
-								// 뭐여!
-								break;
-						}
-					}
-					break;
-
-				case GameEvents.MatchDone:          // [0] = roulette code, [1] = instance code
+				case GameEvents.MatchDone:			// [0] = roulette code, [1] = instance code
 					{
 						var roulette = GameData.GetRoulette(args[0]);
 						var instance = GameData.GetInstance(args[1]);
@@ -986,7 +808,8 @@ namespace ACT.DFAssist
 			for (var i = pos; i < args.Length; i++)
 				text += args[i] + "|";
 
-			if (isFate) text += args[0] + "|";
+			if (isfate) 
+				text += args[0] + "|";
 
 			ActGlobals.oFormActMain.ParseRawLogLine(false, DateTime.Now, "00|" + DateTime.Now.ToString("O") + "|0048|F|" + text);
 		}

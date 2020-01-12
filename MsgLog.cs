@@ -10,6 +10,18 @@ namespace ACT.DFAssist
 {
     public static class MsgLog
     {
+        // 카테고리
+        public enum Cat
+        {
+            Info,
+            Error,
+            Debug,
+
+            Instance,
+            Duty,
+            FATE,
+        }
+
         private static class NativeMethods
         {
             [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -33,7 +45,7 @@ namespace ACT.DFAssist
             _logbox = logbox;
         }
 
-        private static void Write(Color color, object format, params object[] args)
+        private static void Write(Cat cat, Color color, object format, params object[] args)
         {
             if (_logbox == null || _logbox.IsDisposed)
                 return;
@@ -49,7 +61,7 @@ namespace ACT.DFAssist
             }
 
             var datetime = DateTime.Now.ToString("HH:mm:ss");
-            var message = $"[{datetime}] {formatted}{Environment.NewLine}";
+            var message = $"[{datetime}/{cat}] {formatted}{Environment.NewLine}";
 
             ActGlobals.oFormActMain.Invoke(new Action(() =>
             {
@@ -63,35 +75,35 @@ namespace ACT.DFAssist
             }));
         }
 
-        public static void Success(string key, params object[] args)
+        public static void S(string key, params object[] args)
         {
-            Write(Color.Green, Localization.GetText(key, args));
+            Write(Cat.Info, Color.Green, Localization.GetText(key, args));
         }
 
-        public static void Info(string key, params object[] args)
+        public static void I(string key, params object[] args)
         {
-            Write(Color.Black, Localization.GetText(key, args));
+            Write(Cat.Info, Color.Black, Localization.GetText(key, args));
         }
 
-        public static void Error(string key, params object[] args)
+        public static void E(string key, params object[] args)
         {
-            Write(Color.Red, Localization.GetText(key, args));
+            Write(Cat.Error, Color.Red, Localization.GetText(key, args));
         }
 
-        public static void Exception(Exception ex, string key, params object[] args)
+        public static void Ex(Exception ex, string key, params object[] args)
         {
             var fmt = Localization.GetText(key);
             var msg = Escape(ex.Message);
 
-            Error($"{fmt}: {msg}", args);
+            E($"{fmt}: {msg}", args);
         }
 
-        public static void Debug(object format, params object[] args)
+        public static void D(object format, params object[] args)
         {
-            Write(Color.Gray, format, args);
+            Write(Cat.Debug, Color.Gray, format, args);
         }
 
-        public static void Buffer(byte[] buffer)
+        public static void D(byte[] buffer)
         {
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine();
@@ -117,12 +129,27 @@ namespace ACT.DFAssist
                 stringBuilder.Append(buffer[i].ToString("X2"));
             }
 
-            Debug(stringBuilder.ToString());
+            D(stringBuilder.ToString());
         }
 
         internal static string Escape(string line)
         {
             return EscapePattern.Replace(line, "{{$1}}");
+        }
+
+        public static void Fate(string key, params object[] args)
+        {
+            Write(Cat.FATE, Color.Black, Localization.GetText(key, args));
+        }
+
+        public static void Duty(string key, params object[] args)
+        {
+            Write(Cat.Duty, Color.Black, Localization.GetText(key, args));
+        }
+
+        public static void Instance(string key, params object[] args)
+        {
+            Write(Cat.Instance, Color.Black, Localization.GetText(key, args));
         }
     }
 }

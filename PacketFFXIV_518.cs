@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 
 namespace ACT.DFAssist
 {
-	internal static partial class PacketFFXIV
+	internal static partial class PacketWorker
 	{
-		private static void HandleMessage_Current(int pid, byte[] message, ref MatchStatus state)
+		private static void PacketFFXIV_518(string pid, byte[] message)
 		{
 			var opcode = BitConverter.ToUInt16(message, 18);
 
@@ -26,26 +24,14 @@ namespace ACT.DFAssist
 			{
 				var type = data[0];
 
-				if (type == 0x9B)
-                {
-                    var code = BitConverter.ToUInt16(data, 4);
-                    var progress = data[8];
-                    FireEvent(pid, GameEvents.FateProgress, new int[] { code, progress });
-                }
-                else if (type == 0x79) // FATE 끗
-                {
-                    var code = BitConverter.ToUInt16(data, 4);
-                    var status = BitConverter.ToUInt16(data, 28);
-                    FireEvent(pid, GameEvents.FateEnd, new int[] { code, status });
-                }
-                else if (type == 0x74) // FATE 시작! 에이리어 이동해도 진행중인 것도 이걸로 처리됨
+                if (type == 0x74) // FATE 시작! 에이리어 이동해도 진행중인 것도 이걸로 처리됨
                 {
                     var code = BitConverter.ToUInt16(data, 4);
 
                     if (Settings.LoggingWholeFates || Settings.SelectedFates.Contains(code.ToString()))
                     {
-                        MsgLog.Info("l-fate-occured-info", GameData.GetFate(code).Name);
-                        FireEvent(pid, GameEvents.FateBegin, new int[] { code });
+                        MsgLog.Fate("l-fate-occured-info", GameData.GetFate(code).Name);
+                        FireEvent(pid, GameEvents.FateOccur, new int[] { code });
                     }
                 }
 			} // E3
@@ -58,28 +44,26 @@ namespace ACT.DFAssist
 				if (type == 0x0B)
 				{
 					// 들어옴
-					MsgLog.Info("l-field-instance-entered", GameData.GetInstanceName(code));
+					MsgLog.Instance("l-instance-enter", GameData.GetInstanceName(code));
 					FireEvent(pid, GameEvents.InstanceEnter, new int[] { code });
 				}
 				else if (type == 0x0C)
 				{
 					// 나감
-					MsgLog.Info("l-field-instance-left");
+					MsgLog.Instance("l-instance-leave");
 					FireEvent(pid, GameEvents.InstanceLeave, new int[] { code });
 				}
-			} // 22F
+			} // 0x022F
 			else if (opcode == 0x0228)      // 5.18 듀티 큐
 			{
 				var status = data[0];
 				var reason = data[4];
 				var roulette = data[8];
 
-				state = MatchStatus.Queued;
-
-				if (_rouletteCode != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
+				if (roulette != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
 				{
-					MsgLog.Info("l-queue-started-roulette", GameData.GetRouletteName(_rouletteCode));
-					FireEvent(pid, GameEvents.MatchBegin, new[] { (int)MatchType.Roulette, _rouletteCode });
+					MsgLog.Duty("i-queue-roulette", GameData.GetRouletteName(roulette));
+					FireEvent(pid, GameEvents.MatchQueue, new[] { (int)MatchType.Roulette, roulette });
 				}
 				else // 골라놓은 듀티 큐 (Dungeon/Trial/Raid)
 				{
@@ -99,20 +83,18 @@ namespace ACT.DFAssist
 					foreach (var item in instances)
 						args.Add(item);
 
-					MsgLog.Info("l-queue-started-general", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
-					FireEvent(pid, GameEvents.MatchBegin, args.ToArray());
+					MsgLog.Duty("i-queue-instance", string.Join(", ", instances.Select(x => GameData.GetInstanceName(x)).ToArray()));
+					FireEvent(pid, GameEvents.MatchQueue, args.ToArray());
 				}
-			} // 193
+			} // 0x0228
 			else if (opcode == 0x01F8)		// 5.18 매칭
 			{
 				var roulette = BitConverter.ToUInt16(data, 2);
 				var code = BitConverter.ToUInt16(data, 20);
 
-				state = MatchStatus.Matched;
-
-				MsgLog.Info("l-queue-matched", GameData.GetInstanceName(code));
+				MsgLog.Duty("i-matched", GameData.GetInstanceName(code));
 				FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
-			} // 135
+			} // 0x01F8
 		}
 	}
 }

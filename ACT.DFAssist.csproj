@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.props" Condition="Exists('packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,6 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <Deterministic>false</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +37,13 @@
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
       <HintPath>ACT\Advanced Combat Tracker.exe</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Machina, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Machina.FFXIV.2.1.1\lib\net40\Machina.dll</HintPath>
+    </Reference>
+    <Reference Include="Machina.FFXIV, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Machina.FFXIV.2.1.1\lib\net40\Machina.FFXIV.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -59,10 +69,9 @@
     <Compile Include="OverlayForm.Designer.cs">
       <DependentUpon>OverlayForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PacketFFXIV.cs" />
+    <Compile Include="PacketWorker.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="MsgLog.cs" />
-    <Compile Include="Network.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="MainControl.cs">
       <SubType>UserControl</SubType>
@@ -70,9 +79,8 @@
     <Compile Include="MainControl.Designer.cs">
       <DependentUpon>MainControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="PacketFFXIVCurr.cs" />
-    <Compile Include="PacketFFXIVPast.cs" />
-    <Compile Include="ProNet.cs" />
+    <Compile Include="PacketFFXIV_518.cs" />
+    <Compile Include="PacketFFXIV_Nouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -81,18 +89,17 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Toolkits\ConcurrentHashSet.cs" />
+    <Compile Include="Toolkits\LineDb.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ACT\gamedata-de.json" />
-    <None Include="ACT\gamedata-en.json" />
-    <None Include="ACT\gamedata-fr.json" />
-    <None Include="ACT\gamedata-ja.json" />
-    <None Include="ACT\gamedata-ko.json" />
-    <None Include="ACT\locale-de.json" />
-    <None Include="ACT\locale-en.json" />
-    <None Include="ACT\locale-fr.json" />
-    <None Include="ACT\locale-ja.json" />
-    <None Include="ACT\locale-ko.json" />
+    <EmbeddedResource Include="ACT\gamedata-de.json" />
+    <EmbeddedResource Include="ACT\gamedata-en.json" />
+    <EmbeddedResource Include="ACT\gamedata-fr.json" />
+    <EmbeddedResource Include="ACT\gamedata-ja.json" />
+    <EmbeddedResource Include="ACT\gamedata-ko.json" />
+    <EmbeddedResource Include="ACT\locale-en.json" />
+    <EmbeddedResource Include="ACT\locale-ja.json" />
+    <EmbeddedResource Include="ACT\locale-ko.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainControl.resx">
@@ -107,17 +114,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="NetFwTypeLib">
-      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include=".editorconfig" />
+    <None Include="ILMerge.props" />
     <None Include="packages.config" />
     <None Include="README.md" />
     <None Include="Resources\btn_del.png" />
@@ -146,5 +144,16 @@
   <ItemGroup>
     <None Include="Resources\play.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ILMergeOrder.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.props'))" />
+    <Error Condition="!Exists('packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.targets'))" />
+  </Target>
+  <Import Project="packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.targets" Condition="Exists('packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.targets')" />
 </Project>

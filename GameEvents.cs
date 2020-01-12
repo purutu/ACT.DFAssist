@@ -1,54 +1,32 @@
 ﻿namespace ACT.DFAssist
 {
+	// 발생 이벤트 
 	public enum GameEvents
 	{
 		None,
 
-		InstanceEnter,  // [0] = instance code
-		InstanceLeave,  // [0] = instance code
+		InstanceEnter,	// [0] = instance code
+		InstanceLeave,	// [0] = instance code
 
-		FateBegin,      // [0] = fate code
-		FateProgress,   // [0] = fate code, [1] = progress
-		FateEnd,        // [0] = fate code, [1] = status(?)
+		FateOccur,		// [0] = fate code
 
-		MatchBegin,     // [0] = match type(0,1), [1] = roulette code or instance count, [...] = instance
-		MatchOrder,     // [0] = order
-		MatchStatus,    // [0] = match type(2,3,4), [1] = instance code, [2] = status 
-						//  Deprecate/Short  [3] = tank, [4] = healer, [5] = dps
-						//  Current/Long     [6] = maxtank, [7] = maxhealer, [8] = maxdps
-						//  Code             None
-		MatchDone,      // [0] = roulette code, [1] = instance code
-		MatchEnd,       // [0] = end reason <MatchEndType>
+		MatchQueue,		// [0] = MatchType, [1] = code, [...] = instances
+		MatchDone,		// [0] = roulette code, [1] = instance code
 		MatchCancel,
 	}
 
-	public enum MatchResult
-	{
-		Cancel = 0,
-		Enter = 1,
-	}
-
+	// 매치 타입
 	public enum MatchType
 	{
 		Roulette = 0,
 		Assignment = 1,
-
-		StatusShort = 2,    // 사실상 5.1 이전 정보 Deprecated
-		StatusLong = 3,     // 사실상 5.1 부터 정보 Current
-		StatusCode = 4,
 	}
 
-	public enum MatchStatus
+	// 매치 표현 형태
+	public enum MatchStyle
 	{
-		Idle,
-		Queued,
-		Matched,
-	}
-
-	public enum ClientType
-	{
-		Global,
-		Korea,
-		China,
+		Short,			// 5.1 이전
+		Long,			// 5.1 부터
+		Code
 	}
 }

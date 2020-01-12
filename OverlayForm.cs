@@ -115,7 +115,7 @@ namespace ACT.DFAssist
             lblInfo.Text = Localization.GetText(localtext);
         }
 
-        private void StartBlink()
+        internal void StartBlink()
         {
             _blink = 0;
 

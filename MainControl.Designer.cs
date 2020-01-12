@@ -66,8 +66,15 @@
 			this.txtSelectedFates = new System.Windows.Forms.TextBox();
 			this.btnReconnect = new System.Windows.Forms.Button();
 			this.tabPageFates = new System.Windows.Forms.TabPage();
-			this.tabPageInformation = new System.Windows.Forms.TabPage();
+			this.tabPageNotify = new System.Windows.Forms.TabPage();
+			this.btnTestNotify = new System.Windows.Forms.Button();
+			this.panel5 = new System.Windows.Forms.Panel();
+			this.lnklblLineNotify = new System.Windows.Forms.LinkLabel();
+			this.lblNtfLineToken = new System.Windows.Forms.Label();
+			this.txtNtfLineToken = new System.Windows.Forms.TextBox();
+			this.chkNtfUseLine = new System.Windows.Forms.CheckBox();
 			this.ilTab = new System.Windows.Forms.ImageList(this.components);
+			this.ttCtrls = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.splitBase)).BeginInit();
 			this.splitBase.Panel1.SuspendLayout();
 			this.splitBase.Panel2.SuspendLayout();
@@ -79,22 +86,24 @@
 			this.panel2.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.tabPageFates.SuspendLayout();
-			this.tabPageInformation.SuspendLayout();
+			this.tabPageNotify.SuspendLayout();
+			this.panel5.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(3, 11);
+			this.label1.Location = new System.Drawing.Point(33, 411);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(109, 17);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "This is test plugin";
+			this.label1.Visible = false;
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(33, 474);
+			this.label2.Location = new System.Drawing.Point(148, 411);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(43, 17);
 			this.label2.TabIndex = 1;
@@ -143,9 +152,9 @@
 			// 
 			// tabLeft
 			// 
-			this.tabLeft.Controls.Add(this.tabPageSetting);
 			this.tabLeft.Controls.Add(this.tabPageFates);
-			this.tabLeft.Controls.Add(this.tabPageInformation);
+			this.tabLeft.Controls.Add(this.tabPageSetting);
+			this.tabLeft.Controls.Add(this.tabPageNotify);
 			this.tabLeft.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabLeft.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabLeft.ImageList = this.ilTab;
@@ -499,17 +508,85 @@
 			this.tabPageFates.Text = "FATEs";
 			this.tabPageFates.UseVisualStyleBackColor = true;
 			// 
-			// tabPageInformation
+			// tabPageNotify
 			// 
-			this.tabPageInformation.Controls.Add(this.label2);
-			this.tabPageInformation.Controls.Add(this.label1);
-			this.tabPageInformation.ImageIndex = 4;
-			this.tabPageInformation.Location = new System.Drawing.Point(4, 39);
-			this.tabPageInformation.Name = "tabPageInformation";
-			this.tabPageInformation.Size = new System.Drawing.Size(242, 516);
-			this.tabPageInformation.TabIndex = 2;
-			this.tabPageInformation.Text = "Info";
-			this.tabPageInformation.UseVisualStyleBackColor = true;
+			this.tabPageNotify.Controls.Add(this.btnTestNotify);
+			this.tabPageNotify.Controls.Add(this.panel5);
+			this.tabPageNotify.Controls.Add(this.label2);
+			this.tabPageNotify.Controls.Add(this.label1);
+			this.tabPageNotify.ImageIndex = 4;
+			this.tabPageNotify.Location = new System.Drawing.Point(4, 39);
+			this.tabPageNotify.Name = "tabPageNotify";
+			this.tabPageNotify.Size = new System.Drawing.Size(242, 516);
+			this.tabPageNotify.TabIndex = 2;
+			this.tabPageNotify.Text = "Notify";
+			this.tabPageNotify.UseVisualStyleBackColor = true;
+			// 
+			// btnTestNotify
+			// 
+			this.btnTestNotify.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnTestNotify.Location = new System.Drawing.Point(3, 470);
+			this.btnTestNotify.Name = "btnTestNotify";
+			this.btnTestNotify.Size = new System.Drawing.Size(232, 43);
+			this.btnTestNotify.TabIndex = 3;
+			this.btnTestNotify.Text = "Test Notify";
+			this.btnTestNotify.UseVisualStyleBackColor = true;
+			this.btnTestNotify.Click += new System.EventHandler(this.btnTestNotify_Click);
+			// 
+			// panel5
+			// 
+			this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel5.Controls.Add(this.lnklblLineNotify);
+			this.panel5.Controls.Add(this.lblNtfLineToken);
+			this.panel5.Controls.Add(this.txtNtfLineToken);
+			this.panel5.Controls.Add(this.chkNtfUseLine);
+			this.panel5.Location = new System.Drawing.Point(3, 3);
+			this.panel5.Name = "panel5";
+			this.panel5.Size = new System.Drawing.Size(236, 83);
+			this.panel5.TabIndex = 2;
+			// 
+			// lnklblLineNotify
+			// 
+			this.lnklblLineNotify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.lnklblLineNotify.AutoSize = true;
+			this.lnklblLineNotify.Location = new System.Drawing.Point(75, 55);
+			this.lnklblLineNotify.Name = "lnklblLineNotify";
+			this.lnklblLineNotify.Size = new System.Drawing.Size(156, 17);
+			this.lnklblLineNotify.TabIndex = 3;
+			this.lnklblLineNotify.TabStop = true;
+			this.lnklblLineNotify.Text = "https://notify-bot.line.me/";
+			this.lnklblLineNotify.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnklblLineNotify_LinkClicked);
+			// 
+			// lblNtfLineToken
+			// 
+			this.lblNtfLineToken.AutoSize = true;
+			this.lblNtfLineToken.Location = new System.Drawing.Point(3, 30);
+			this.lblNtfLineToken.Name = "lblNtfLineToken";
+			this.lblNtfLineToken.Size = new System.Drawing.Size(42, 17);
+			this.lblNtfLineToken.TabIndex = 2;
+			this.lblNtfLineToken.Text = "Token";
+			// 
+			// txtNtfLineToken
+			// 
+			this.txtNtfLineToken.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtNtfLineToken.Location = new System.Drawing.Point(61, 27);
+			this.txtNtfLineToken.Name = "txtNtfLineToken";
+			this.txtNtfLineToken.Size = new System.Drawing.Size(170, 25);
+			this.txtNtfLineToken.TabIndex = 1;
+			// 
+			// chkNtfUseLine
+			// 
+			this.chkNtfUseLine.AutoSize = true;
+			this.chkNtfUseLine.Location = new System.Drawing.Point(3, 3);
+			this.chkNtfUseLine.Name = "chkNtfUseLine";
+			this.chkNtfUseLine.Size = new System.Drawing.Size(115, 21);
+			this.chkNtfUseLine.TabIndex = 0;
+			this.chkNtfUseLine.Text = "Use LINE notify";
+			this.chkNtfUseLine.UseVisualStyleBackColor = true;
 			// 
 			// ilTab
 			// 
@@ -520,6 +597,11 @@
 			this.ilTab.Images.SetKeyName(2, "Map64_Icon.png");
 			this.ilTab.Images.SetKeyName(3, "Player2_Icon.png");
 			this.ilTab.Images.SetKeyName(4, "Player12_Icon.png");
+			// 
+			// ttCtrls
+			// 
+			this.ttCtrls.IsBalloon = true;
+			this.ttCtrls.ShowAlways = true;
 			// 
 			// MainControl
 			// 
@@ -544,8 +626,10 @@
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.tabPageFates.ResumeLayout(false);
-			this.tabPageInformation.ResumeLayout(false);
-			this.tabPageInformation.PerformLayout();
+			this.tabPageNotify.ResumeLayout(false);
+			this.tabPageNotify.PerformLayout();
+			this.panel5.ResumeLayout(false);
+			this.panel5.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -566,7 +650,7 @@
         private System.Windows.Forms.TabControl tabLeft;
         private System.Windows.Forms.TabPage tabPageFates;
         private System.Windows.Forms.TabPage tabPageSetting;
-        private System.Windows.Forms.TabPage tabPageInformation;
+        private System.Windows.Forms.TabPage tabPageNotify;
         private System.Windows.Forms.Button btnReconnect;
         private System.Windows.Forms.Label lblBackColor;
         private System.Windows.Forms.ImageList ilTab;
@@ -590,5 +674,12 @@
 		private System.Windows.Forms.Label lblClientVersion;
 		private System.Windows.Forms.TextBox txtClientVersion;
 		private System.Windows.Forms.Button btnBlinkOverlay;
+		private System.Windows.Forms.ToolTip ttCtrls;
+		private System.Windows.Forms.Panel panel5;
+		private System.Windows.Forms.Label lblNtfLineToken;
+		private System.Windows.Forms.TextBox txtNtfLineToken;
+		private System.Windows.Forms.CheckBox chkNtfUseLine;
+		private System.Windows.Forms.Button btnTestNotify;
+		private System.Windows.Forms.LinkLabel lnklblLineNotify;
 	}
 }

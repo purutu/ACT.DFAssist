@@ -3,13 +3,19 @@
 using Advanced_Combat_Tracker;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Drawing;
 using System.EnterpriseServices.Internal;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -206,7 +212,8 @@ namespace ACT.DFAssist
 		{
 			tabPageFates.Text = Localization.GetText("ui-tab-1-text");
 			tabPageSetting.Text = Localization.GetText("ui-tab-2-text");
-			tabPageInformation.Text = Localization.GetText("ui-tab-3-text");
+			tabPageNotify.Text = Localization.GetText("ui-tab-3-text");
+
 			lblClientVersion.Text = Localization.GetText("ui-client-version");
 			lblUiLanguage.Text = Localization.GetText("ui-language");
 			lblGameLanguage.Text = Localization.GetText("ui-in-game");
@@ -219,7 +226,16 @@ namespace ACT.DFAssist
 			chkUseSound.Text = Localization.GetText("ui-enable-sound");
 			//btnSelectSound.Text = Localization.GetText("ui-find");
 			label1.Text = Localization.GetText("app-description");
+
+			btnTestNotify.Text = Localization.GetText("ui-notift-test");
+			chkNtfUseLine.Text = Localization.GetText("ui-notify-use-line");
+			lblNtfLineToken.Text= Localization.GetText("ui-token");
+
 			_frmOverlay.SetInfoText("app-description");
+
+			ttCtrls.SetToolTip(btnBlinkOverlay, Localization.GetText("tip-blink-overlay"));
+			ttCtrls.SetToolTip(btnSelectSound, Localization.GetText("tip-select-sound-dialog"));
+			ttCtrls.SetToolTip(btnSoundPlay, Localization.GetText("tip-sound-play"));
 
 			btnLogFont.Text = $"{rtxLogger.Font.Name}, {rtxLogger.Font.Size}";
 		}
@@ -481,6 +497,9 @@ namespace ACT.DFAssist
 			_srset.AddControlSetting("LogFont", txtLogFont);
 			_srset.AddControlSetting("ClientVersion", txtClientVersion);
 
+			_srset.AddControlSetting("NotifyUseLine", chkNtfUseLine);
+			_srset.AddControlSetting("NotifyLineToken", txtNtfLineToken);
+
 			if (File.Exists(Settings.Path))
 			{
 				using (var fs = new FileStream(Settings.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -741,6 +760,7 @@ namespace ACT.DFAssist
 						if (Settings.SelectedFates.Contains(args[0].ToString()))    
 						{
 							_frmOverlay.EventFate(fate);
+							NotifyFate(fate);
 							PlayEffectSound();
 						}
 
@@ -796,6 +816,7 @@ namespace ACT.DFAssist
 						pos++;
 
 						_frmOverlay.EventMatch(instance);
+						NotifyDuty(instance);
 						PlayEffectSound();
 					}
 					break;
@@ -812,6 +833,59 @@ namespace ACT.DFAssist
 				text += args[0] + "|";
 
 			ActGlobals.oFormActMain.ParseRawLogLine(false, DateTime.Now, "00|" + DateTime.Now.ToString("O") + "|0048|F|" + text);
+		}
+		#endregion
+
+		#region 알림
+		private void SendNotify(string s)
+		{
+			if (chkNtfUseLine.Checked)
+				_ = InternalNotifyByLine(s);
+		}
+
+		private void NotifyFate(GameData.Fate fate)
+		{
+			string s = Localization.GetText("l-fate-occured-info", fate.Name);
+			SendNotify(s);
+		}
+
+		private void NotifyDuty(GameData.Instance instance)
+		{
+			string s = Localization.GetText("i-matched", instance.Name);
+			SendNotify(s);
+		}
+
+		private async void btnTestNotify_Click(object sender, EventArgs e)
+		{
+			string s = string.Format("{0} - {1}",
+				Localization.GetText("ui-notift-test"),
+				Localization.GetText("app-description"));
+
+			if (chkNtfUseLine.Checked)
+				await InternalNotifyByLine(s);
+		}
+
+		private void lnklblLineNotify_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			Process.Start("https://notify-bot.line.me/");
+		}
+
+		internal async Task InternalNotifyByLine(string mesg)
+		{
+			if (txtNtfLineToken.TextLength == 0)
+				return;
+
+			var hc = new HttpClient();
+			hc.DefaultRequestHeaders.Add("Authorization", $"Bearer {txtNtfLineToken.Text}");
+
+			var param = new Dictionary<string, string>
+			{
+				{ "message", mesg }
+			};
+
+			await hc.PostAsync(
+				"https://notify-api.line.me/api/notify", 
+				new FormUrlEncodedContent(param)).ConfigureAwait(false);
 		}
 		#endregion
 	}

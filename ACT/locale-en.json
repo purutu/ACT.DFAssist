@@ -37,5 +37,11 @@
   "ui-select-sound": "Select sound file",
   "ui-tab-1-text": "FATEs",
   "ui-tab-2-text": "Setting",
-  "ui-tab-3-text": "Info"
+  "ui-tab-3-text": "Notify",
+  "tip-blink-overlay": "Blink overlay window for easy find",
+  "tip-select-sound-dialog": "Open dialog for select sound file",
+  "tip-sound-play": "Play selected sound",
+  "ui-notify-use-line": "Use LINE notify",
+  "ui-token": "Token",
+  "ui-notift-test": "Test Notify"
 }

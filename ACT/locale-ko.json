@@ -37,5 +37,11 @@
   "ui-select-sound": "소리 파일을 선택해주세요",
   "ui-tab-1-text": "돌발",
   "ui-tab-2-text": "설정",
-  "ui-tab-3-text": "정보"
+  "ui-tab-3-text": "알림",
+  "tip-blink-overlay": "오버레이 창을 쉽게 찾기 위해 깜빡입니다",
+  "tip-select-sound-dialog": "소리 파일을 고르기 위한 대화창을 엽니다",
+  "tip-sound-play": "선택한 소리를 재생합니다",
+  "ui-notify-use-line": "라인 알림을 사용합니다",
+  "ui-token": "토큰",
+  "ui-notift-test": "알림 테스트"
 }

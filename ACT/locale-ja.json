@@ -37,5 +37,11 @@
   "ui-select-sound": "サウンドファイルを選んでください",
   "ui-tab-1-text": "ﾌｪｲﾄ",
   "ui-tab-2-text": "設定",
-  "ui-tab-3-text": "ｲﾝﾌｫ"
+  "ui-tab-3-text": "通知",
+  "tip-blink-overlay": "オーバーレイウィンドウを簡単に探すのにうっかりうっかりします",
+  "tip-select-sound-dialog": "サウンドファイルを選ぶためのダイアログを開きます",
+  "tip-sound-play": "選んだサウンドを再生します",
+  "ui-notify-use-line": "ライン通知を使用します",
+  "ui-token": "トークン",
+  "ui-notift-test": "通知テスト"
 }

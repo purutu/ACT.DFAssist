@@ -3,11 +3,11 @@
 Final Fantasy XIV DFAssist forked plug-in for **ACT3**
 
 ## Feature
-* Supported game data: Version 5.18 and **below**
+* Supported game client: Version 5.18 and **below**
 * Supported game language: En/Ja/De/Fr/Ko
 * Assist both **duty instances** and **FATEs** *(include Eureka NM)*
 * *Notification sound* & *Alert overlay*
-* *LINE* / *Telegram* notification *(Experimental)*
+* *LINE* & *Telegram* notification *(Experimental)*
 
 ## Install
 Put "**ACT.DFAssist.dll**" to your plugin directory. Then add this dll to your plugin list

@@ -45,7 +45,7 @@ namespace ACT.DFAssist
             _logbox = logbox;
         }
 
-        private static void Write(Cat cat, Color color, object format, params object[] args)
+        private static void Write(Cat cat, Color color, string format, params object[] args)
         {
             if (_logbox == null || _logbox.IsDisposed)
                 return;
@@ -98,7 +98,7 @@ namespace ACT.DFAssist
             E($"{fmt}: {msg}", args);
         }
 
-        public static void D(object format, params object[] args)
+        public static void D(string format, params object[] args)
         {
             Write(Cat.Debug, Color.Gray, format, args);
         }

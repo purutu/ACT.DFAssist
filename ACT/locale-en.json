@@ -46,5 +46,7 @@
   "ui-notift-test": "Test Notify",
   "ui-notify-use-telegram": "Use Telegram notify",
   "ui-id": "ID",
-  "i-client-version": "Client version: {0}"
+  "i-client-version": "Client version: {0}",
+  "i-visit-updated": "Updated plugin found! Visit download website?",
+  "i-client-updated": "Updated plugin found! New version is \"{0}\""
 }

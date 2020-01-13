@@ -154,7 +154,6 @@ namespace ACT.DFAssist
 			cboClientVersion.DisplayMember = "Name";
 			cboClientVersion.ValueMember = "Value";
 			cboClientVersion.SelectedIndex = 0;
-			//cboClientVersion.Enabled = false;
 
 			Dock = DockStyle.Fill;
 
@@ -170,6 +169,30 @@ namespace ACT.DFAssist
 			ReadSettings();
 
 			UpdateFates();
+
+			// 
+			string tagname = Settings.GetTagNameForUpdate();
+			if (!Settings.TagName.Equals(tagname))
+			{
+				MsgLog.I("i-client-updated", tagname);
+
+				if (!txtUpdateSkip.Text.Equals(tagname))
+				{
+					Task.Run(() =>
+					{
+						var res = MessageBox.Show(
+							Localization.GetText("i-visit-updated"),
+							Localization.GetText("app-name"), MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+						if (res == DialogResult.Yes)
+							Process.Start("https://github.com/purutu/ACT.DFAssist/releases/latest");
+						else
+						{
+							txtUpdateSkip.Text = tagname;
+							SaveSettings();
+						}
+					});
+				}
+			}
 
 			//
 			PacketWorker.OnEventReceived += PacketWorker_OnEventReceived;
@@ -506,6 +529,7 @@ namespace ACT.DFAssist
 			_srset.AddControlSetting("SoundFile", txtSoundFile);
 			_srset.AddControlSetting("LogFont", txtLogFont);
 			_srset.AddControlSetting("ClientVersion", txtClientVersion);
+			_srset.AddControlSetting("UpdateSkip", txtUpdateSkip);
 
 			_srset.AddControlSetting("NotifyUseLine", chkNtfUseLine);
 			_srset.AddControlSetting("NotifyLineToken", txtNtfLineToken);

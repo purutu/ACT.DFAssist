@@ -81,6 +81,7 @@
 			this.chkNtfUseLine = new System.Windows.Forms.CheckBox();
 			this.ilTab = new System.Windows.Forms.ImageList(this.components);
 			this.ttCtrls = new System.Windows.Forms.ToolTip(this.components);
+			this.txtUpdateSkip = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitBase)).BeginInit();
 			this.splitBase.Panel1.SuspendLayout();
 			this.splitBase.Panel2.SuspendLayout();
@@ -187,6 +188,7 @@
 			// tabPageSetting
 			// 
 			this.tabPageSetting.AutoScroll = true;
+			this.tabPageSetting.Controls.Add(this.txtUpdateSkip);
 			this.tabPageSetting.Controls.Add(this.txtClientVersion);
 			this.tabPageSetting.Controls.Add(this.cboClientVersion);
 			this.tabPageSetting.Controls.Add(this.lblClientVersion);
@@ -210,7 +212,7 @@
 			// 
 			// txtClientVersion
 			// 
-			this.txtClientVersion.Location = new System.Drawing.Point(110, 485);
+			this.txtClientVersion.Location = new System.Drawing.Point(58, 486);
 			this.txtClientVersion.Name = "txtClientVersion";
 			this.txtClientVersion.Size = new System.Drawing.Size(20, 25);
 			this.txtClientVersion.TabIndex = 22;
@@ -296,7 +298,7 @@
 			// 
 			// txtLogFont
 			// 
-			this.txtLogFont.Location = new System.Drawing.Point(136, 488);
+			this.txtLogFont.Location = new System.Drawing.Point(110, 486);
 			this.txtLogFont.Name = "txtLogFont";
 			this.txtLogFont.Size = new System.Drawing.Size(20, 25);
 			this.txtLogFont.TabIndex = 20;
@@ -487,7 +489,7 @@
 			// 
 			// txtOverayLocation
 			// 
-			this.txtOverayLocation.Location = new System.Drawing.Point(199, 485);
+			this.txtOverayLocation.Location = new System.Drawing.Point(173, 486);
 			this.txtOverayLocation.Name = "txtOverayLocation";
 			this.txtOverayLocation.Size = new System.Drawing.Size(34, 25);
 			this.txtOverayLocation.TabIndex = 15;
@@ -496,7 +498,7 @@
 			// 
 			// txtSelectedFates
 			// 
-			this.txtSelectedFates.Location = new System.Drawing.Point(162, 486);
+			this.txtSelectedFates.Location = new System.Drawing.Point(136, 486);
 			this.txtSelectedFates.Name = "txtSelectedFates";
 			this.txtSelectedFates.Size = new System.Drawing.Size(31, 25);
 			this.txtSelectedFates.TabIndex = 12;
@@ -507,13 +509,14 @@
 			this.btnReconnect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnReconnect.Image = global::ACT.DFAssist.Properties.Resources.Player2_Icon;
-			this.btnReconnect.Location = new System.Drawing.Point(3, 364);
+			this.btnReconnect.Location = new System.Drawing.Point(211, 485);
 			this.btnReconnect.Name = "btnReconnect";
-			this.btnReconnect.Size = new System.Drawing.Size(236, 46);
+			this.btnReconnect.Size = new System.Drawing.Size(25, 25);
 			this.btnReconnect.TabIndex = 10;
 			this.btnReconnect.Text = "Reconnect";
 			this.btnReconnect.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.btnReconnect.UseVisualStyleBackColor = true;
+			this.btnReconnect.Visible = false;
 			this.btnReconnect.Click += new System.EventHandler(this.BtnReconnect_Click);
 			// 
 			// tabPageNotify
@@ -679,6 +682,14 @@
 			this.ttCtrls.IsBalloon = true;
 			this.ttCtrls.ShowAlways = true;
 			// 
+			// txtUpdateSkip
+			// 
+			this.txtUpdateSkip.Location = new System.Drawing.Point(84, 486);
+			this.txtUpdateSkip.Name = "txtUpdateSkip";
+			this.txtUpdateSkip.Size = new System.Drawing.Size(20, 25);
+			this.txtUpdateSkip.TabIndex = 23;
+			this.txtUpdateSkip.Visible = false;
+			// 
 			// MainControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -765,5 +776,6 @@
 		private System.Windows.Forms.CheckBox chkNtfUseTelegram;
 		private System.Windows.Forms.Label lblNtfTelegramToken;
 		private System.Windows.Forms.TextBox txtNtfTelegramToken;
+		private System.Windows.Forms.TextBox txtUpdateSkip;
 	}
 }

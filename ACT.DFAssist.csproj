@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Toolkits\ConcurrentHashSet.cs" />
+    <Compile Include="Toolkits\HttpHelper.cs" />
     <Compile Include="Toolkits\LineDb.cs" />
   </ItemGroup>
   <ItemGroup>

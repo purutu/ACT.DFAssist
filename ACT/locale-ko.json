@@ -46,5 +46,7 @@
   "ui-notift-test": "알림 테스트",
   "ui-notify-use-telegram": "텔레그람 알림을 사용합니다",
   "ui-id": "아이디",
-  "i-client-version": "클라이언트 버전: {0}"
+  "i-client-version": "클라이언트 버전: {0}",
+  "i-visit-updated": "새로운 플러그인이 있습니다. 다운로드 웹사이트로 이동할까요?",
+  "i-client-updated": "새로운 플러그인이 있습니다. 버전은 \"{0}\"입니다"
 }

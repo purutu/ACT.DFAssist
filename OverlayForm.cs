@@ -17,8 +17,6 @@ namespace ACT.DFAssist
 
         private const int WS_EX_LAYERED = 0x80000;
         private const int WS_EX_TOOLWINDOW = 0x80;
-        private const int WS_EX_TRANSPARENT = 0x20;
-
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
 
@@ -30,7 +28,7 @@ namespace ACT.DFAssist
         private static readonly Color ColorMatch = Color.Red;
 
         //
-        private Timer _timer;
+        private readonly Timer _timer;
         private int _blink;
         private Color _accent_color;
 
@@ -44,12 +42,14 @@ namespace ACT.DFAssist
 
             Location = Settings.OverlayLocation;
 
-            _timer = new Timer();
-            _timer.Interval = BlinkTime;
-            _timer.Tick += _Timer_Tick;
+            _timer = new Timer
+            {
+                Interval = BlinkTime
+            };
+            _timer.Tick += Timer_Tick;
         }
 
-        private void _Timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
             if (++_blink > BlinkCount)
                 StopBlink();
@@ -166,7 +166,7 @@ namespace ACT.DFAssist
             _members = new int[] { tank, healer, dps };
         }
 
-        // 인스턴스 주어진 상태
+        // instance status
         internal void EventStatus(GameData.Instance instance, int tank, int healer, int dps)
         {
             _current = instance.Name;
@@ -180,7 +180,7 @@ namespace ACT.DFAssist
             }));
         }
 
-        // 5.1 이후 숫자만 있는 상태
+        // instance status only number after 5.1
         internal void EventStatus(int tank, int healer, int dps, int maxtank, int maxhealer, int maxdps)
         {
             var merge = $@"{tank}/{maxtank} {healer}/{maxhealer} {dps}/{maxdps}";
@@ -193,7 +193,7 @@ namespace ACT.DFAssist
             }));
         }
 
-		// 5.11 매칭인데 인원수 이상으로 이름만 표시
+		// instance status name only after 5.11
 		internal void EventStatus(GameData.Instance instance)
 		{
 			_current = instance.Name;
@@ -204,7 +204,7 @@ namespace ACT.DFAssist
 			}));
 		}
 
-		// 듀티 큐 상태
+		// duty queue status
 		internal void EventStatus(int queue)
         {
             var msg = queue < 0 ? string.Empty : $"#{queue}";
@@ -217,6 +217,7 @@ namespace ACT.DFAssist
             }));
         }
 
+        // matching statue
         internal void EventMatch(GameData.Instance instance)
         {
             _current = instance.Name;
@@ -229,6 +230,7 @@ namespace ACT.DFAssist
             }));
         }
 
+        // roulette status
         internal void EventRoulette(GameData.Roulette roulette)
         {
             _members = null;

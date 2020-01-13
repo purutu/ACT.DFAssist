@@ -10,7 +10,7 @@ namespace ACT.DFAssist
 {
 	class Localization
 	{
-		// 로캘
+		// locale
 		public class Locale
 		{
 			public int Index { get; set; }
@@ -18,7 +18,7 @@ namespace ACT.DFAssist
 			public string Code { get; set; }
 		}
 
-		// 로캘 목록
+		// locale list
 		public static readonly Locale[] Locales = new Locale[]
 		{
 			new Locale{Index=0, Name="English", Code="en"},
@@ -28,7 +28,7 @@ namespace ACT.DFAssist
 			new Locale{Index=4, Name="한국말", Code="ko"},
 		};
 
-		// 기본 로캘
+		// default locale
 		public static readonly Locale DefaultLocale = new Locale { Index = 0, Name = "English", Code = "en" };
 
 		//

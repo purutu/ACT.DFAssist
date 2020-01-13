@@ -36,6 +36,7 @@
 			this.trvFates = new System.Windows.Forms.TreeView();
 			this.splitBase = new System.Windows.Forms.SplitContainer();
 			this.tabLeft = new System.Windows.Forms.TabControl();
+			this.tabPageFates = new System.Windows.Forms.TabPage();
 			this.tabPageSetting = new System.Windows.Forms.TabPage();
 			this.txtClientVersion = new System.Windows.Forms.TextBox();
 			this.cboClientVersion = new System.Windows.Forms.ComboBox();
@@ -65,8 +66,13 @@
 			this.txtOverayLocation = new System.Windows.Forms.TextBox();
 			this.txtSelectedFates = new System.Windows.Forms.TextBox();
 			this.btnReconnect = new System.Windows.Forms.Button();
-			this.tabPageFates = new System.Windows.Forms.TabPage();
 			this.tabPageNotify = new System.Windows.Forms.TabPage();
+			this.panel6 = new System.Windows.Forms.Panel();
+			this.lblNtfTelegramToken = new System.Windows.Forms.Label();
+			this.lblNtfTelegramId = new System.Windows.Forms.Label();
+			this.txtNtfTelegramId = new System.Windows.Forms.TextBox();
+			this.txtNtfTelegramToken = new System.Windows.Forms.TextBox();
+			this.chkNtfUseTelegram = new System.Windows.Forms.CheckBox();
 			this.btnTestNotify = new System.Windows.Forms.Button();
 			this.panel5 = new System.Windows.Forms.Panel();
 			this.lnklblLineNotify = new System.Windows.Forms.LinkLabel();
@@ -80,13 +86,14 @@
 			this.splitBase.Panel2.SuspendLayout();
 			this.splitBase.SuspendLayout();
 			this.tabLeft.SuspendLayout();
+			this.tabPageFates.SuspendLayout();
 			this.tabPageSetting.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.panel3.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.panel1.SuspendLayout();
-			this.tabPageFates.SuspendLayout();
 			this.tabPageNotify.SuspendLayout();
+			this.panel6.SuspendLayout();
 			this.panel5.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -164,6 +171,19 @@
 			this.tabLeft.Size = new System.Drawing.Size(250, 559);
 			this.tabLeft.TabIndex = 5;
 			// 
+			// tabPageFates
+			// 
+			this.tabPageFates.Controls.Add(this.trvFates);
+			this.tabPageFates.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabPageFates.ImageIndex = 0;
+			this.tabPageFates.Location = new System.Drawing.Point(4, 39);
+			this.tabPageFates.Name = "tabPageFates";
+			this.tabPageFates.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageFates.Size = new System.Drawing.Size(242, 516);
+			this.tabPageFates.TabIndex = 0;
+			this.tabPageFates.Text = "FATEs";
+			this.tabPageFates.UseVisualStyleBackColor = true;
+			// 
 			// tabPageSetting
 			// 
 			this.tabPageSetting.AutoScroll = true;
@@ -206,7 +226,8 @@
 			this.cboClientVersion.Name = "cboClientVersion";
 			this.cboClientVersion.Size = new System.Drawing.Size(140, 25);
 			this.cboClientVersion.TabIndex = 7;
-			this.cboClientVersion.SelectedValueChanged += new System.EventHandler(this.cboClientVersion_SelectedValueChanged);
+			this.cboClientVersion.SelectedIndexChanged += new System.EventHandler(this.CboClientVersion_SelectedIndexChanged);
+			this.cboClientVersion.SelectedValueChanged += new System.EventHandler(this.CboClientVersion_SelectedValueChanged);
 			// 
 			// lblClientVersion
 			// 
@@ -483,10 +504,10 @@
 			// 
 			// btnReconnect
 			// 
-			this.btnReconnect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			this.btnReconnect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnReconnect.Image = global::ACT.DFAssist.Properties.Resources.Player2_Icon;
-			this.btnReconnect.Location = new System.Drawing.Point(3, 467);
+			this.btnReconnect.Location = new System.Drawing.Point(3, 364);
 			this.btnReconnect.Name = "btnReconnect";
 			this.btnReconnect.Size = new System.Drawing.Size(236, 46);
 			this.btnReconnect.TabIndex = 10;
@@ -495,21 +516,10 @@
 			this.btnReconnect.UseVisualStyleBackColor = true;
 			this.btnReconnect.Click += new System.EventHandler(this.BtnReconnect_Click);
 			// 
-			// tabPageFates
-			// 
-			this.tabPageFates.Controls.Add(this.trvFates);
-			this.tabPageFates.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabPageFates.ImageIndex = 0;
-			this.tabPageFates.Location = new System.Drawing.Point(4, 39);
-			this.tabPageFates.Name = "tabPageFates";
-			this.tabPageFates.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageFates.Size = new System.Drawing.Size(242, 516);
-			this.tabPageFates.TabIndex = 0;
-			this.tabPageFates.Text = "FATEs";
-			this.tabPageFates.UseVisualStyleBackColor = true;
-			// 
 			// tabPageNotify
 			// 
+			this.tabPageNotify.AutoScroll = true;
+			this.tabPageNotify.Controls.Add(this.panel6);
 			this.tabPageNotify.Controls.Add(this.btnTestNotify);
 			this.tabPageNotify.Controls.Add(this.panel5);
 			this.tabPageNotify.Controls.Add(this.label2);
@@ -522,17 +532,81 @@
 			this.tabPageNotify.Text = "Notify";
 			this.tabPageNotify.UseVisualStyleBackColor = true;
 			// 
+			// panel6
+			// 
+			this.panel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel6.Controls.Add(this.lblNtfTelegramToken);
+			this.panel6.Controls.Add(this.lblNtfTelegramId);
+			this.panel6.Controls.Add(this.txtNtfTelegramId);
+			this.panel6.Controls.Add(this.txtNtfTelegramToken);
+			this.panel6.Controls.Add(this.chkNtfUseTelegram);
+			this.panel6.Location = new System.Drawing.Point(3, 92);
+			this.panel6.Name = "panel6";
+			this.panel6.Size = new System.Drawing.Size(236, 97);
+			this.panel6.TabIndex = 4;
+			// 
+			// lblNtfTelegramToken
+			// 
+			this.lblNtfTelegramToken.AutoSize = true;
+			this.lblNtfTelegramToken.Location = new System.Drawing.Point(3, 34);
+			this.lblNtfTelegramToken.Name = "lblNtfTelegramToken";
+			this.lblNtfTelegramToken.Size = new System.Drawing.Size(42, 17);
+			this.lblNtfTelegramToken.TabIndex = 5;
+			this.lblNtfTelegramToken.Text = "Token";
+			// 
+			// lblNtfTelegramId
+			// 
+			this.lblNtfTelegramId.AutoSize = true;
+			this.lblNtfTelegramId.Location = new System.Drawing.Point(3, 65);
+			this.lblNtfTelegramId.Name = "lblNtfTelegramId";
+			this.lblNtfTelegramId.Size = new System.Drawing.Size(20, 17);
+			this.lblNtfTelegramId.TabIndex = 2;
+			this.lblNtfTelegramId.Text = "ID";
+			// 
+			// txtNtfTelegramId
+			// 
+			this.txtNtfTelegramId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtNtfTelegramId.Location = new System.Drawing.Point(61, 62);
+			this.txtNtfTelegramId.Name = "txtNtfTelegramId";
+			this.txtNtfTelegramId.Size = new System.Drawing.Size(170, 25);
+			this.txtNtfTelegramId.TabIndex = 1;
+			this.txtNtfTelegramId.TextChanged += new System.EventHandler(this.TxtNtfLineToken_TextChanged);
+			// 
+			// txtNtfTelegramToken
+			// 
+			this.txtNtfTelegramToken.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtNtfTelegramToken.Location = new System.Drawing.Point(61, 31);
+			this.txtNtfTelegramToken.Name = "txtNtfTelegramToken";
+			this.txtNtfTelegramToken.Size = new System.Drawing.Size(170, 25);
+			this.txtNtfTelegramToken.TabIndex = 4;
+			this.txtNtfTelegramToken.TextChanged += new System.EventHandler(this.TxtNtfLineToken_TextChanged);
+			// 
+			// chkNtfUseTelegram
+			// 
+			this.chkNtfUseTelegram.AutoSize = true;
+			this.chkNtfUseTelegram.Location = new System.Drawing.Point(3, 3);
+			this.chkNtfUseTelegram.Name = "chkNtfUseTelegram";
+			this.chkNtfUseTelegram.Size = new System.Drawing.Size(143, 21);
+			this.chkNtfUseTelegram.TabIndex = 0;
+			this.chkNtfUseTelegram.Text = "Use Telegram notify";
+			this.chkNtfUseTelegram.UseVisualStyleBackColor = true;
+			this.chkNtfUseTelegram.CheckedChanged += new System.EventHandler(this.ChkNtfUseTelegram_CheckedChanged);
+			// 
 			// btnTestNotify
 			// 
-			this.btnTestNotify.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			this.btnTestNotify.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnTestNotify.Location = new System.Drawing.Point(3, 470);
+			this.btnTestNotify.Location = new System.Drawing.Point(3, 195);
 			this.btnTestNotify.Name = "btnTestNotify";
-			this.btnTestNotify.Size = new System.Drawing.Size(232, 43);
+			this.btnTestNotify.Size = new System.Drawing.Size(236, 43);
 			this.btnTestNotify.TabIndex = 3;
 			this.btnTestNotify.Text = "Test Notify";
 			this.btnTestNotify.UseVisualStyleBackColor = true;
-			this.btnTestNotify.Click += new System.EventHandler(this.btnTestNotify_Click);
+			this.btnTestNotify.Click += new System.EventHandler(this.BtnTestNotify_Click);
 			// 
 			// panel5
 			// 
@@ -558,7 +632,7 @@
 			this.lnklblLineNotify.TabIndex = 3;
 			this.lnklblLineNotify.TabStop = true;
 			this.lnklblLineNotify.Text = "https://notify-bot.line.me/";
-			this.lnklblLineNotify.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnklblLineNotify_LinkClicked);
+			this.lnklblLineNotify.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LnklblLineNotify_LinkClicked);
 			// 
 			// lblNtfLineToken
 			// 
@@ -577,6 +651,7 @@
 			this.txtNtfLineToken.Name = "txtNtfLineToken";
 			this.txtNtfLineToken.Size = new System.Drawing.Size(170, 25);
 			this.txtNtfLineToken.TabIndex = 1;
+			this.txtNtfLineToken.TextChanged += new System.EventHandler(this.TxtNtfLineToken_TextChanged);
 			// 
 			// chkNtfUseLine
 			// 
@@ -587,6 +662,7 @@
 			this.chkNtfUseLine.TabIndex = 0;
 			this.chkNtfUseLine.Text = "Use LINE notify";
 			this.chkNtfUseLine.UseVisualStyleBackColor = true;
+			this.chkNtfUseLine.CheckedChanged += new System.EventHandler(this.ChkNtfUseLine_CheckedChanged);
 			// 
 			// ilTab
 			// 
@@ -615,6 +691,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.splitBase)).EndInit();
 			this.splitBase.ResumeLayout(false);
 			this.tabLeft.ResumeLayout(false);
+			this.tabPageFates.ResumeLayout(false);
 			this.tabPageSetting.ResumeLayout(false);
 			this.tabPageSetting.PerformLayout();
 			this.panel4.ResumeLayout(false);
@@ -625,9 +702,10 @@
 			this.panel2.PerformLayout();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
-			this.tabPageFates.ResumeLayout(false);
 			this.tabPageNotify.ResumeLayout(false);
 			this.tabPageNotify.PerformLayout();
+			this.panel6.ResumeLayout(false);
+			this.panel6.PerformLayout();
 			this.panel5.ResumeLayout(false);
 			this.panel5.PerformLayout();
 			this.ResumeLayout(false);
@@ -681,5 +759,11 @@
 		private System.Windows.Forms.CheckBox chkNtfUseLine;
 		private System.Windows.Forms.Button btnTestNotify;
 		private System.Windows.Forms.LinkLabel lnklblLineNotify;
+		private System.Windows.Forms.Panel panel6;
+		private System.Windows.Forms.Label lblNtfTelegramId;
+		private System.Windows.Forms.TextBox txtNtfTelegramId;
+		private System.Windows.Forms.CheckBox chkNtfUseTelegram;
+		private System.Windows.Forms.Label lblNtfTelegramToken;
+		private System.Windows.Forms.TextBox txtNtfTelegramToken;
 	}
 }

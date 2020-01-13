@@ -43,5 +43,8 @@
   "tip-sound-play": "선택한 소리를 재생합니다",
   "ui-notify-use-line": "라인 알림을 사용합니다",
   "ui-token": "토큰",
-  "ui-notift-test": "알림 테스트"
+  "ui-notift-test": "알림 테스트",
+  "ui-notify-use-telegram": "텔레그람 알림을 사용합니다",
+  "ui-id": "아이디",
+  "i-client-version": "클라이언트 버전: {0}"
 }

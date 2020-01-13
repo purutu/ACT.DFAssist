@@ -10,7 +10,7 @@ namespace ACT.DFAssist
 {
     public static class MsgLog
     {
-        // 카테고리
+        // message category
         public enum Cat
         {
             Info,

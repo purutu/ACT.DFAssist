@@ -23,8 +23,6 @@ namespace ACT.DFAssist
 {
 	public partial class MainControl : UserControl, IActPluginV1
 	{
-		private const bool NOFATE = false;
-
 		#region 변수
 		//
 		private bool _isFormLoaded;
@@ -45,6 +43,7 @@ namespace ACT.DFAssist
 		private Localization.Locale _localeGame;
 
 		private long _last_sound;
+		private bool _use_notify = false;
 
 		//
 		private OverlayForm _frmOverlay;
@@ -84,11 +83,10 @@ namespace ACT.DFAssist
 
 			// 페이트 안되게하자 
 			// 2020-1-10 페이트 찾았다
-			if (NOFATE)
-			{
-				tabLeft.TabPages.Remove(tabPageFates);
-				chkWholeFates.Enabled = false;
-			}
+#if false
+			tabLeft.TabPages.Remove(tabPageFates);
+			chkWholeFates.Enabled = false;
+#endif
 		}
 		#endregion
 
@@ -156,7 +154,7 @@ namespace ACT.DFAssist
 			cboClientVersion.DisplayMember = "Name";
 			cboClientVersion.ValueMember = "Value";
 			cboClientVersion.SelectedIndex = 0;
-			cboClientVersion.Enabled = false;
+			//cboClientVersion.Enabled = false;
 
 			Dock = DockStyle.Fill;
 
@@ -229,7 +227,10 @@ namespace ACT.DFAssist
 
 			btnTestNotify.Text = Localization.GetText("ui-notift-test");
 			chkNtfUseLine.Text = Localization.GetText("ui-notify-use-line");
-			lblNtfLineToken.Text= Localization.GetText("ui-token");
+			lblNtfLineToken.Text = Localization.GetText("ui-token");
+			chkNtfUseTelegram.Text = Localization.GetText("ui-notify-use-telegram");
+			lblNtfTelegramId.Text = Localization.GetText("ui-id");
+			lblNtfTelegramToken.Text = Localization.GetText("ui-token");
 
 			_frmOverlay.SetInfoText("app-description");
 
@@ -294,26 +295,37 @@ namespace ACT.DFAssist
 		}
 
 		//
-		private void cboClientVersion_SelectedValueChanged(object sender, EventArgs e)
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
+		private void CboClientVersion_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			var n = cboClientVersion.SelectedIndex;
+			if (cboClientVersion.SelectedIndex < 0)
+				return;
 
-			if (n >= 0 && n < GameData.ClientVersions.Length)
+			try
 			{
-				try
-				{
-					var v = GameData.ClientVersions[n];
+				var v = GameData.ClientVersions[cboClientVersion.SelectedIndex];
+				//MsgLog.S("i-client-version", string.Format("이전={0}, 변경={1}", Settings.ClientVersion, v.Value));
 
-					Settings.ClientVersion = int.Parse(v.Value);
-					txtClientVersion.Text = v.Value;
+				if (Settings.ClientVersion != v.Value)
+				{
+					Settings.ClientVersion = v.Value;
+					txtClientVersion.Text = v.Value.ToString();
+
+					PacketWorker.Codes = GameData.PacketCodes[v.Value];
+
+					MsgLog.S("i-client-version", v.Name);
 
 					SaveSettings();
 				}
-				catch (Exception)
-				{
-
-				}
 			}
+			catch
+			{
+			}
+		}
+
+		//
+		private void CboClientVersion_SelectedValueChanged(object sender, EventArgs e)
+		{
 		}
 
 		//
@@ -388,10 +400,12 @@ namespace ACT.DFAssist
 
 		private void BtnSelectSound_Click(object sender, EventArgs e)
 		{
-			var dg = new OpenFileDialog();
-			dg.Title = Localization.GetText("ui-select-sound");
-			dg.DefaultExt = "wav";
-			dg.Filter = "Wave (*.wav)|*.wav|All (*.*)|*.*";
+			var dg = new OpenFileDialog
+			{
+				Title = Localization.GetText("ui-select-sound"),
+				DefaultExt = "wav",
+				Filter = "Wave (*.wav)|*.wav|All (*.*)|*.*"
+			};
 
 			if (dg.ShowDialog() == DialogResult.OK)
 			{
@@ -408,10 +422,12 @@ namespace ACT.DFAssist
 
 		private void BtnLogFont_Click(object sender, EventArgs e)
 		{
-			FontDialog dg = new FontDialog();
-			dg.Font = rtxLogger.Font;
-			dg.FontMustExist = true;
-			dg.AllowVerticalFonts = false;
+			FontDialog dg = new FontDialog
+			{
+				Font = rtxLogger.Font,
+				FontMustExist = true,
+				AllowVerticalFonts = false
+			};
 
 			if (dg.ShowDialog() == DialogResult.OK)
 			{
@@ -428,13 +444,6 @@ namespace ACT.DFAssist
 
 		#region 자료 처리
 		//
-		private string GetLocaleJsonString(string hdr, string code)
-		{
-			string s = string.Format("{0}_{1}", hdr, code);
-			return Properties.Resources.ResourceManager.GetObject(s) as string;
-		}
-
-		//
 		private void ReadLocale(Localization.Locale uilang = null)
 		{
 			Localization.Locale lang = uilang ?? (Localization.Locale)cboUiLanguage.SelectedItem;
@@ -450,7 +459,7 @@ namespace ACT.DFAssist
 					case 4: json = Properties.Resources.locale_ko; break;
 					default: json = Properties.Resources.locale_en; break;
 				}
-				Localization.Initialize(json);				
+				Localization.Initialize(json);
 			}
 		}
 
@@ -483,6 +492,7 @@ namespace ACT.DFAssist
 
 		#region 설정
 		//
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
 		private void ReadSettings()
 		{
 			_srset.AddControlSetting("LocaleUi", cboUiLanguage);
@@ -499,6 +509,9 @@ namespace ACT.DFAssist
 
 			_srset.AddControlSetting("NotifyUseLine", chkNtfUseLine);
 			_srset.AddControlSetting("NotifyLineToken", txtNtfLineToken);
+			_srset.AddControlSetting("NotifyUseTelegram", chkNtfUseTelegram);
+			_srset.AddControlSetting("NotifyTelegramId", txtNtfTelegramId);
+			_srset.AddControlSetting("NotifyTelegramToken", txtNtfTelegramToken);
 
 			if (File.Exists(Settings.Path))
 			{
@@ -525,9 +538,22 @@ namespace ACT.DFAssist
 				}
 			}
 
+			// game version
+			int.TryParse(txtClientVersion.Text, out int clientversion);
+			for (int i = 0; i < GameData.ClientVersions.Length; i++)
+			{
+				if (GameData.ClientVersions[i].Value == clientversion)
+				{
+					cboClientVersion.SelectedIndex = i;
+					break;
+				}
+			}
+
+			// locale
 			_localeUi = (Localization.Locale)cboUiLanguage.SelectedItem;
 			_localeGame = (Localization.Locale)cboGameLanguage.SelectedItem;
 
+			// fates
 			Settings.LoggingWholeFates = chkWholeFates.Checked;
 
 			try
@@ -540,10 +566,11 @@ namespace ACT.DFAssist
 					_frmOverlay.Location = Settings.OverlayLocation;
 				}
 			}
-			catch (Exception)
+			catch
 			{
 			}
 
+			// overlay
 			if (chkUseOverlay.Checked)
 				_frmOverlay.Show();
 			else
@@ -551,18 +578,10 @@ namespace ACT.DFAssist
 
 			Settings.UseOverlay = chkUseOverlay.Checked;
 
-			// 색깔을 여기서
-			if (!string.IsNullOrWhiteSpace(cboLogBackground.Text))
-			{
-				Color c = Color.FromName(cboLogBackground.Text);
-				if (c.Equals(Color.Transparent))
-					rtxLogger.BackColor = c;
-			}
-
-			//
+			// sound 
 			CheckSoundEnable();
 
-			//
+			// font
 			try
 			{
 				var ss = txtLogFont.Text.Split(',');
@@ -573,7 +592,7 @@ namespace ACT.DFAssist
 						rtxLogger.Font = font;
 				}
 			}
-			catch (Exception)
+			catch
 			{
 			}
 			finally
@@ -582,10 +601,23 @@ namespace ACT.DFAssist
 			}
 
 			//
+			CheckUseNotify();
+
+			// background color
+			if (!string.IsNullOrWhiteSpace(cboLogBackground.Text))
+			{
+				Color c = Color.FromName(cboLogBackground.Text);
+				if (c.Equals(Color.Transparent))
+					rtxLogger.BackColor = c;
+			}
+
+			//
 			_isInitSetting = true;
 		}
 
+
 		//
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
 		private void SaveSettings()
 		{
 			if (!_isInitSetting)
@@ -700,6 +732,7 @@ namespace ACT.DFAssist
 			btnSelectSound.Enabled = chkUseSound.Checked;
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
 		private void PlayEffectSound(bool force = false)
 		{
 			if (!force && !chkUseSound.Checked)
@@ -719,7 +752,7 @@ namespace ACT.DFAssist
 					using (var sp = new SoundPlayer(txtSoundFile.Text))
 						sp.Play();
 				}
-				catch (Exception)
+				catch
 				{
 				}
 			}
@@ -737,7 +770,7 @@ namespace ACT.DFAssist
 
 			switch (gameevent)
 			{
-				case GameEvents.InstanceEnter:		// [0] = instance code
+				case GameEvents.InstanceEnter:      // [0] = instance code
 				case GameEvents.InstanceLeave:
 					{
 						if (args.Length > 0)
@@ -750,17 +783,18 @@ namespace ACT.DFAssist
 					}
 					break;
 
-				case GameEvents.FateOccur:			// [0] = fate code
+				case GameEvents.FateOccur:          // [0] = fate code
 					{
 						var fate = GameData.GetFate(args[0]);
 						text += fate.Name + "|" + fate.Area.Name + "|";
 						pos++;
 
 						// 모든 페이트를 골라도 목록에 있는것만 알려줌
-						if (Settings.SelectedFates.Contains(args[0].ToString()))    
+						if (Settings.SelectedFates.Contains(args[0].ToString()))
 						{
 							_frmOverlay.EventFate(fate);
-							NotifyFate(fate);
+							if (_use_notify)
+								NotifyFate(fate);
 							PlayEffectSound();
 						}
 
@@ -805,7 +839,7 @@ namespace ACT.DFAssist
 					}
 					break;
 
-				case GameEvents.MatchDone:			// [0] = roulette code, [1] = instance code
+				case GameEvents.MatchDone:          // [0] = roulette code, [1] = instance code
 					{
 						var roulette = GameData.GetRoulette(args[0]);
 						var instance = GameData.GetInstance(args[1]);
@@ -816,7 +850,8 @@ namespace ACT.DFAssist
 						pos++;
 
 						_frmOverlay.EventMatch(instance);
-						NotifyDuty(instance);
+						if (_use_notify)
+							NotifyDuty(instance);
 						PlayEffectSound();
 					}
 					break;
@@ -829,7 +864,7 @@ namespace ACT.DFAssist
 			for (var i = pos; i < args.Length; i++)
 				text += args[i] + "|";
 
-			if (isfate) 
+			if (isfate)
 				text += args[0] + "|";
 
 			ActGlobals.oFormActMain.ParseRawLogLine(false, DateTime.Now, "00|" + DateTime.Now.ToString("O") + "|0048|F|" + text);
@@ -837,10 +872,21 @@ namespace ACT.DFAssist
 		#endregion
 
 		#region 알림
+		private void CheckUseNotify()
+		{
+			_use_notify = chkNtfUseLine.Checked || chkNtfUseTelegram.Checked;
+
+			txtNtfLineToken.Enabled = chkNtfUseLine.Checked;
+			txtNtfTelegramToken.Enabled = txtNtfTelegramId.Enabled = chkNtfUseTelegram.Checked;
+		}
+
 		private void SendNotify(string s)
 		{
 			if (chkNtfUseLine.Checked)
-				_ = InternalNotifyByLine(s);
+				InternalNotifyByLine(s).Wait();
+
+			if (chkNtfUseTelegram.Checked)
+				InternalNotifyByTelegram(s);
 		}
 
 		private void NotifyFate(GameData.Fate fate)
@@ -855,7 +901,7 @@ namespace ACT.DFAssist
 			SendNotify(s);
 		}
 
-		private async void btnTestNotify_Click(object sender, EventArgs e)
+		private async void BtnTestNotify_Click(object sender, EventArgs e)
 		{
 			string s = string.Format("{0} - {1}",
 				Localization.GetText("ui-notift-test"),
@@ -863,9 +909,23 @@ namespace ACT.DFAssist
 
 			if (chkNtfUseLine.Checked)
 				await InternalNotifyByLine(s);
+
+			if (chkNtfUseTelegram.Checked)
+				InternalNotifyByTelegram(s);
 		}
 
-		private void lnklblLineNotify_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void ChkNtfUseLine_CheckedChanged(object sender, EventArgs e)
+		{
+			CheckUseNotify();
+			SaveSettings();
+		}
+
+		private void TxtNtfLineToken_TextChanged(object sender, EventArgs e)
+		{
+			SaveSettings();
+		}
+
+		private void LnklblLineNotify_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			Process.Start("https://notify-bot.line.me/");
 		}
@@ -884,8 +944,25 @@ namespace ACT.DFAssist
 			};
 
 			await hc.PostAsync(
-				"https://notify-api.line.me/api/notify", 
+				"https://notify-api.line.me/api/notify",
 				new FormUrlEncodedContent(param)).ConfigureAwait(false);
+		}
+
+		private void ChkNtfUseTelegram_CheckedChanged(object sender, EventArgs e)
+		{
+			CheckUseNotify();
+			SaveSettings();
+		}
+
+		internal void InternalNotifyByTelegram(string mesg)
+		{
+			if (txtNtfTelegramId.TextLength == 0 || txtNtfTelegramToken.TextLength == 0)
+				return;
+
+			var url = string.Format("https://api.telegram.org/bot{0}/sendMessage?chat_id={1}&text={2}",
+				txtNtfTelegramToken.Text, txtNtfTelegramId.Text, mesg);
+			var wr = WebRequest.Create(url);
+			wr.GetResponse().GetResponseStream();
 		}
 		#endregion
 	}

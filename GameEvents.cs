@@ -1,6 +1,6 @@
 ﻿namespace ACT.DFAssist
 {
-	// 발생 이벤트 
+	// occur events
 	public enum GameEvents
 	{
 		None,
@@ -15,14 +15,14 @@
 		MatchCancel,
 	}
 
-	// 매치 타입
+	// match types
 	public enum MatchType
 	{
 		Roulette = 0,
 		Assignment = 1,
 	}
 
-	// 매치 표현 형태
+	// match expression style
 	public enum MatchStyle
 	{
 		Short,			// 5.1 이전

@@ -10,7 +10,7 @@ Final Fantasy XIV DFAssist forked plug-in for **ACT3**
 * *LINE* / *Telegram* notification *(Experimental)*
 
 ## Install
-Put "**ACT.DFAssist.dll**" to yout plugin directory. Than add this dll to your plugin list
+Put "**ACT.DFAssist.dll**" to your plugin directory. Then add this dll to your plugin list
 ![ACT3 plugin add image](https://user-images.githubusercontent.com/47320226/52210588-db581b00-28ca-11e9-8c60-4d4d1fc21fa4.png)
 
 ## Screenshot

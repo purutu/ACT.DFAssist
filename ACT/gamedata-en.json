@@ -1,6 +1,6 @@
 ﻿{
   // Version
-  "version": "202001101.1",
+  "version": "202002191.1",
 
   // Duty
   "instances": {
@@ -1547,6 +1547,32 @@
     // 5.11
     "694": {
       "name": "The Epic of Alexander (Ultimate)",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
+
+    // 5.2
+    "715": {
+      "name": "Eden's Verse: Fulmination",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
+    "719": {
+      "name": "Eden's Verse: Furor",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
+    "726": {
+      "name": "Eden's Verse: Iconoclasm",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
+    "728": {
+      "name": "Eden's Verse: Refulgence",
       "tank": "2",
       "healer": "2",
       "dps": "4"

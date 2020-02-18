@@ -103,7 +103,7 @@ namespace ACT.DFAssist
 			{
 				var type = data[0];
 
-				if (type == 0x74) // FATE 시작! 에이리어 이동해도 진행중인 것도 이걸로 처리됨
+				if (type == Codes.FateIndex) // FATE 시작! 에이리어 이동해도 진행중인 것도 이걸로 처리됨
 				{
 					var code = BitConverter.ToUInt16(data, 4);
 
@@ -118,7 +118,7 @@ namespace ACT.DFAssist
 			{
 				var status = data[0];
 				var reason = data[4];
-				var roulette = data[Codes.RouletteCode];
+				var roulette = data[Codes.RouletteIndex];
 
 				if (roulette != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
 				{

@@ -18,7 +18,8 @@ namespace ACT.DFAssist
 		// client version list 
 		public static readonly ClientVersion[] ClientVersions = new ClientVersion[]
 		{
-			/* 20191224 */ new ClientVersion{Name = "5.18", Value = 0},
+			/* 20200218 */ new ClientVersion{Name = "5.2", Value = 0},
+			/* 20191224 */ new ClientVersion{Name = "5.18", Value = 6},
 			/* 20191210 */ new ClientVersion{Name = "5.15", Value = 5},
 			/* 20191126 */ new ClientVersion{Name = "5.11HF", Value = 4},
 			/* 20191111 */ new ClientVersion{Name = "5.11", Value = 3},
@@ -29,24 +30,27 @@ namespace ACT.DFAssist
 		// packet code
 		public struct PacketCode
 		{
+			public string Version { get; set; }
 			public ushort Instance { get; set; }
 			public ushort FATE { get; set; }
+			public ushort FateIndex { get; set; }   // 페이트 인덱스
 			public ushort Duty { get; set; }
 			public ushort Match { get; set; }
-			public ushort RouletteCode { get; set; }
+			public ushort RouletteIndex { get; set; }   // 룰렛 인덱스
 		}
 
 		// packet code list, reverse index of client version!!!, 0 is always up to date code
 		public static readonly PacketCode[] PacketCodes = new PacketCode[]
 		{
-			/*   0 0518   */ new PacketCode{Instance = 0x0339, FATE = 0x00E3, Duty = 0x0228, Match = 0x01F8, RouletteCode = 8},
+			/*   0 */ new PacketCode{Version="Current", Instance = 0x0339, FATE = 0x010E, Duty = 0x0172, Match = 0x025C, RouletteIndex = 8, FateIndex=0x35},	// 페이트 인덱스는 35아니면 3E 둘중 하나인데 35로함
 																			  				 
-			/*   1 0500   */ new PacketCode{Instance = 0x022F, FATE = 0x0143, Duty = 0x0078, Match = 0x0080, RouletteCode = 20},
-			/*   2 0510   */ new PacketCode{Instance = 0x022F, FATE = 0x00E3, Duty = 0x008F, Match = 0x00B3, RouletteCode = 8},
-			/*   3 0511   */ new PacketCode{Instance = 0x0339, FATE = 0x00E3, Duty = 0x0164, Match = 0x032D, RouletteCode = 8},
-			/*   4 0511HF */ new PacketCode{Instance = 0x0339, FATE = 0x00E3, Duty = 0x0164, Match = 0x02B0, RouletteCode = 8},
-			/*   5 0515   */ new PacketCode{Instance = 0x0339, FATE = 0x00E3, Duty = 0x0193, Match = 0x0135, RouletteCode = 8},
-			/*   6 0518   */ new PacketCode{Instance = 0x0339, FATE = 0x00E3, Duty = 0x0228, Match = 0x01F8, RouletteCode = 8},
+			/*   1 */ new PacketCode{Version="0500", Instance = 0x022F, FATE = 0x0143, Duty = 0x0078, Match = 0x0080, RouletteIndex = 20, FateIndex=0x74},
+			/*   2 */ new PacketCode{Version="0510", Instance = 0x022F, FATE = 0x00E3, Duty = 0x008F, Match = 0x00B3, RouletteIndex = 8, FateIndex=0x74},
+			/*   3 */ new PacketCode{Version="0511", Instance = 0x0339, FATE = 0x00E3, Duty = 0x0164, Match = 0x032D, RouletteIndex = 8, FateIndex=0x74},
+			/*   4 */ new PacketCode{Version="0511HF", Instance = 0x0339, FATE = 0x00E3, Duty = 0x0164, Match = 0x02B0, RouletteIndex = 8, FateIndex=0x74},
+			/*   5 */ new PacketCode{Version="0515", Instance = 0x0339, FATE = 0x00E3, Duty = 0x0193, Match = 0x0135, RouletteIndex = 8, FateIndex=0x74},
+			/*   6 */ new PacketCode{Version="0518", Instance = 0x0339, FATE = 0x00E3, Duty = 0x0228, Match = 0x01F8, RouletteIndex = 8, FateIndex=0x74},
+			/*   7 */ new PacketCode{Version="0520", Instance = 0x0339, FATE = 0x010E, Duty = 0x0172, Match = 0x025C, RouletteIndex = 8, FateIndex=0x35},
 		};
 
 		// instance

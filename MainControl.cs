@@ -336,8 +336,11 @@ namespace ACT.DFAssist
 
 					PacketWorker.Codes = GameData.PacketCodes[v.Value];
 
+#if true
+					MsgLog.S("i-client-version", $"{v.Name}, {PacketWorker.Codes.FATE:X4}/{PacketWorker.Codes.Duty:X4}/{PacketWorker.Codes.Match:X4}");
+#else
 					MsgLog.S("i-client-version", v.Name);
-
+#endif
 					SaveSettings();
 				}
 			}
@@ -463,9 +466,9 @@ namespace ACT.DFAssist
 				SaveSettings();
 			}
 		}
-		#endregion
+#endregion
 
-		#region 자료 처리
+#region 자료 처리
 		//
 		private void ReadLocale(Localization.Locale uilang = null)
 		{
@@ -513,7 +516,7 @@ namespace ACT.DFAssist
 			}
 		}
 
-		#region 설정
+#region 설정
 		//
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
 		private void ReadSettings()
@@ -670,10 +673,10 @@ namespace ACT.DFAssist
 				MsgLog.Ex(ex, "Exception: save setting failed");
 			}
 		}
-		#endregion
-		#endregion
+#endregion
+#endregion
 
-		#region FATE 처리
+#region FATE 처리
 		//
 		private void InternalBuildSelectedFates(IEnumerable node)
 		{
@@ -747,9 +750,9 @@ namespace ACT.DFAssist
 
 			_isLockFates = false;
 		}
-		#endregion
+#endregion
 
-		#region 소리 처리
+#region 소리 처리
 		private void CheckSoundEnable()
 		{
 			txtSoundFile.Enabled = chkUseSound.Checked;
@@ -781,9 +784,9 @@ namespace ACT.DFAssist
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region 게임 프로시져
+#region 게임 프로시져
 		// 실제 데이터 처리 하는 곳
 		private void PacketWorker_OnEventReceived(string pid, GameEvents gameevent, int[] args)
 		{
@@ -893,9 +896,9 @@ namespace ACT.DFAssist
 
 			ActGlobals.oFormActMain.ParseRawLogLine(false, DateTime.Now, "00|" + DateTime.Now.ToString("O") + "|0048|F|" + text);
 		}
-		#endregion
+#endregion
 
-		#region 알림
+#region 알림
 		private void CheckUseNotify()
 		{
 			_use_notify = chkNtfUseLine.Checked || chkNtfUseTelegram.Checked;
@@ -988,6 +991,6 @@ namespace ACT.DFAssist
 			var wr = WebRequest.Create(url);
 			wr.GetResponse().GetResponseStream();
 		}
-		#endregion
+#endregion
 	}
 }

@@ -18,3 +18,5 @@ Put "**ACT.DFAssist.dll**" to your plugin directory. Then add this dll to your p
 * Jaehyuk-Lee/DFASSIST(https://jaehyuk-lee.github.io/DFAssist)
 * Devunt/DFASSIST(https://devunt.github.io/DFAssist/) 
 * Binggrae font(http://bingfont.co.kr/)
+
+I need help! please help me translate instances and ui data. I'm waiting your PR :) 

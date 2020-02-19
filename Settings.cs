@@ -9,7 +9,7 @@ namespace ACT.DFAssist
 {
 	static class Settings
 	{
-		public static string TagName = "20200114";
+		public static string TagName = "20200220";
 
 		public static string Path { get; set; }
 		public static readonly ConcurrentHashSet<string> SelectedFates = new ConcurrentHashSet<string>();

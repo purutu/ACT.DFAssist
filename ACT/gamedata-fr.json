@@ -1560,6 +1560,24 @@
     },
 
     // 5.2
+    "714": {
+      "name": "Anamnesis Anyder",
+      "tank": "1",
+      "healer": "1",
+      "dps": "2"
+    },
+    "717": {
+      "name": "Cinder Drift",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
+    "718": {
+      "name": "Cinder Drift (Extreme)",
+      "tank": "2",
+      "healer": "2",
+      "dps": "4"
+    },
     "715": {
       "name": "Eden's Verse: Fulmination",
       "tank": "2",

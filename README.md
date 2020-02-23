@@ -2,6 +2,9 @@
 
 Final Fantasy XIV DFAssist forked plug-in for **ACT3**
 
+*Duty roulette packets seem to be **obfuscated** since version 5.2. And I couldn't decode them. Sorry :(
+Other features like notifications and FATEs infomations are still work good.*
+
 ## Feature
 * Supported game client: Version **5.2** and **below**
 * Assist both **duty instances** and **FATEs & Eureka**

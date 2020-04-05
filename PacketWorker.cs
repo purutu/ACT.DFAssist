@@ -68,38 +68,16 @@ namespace ACT.DFAssist
 			var opcode = BitConverter.ToUInt16(message, 18);
 
 #if !DEBUG
-			if (opcode != Codes.Instance &&
-				opcode != Codes.FATE &&
-				opcode != Codes.Duty &&
-				opcode != Codes.Match)
+			if (opcode != Codes.OpFate &&
+				opcode != Codes.OpDuty &&
+				opcode != Codes.OpMatch &&
+				opcode != Codes.OpEnter)
 				return;
 #endif
 
 			var data = message.Skip(32).ToArray();
 
-#if false
-			if (opcode == Codes.Instance)		// 인스턴스
-			{
-				// [2020-01-13] 코드를 찾을 수 없다.
-				var code = BitConverter.ToInt16(data, 4);
-				var type = data[8];
-
-				if (type == 0x0B)
-				{
-					// 들어옴
-					MsgLog.Instance("l-instance-enter", GameData.GetInstanceName(code));
-					FireEvent(pid, GameEvents.InstanceEnter, new int[] { code });
-				}
-				else if (type == 0x0C)
-				{
-					// 나감
-					MsgLog.Instance("l-instance-leave");
-					FireEvent(pid, GameEvents.InstanceLeave, new int[] { code });
-				}
-			} // Codes.Instance
-			else
-#endif
-			if (opcode == Codes.FATE)           // FATE 관련
+			if (opcode == Codes.OpFate)           // FATE 관련
 			{
 				var type = data[0];
 
@@ -114,13 +92,13 @@ namespace ACT.DFAssist
 					}
 				}
 			} // Codes.FATE
-			else if (opcode == Codes.Duty)  // 듀티
+			else if (opcode == Codes.OpDuty)  // 듀티
 			{
 				var status = data[0];
 				var reason = data[4];
-				var roulette = data[Codes.RouletteIndex];
+				var roulette = data[Codes.DutyRoulette];
 
-				if (roulette != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
+				if (roulette != 0)  // (roulette != 0 && (data[15] == 0 || data[15] == 64)) // 루렛, 한국/글로벌
 				{
 					MsgLog.Duty("i-queue-roulette", GameData.GetRouletteName(roulette));
 					FireEvent(pid, GameEvents.MatchQueue, new[] { (int)MatchType.Roulette, roulette });
@@ -131,7 +109,7 @@ namespace ACT.DFAssist
 
 					for (var i = 0; i < 5; i++)
 					{
-						var code = BitConverter.ToUInt16(data, 12 + (i * 4));
+						var code = BitConverter.ToUInt16(data, Codes.DutyInstance + (i * 4));
 						if (code == 0)
 							break;
 					}
@@ -147,14 +125,23 @@ namespace ACT.DFAssist
 					FireEvent(pid, GameEvents.MatchQueue, args.ToArray());
 				}
 			} // Codes.Duty
-			else if (opcode == Codes.Match) // 매칭
+			else if (opcode == Codes.OpMatch) // 매칭
 			{
-				var roulette = BitConverter.ToUInt16(data, 2);
-				var code = BitConverter.ToUInt16(data, 20);
+				var roulette = BitConverter.ToUInt16(data, Codes.MatchRoulette);
+				var instance = BitConverter.ToUInt16(data, Codes.MatchInstance);
 
-				MsgLog.Duty("i-matched", GameData.GetInstanceName(code));
-				FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, code });
+				MsgLog.Duty("i-matched", $"{GameData.GetInstanceName(instance)}/{GameData.GetRouletteName(roulette)}");
+				FireEvent(pid, GameEvents.MatchDone, new int[] { roulette, instance });
 			} // Codes.Match
+			else if (opcode == Codes.OpEnter && Codes.OpEnter != 0) // 입장
+			{
+				if (data[4] == 0)
+				{
+					var instance = BitConverter.ToUInt16(data, Codes.EnterInstance);
+					MsgLog.Duty("i-matched", GameData.GetInstanceName(instance));
+					FireEvent(pid, GameEvents.MatchEnter, new int[] { instance });
+				}
+			}
 		}
 	}
 }

@@ -12,6 +12,7 @@
 
 		MatchQueue,		// [0] = MatchType, [1] = code, [...] = instances
 		MatchDone,		// [0] = roulette code, [1] = instance code
+		MatchEnter,     // [0] = instance code
 		MatchCancel,
 	}
 

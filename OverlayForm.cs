@@ -218,9 +218,9 @@ namespace ACT.DFAssist
         }
 
         // matching statue
-        internal void EventMatch(GameData.Instance instance)
+        internal void EventMatch(string name)
         {
-            _current = instance.Name;
+            _current = name;
 
             this.Invoke((MethodInvoker)(() =>
             {

@@ -18,7 +18,8 @@ namespace ACT.DFAssist
 		// client version list 
 		public static readonly ClientVersion[] ClientVersions = new ClientVersion[]
 		{
-			/* 20200218 */ new ClientVersion{Name = "5.2", Value = 0},
+			/* 20200330 */ new ClientVersion{Name = "5.21HF", Value = 0},
+			/* 20200218 */ new ClientVersion{Name = "5.2", Value = 7},
 			/* 20191224 */ new ClientVersion{Name = "5.18", Value = 6},
 			/* 20191210 */ new ClientVersion{Name = "5.15", Value = 5},
 			/* 20191126 */ new ClientVersion{Name = "5.11HF", Value = 4},
@@ -30,27 +31,158 @@ namespace ACT.DFAssist
 		// packet code
 		public struct PacketCode
 		{
-			public string Version { get; set; }
-			public ushort Instance { get; set; }
-			public ushort FATE { get; set; }
-			public ushort FateIndex { get; set; }   // 페이트 인덱스
-			public ushort Duty { get; set; }
-			public ushort Match { get; set; }
-			public ushort RouletteIndex { get; set; }   // 룰렛 인덱스
+			public string Version { get; set; }			// 게임 버전
+			public ushort OpFate { get; set; }			// FATE op
+			public ushort FateIndex { get; set; }		// 페이트 인덱스
+			public ushort OpDuty { get; set; }          // 임무 op
+			public ushort DutyRoulette { get; set; }    // 임무 룰렛 인덱스
+			public ushort DutyInstance { get; set; }    // 임무 인스턴스 인덱스
+			public ushort OpMatch { get; set; }         // 매치 op
+			public ushort MatchRoulette { get; set; }   // 매치 룰렛 인덱스
+			public ushort MatchInstance { get; set; }   // 매치 인스턴스 인덱스
+			public ushort OpEnter { get; set; }			// 입장
+			public ushort EnterInstance { get; set; }	// 임장 인스턴스 인덱스
 		}
 
 		// packet code list, reverse index of client version!!!, 0 is always up to date code
 		public static readonly PacketCode[] PacketCodes = new PacketCode[]
 		{
-			/*   0 */ new PacketCode{Version="Current", Instance = 0x0339, FATE = 0x010E, Duty = 0x0172, Match = 0x025C, RouletteIndex = 8, FateIndex=0x35},	// 페이트 인덱스는 35아니면 3E 둘중 하나인데 35로함
+			/*   0 */ 
+			new PacketCode
+			{
+				Version = "Current",
+				OpFate = 0x0253,
+				FateIndex = 0x35,	// 페이트 인덱스는 35아니면 3E 둘중 하나인데 35로함
+				OpDuty = 0x0164,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x02C7,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0x12F,
+				EnterInstance = 0,
+			},
 																			  				 
-			/*   1 */ new PacketCode{Version="0500", Instance = 0x022F, FATE = 0x0143, Duty = 0x0078, Match = 0x0080, RouletteIndex = 20, FateIndex=0x74},
-			/*   2 */ new PacketCode{Version="0510", Instance = 0x022F, FATE = 0x00E3, Duty = 0x008F, Match = 0x00B3, RouletteIndex = 8, FateIndex=0x74},
-			/*   3 */ new PacketCode{Version="0511", Instance = 0x0339, FATE = 0x00E3, Duty = 0x0164, Match = 0x032D, RouletteIndex = 8, FateIndex=0x74},
-			/*   4 */ new PacketCode{Version="0511HF", Instance = 0x0339, FATE = 0x00E3, Duty = 0x0164, Match = 0x02B0, RouletteIndex = 8, FateIndex=0x74},
-			/*   5 */ new PacketCode{Version="0515", Instance = 0x0339, FATE = 0x00E3, Duty = 0x0193, Match = 0x0135, RouletteIndex = 8, FateIndex=0x74},
-			/*   6 */ new PacketCode{Version="0518", Instance = 0x0339, FATE = 0x00E3, Duty = 0x0228, Match = 0x01F8, RouletteIndex = 8, FateIndex=0x74},
-			/*   7 */ new PacketCode{Version="0520", Instance = 0x0339, FATE = 0x010E, Duty = 0x0172, Match = 0x025C, RouletteIndex = 8, FateIndex=0x35},
+			/*   1 */
+			new PacketCode
+			{
+				Version = "0500",
+				OpFate = 0x0143,
+				FateIndex = 0x74,
+				OpDuty = 0x0078,
+				DutyRoulette = 20,
+				DutyInstance = 12,
+				OpMatch = 0x0080,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0,
+				EnterInstance = 0,
+			},
+			/*   2 */
+			new PacketCode
+			{
+				Version = "0510",
+				OpFate = 0x00E3,
+				FateIndex = 0x74,
+				OpDuty = 0x008F,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x00B3,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0,
+				EnterInstance = 0,
+			},
+			/*   3 */
+			new PacketCode
+			{
+				Version = "0511",
+				OpFate = 0x00E3,
+				FateIndex = 0x74,
+				OpDuty = 0x0164,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x032D,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0,
+				EnterInstance = 0,
+			},
+			/*   4 */
+			new PacketCode
+			{
+				Version = "0511HF",
+				OpFate = 0x00E3,
+				FateIndex = 0x35,
+				OpDuty = 0x0164,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x02B0,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0,
+				EnterInstance = 0,
+			},
+			/*   5 */
+			new PacketCode
+			{
+				Version = "Current",
+				OpFate = 0x00E3,
+				FateIndex = 0x74,
+				OpDuty = 0x0193,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x0135,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0,
+				EnterInstance = 0,
+			},
+			/*   6 */ 
+			new PacketCode
+			{
+				Version = "0518",
+				OpFate = 0x00E3,
+				FateIndex = 0x74,
+				OpDuty = 0x0228,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x01F8,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0,
+				EnterInstance = 0,
+			},
+			/*   7 */ 
+			new PacketCode
+			{
+				Version = "0520",
+				OpFate = 0x010E,
+				FateIndex = 0x35,
+				OpDuty = 0x0172,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x025C,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0,
+				EnterInstance = 0,
+			},
+			/*   8 */
+			new PacketCode
+			{
+				Version = "0521HF",
+				OpFate = 0x0253,
+				FateIndex = 0x35,
+				OpDuty = 0x0164,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x02C7,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpEnter = 0x12F,
+				EnterInstance = 0,
+			},
 		};
 
 		// instance
@@ -155,6 +287,33 @@ namespace ACT.DFAssist
 			{
 				MsgLog.Ex(ex, "l-data-error");
 			}
+		}
+
+		//
+		public static Instance TryInstance(int code, bool refId = false)
+		{
+			if (refId)
+				return Instances.Values.FirstOrDefault(x => x.Id == code);
+
+			return Instances.TryGetValue(code, out var instance) ? instance : null;
+		}
+
+		//
+		public static Roulette TryRoulette(int code)
+		{
+			return Roulettes.TryGetValue(code, out var roulette) ? roulette : null;
+		}
+
+		//
+		public static Area TryArea(int code)
+		{
+			return Areas.TryGetValue(code, out var area) ? area : null;
+		}
+
+		//
+		public static Fate TryFate(int code)
+		{
+			return Fates.ContainsKey(code) ? Fates[code] : null;
 		}
 
 		//

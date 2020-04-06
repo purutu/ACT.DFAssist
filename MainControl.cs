@@ -1,6 +1,5 @@
-﻿#define ENABLE_FATE
-
-using Advanced_Combat_Tracker;
+﻿using Advanced_Combat_Tracker;
+using FFXIV_ACT_Plugin.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,28 +24,39 @@ namespace ACT.DFAssist
 	{
 		#region 변수
 		//
+		private Mesg.Locale _localeUi;
+		private Mesg.Locale _localeGame;
+
+		//
 		private bool _isFormLoaded;
 		private bool _isInActInit;
 		private bool _isPluginEnabled;
 		private bool _isLockFates;
 		private bool _isInitSetting;
 
-		//
 		private Label _actLabelStatus;
 		private TabPage _actTabPage;
 
-		//
 		private SettingsSerializer _srset;
 
 		//
-		private Localization.Locale _localeUi;
-		private Localization.Locale _localeGame;
+		private IActPluginV1 _FFXIVPlugin;
+		private NetworkReceivedDelegate _fpgNetworkReceiveDelegete;
+		private ZoneChangedDelegate _fpgZoneChangeDelegate;
+		private bool _fpgConnect = false;
 
-		private long _last_sound;
+		//
 		private bool _use_notify = false;
+		private long _last_notify;
+		private long _last_sound;
 
 		//
 		private OverlayForm _frmOverlay;
+		#endregion
+
+		#region
+		//
+		public bool IsAttached => _FFXIVPlugin != null && _fpgConnect;
 		#endregion
 
 		#region 클래스
@@ -56,17 +66,7 @@ namespace ACT.DFAssist
 			RegisterActAssemblies();
 
 			InitializeComponent();
-
-			// 색깔 선택 색깔만들기
-			Type colortype = typeof(System.Drawing.Color);
-			PropertyInfo[] pis = colortype.GetProperties(BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public);
-			foreach (var p in pis)
-				cboLogBackground.Items.Add(p.Name);
-
-			cboLogBackground.SelectedValue = rtxLogger.BackColor.Name;
-
-			// 설정 경로
-			Settings.Path = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config", "ACT.DFAssist.config.xml");
+			InitializeUi();
 
 			//
 			foreach (var f in Application.OpenForms)
@@ -80,24 +80,24 @@ namespace ACT.DFAssist
 
 			//
 			_frmOverlay = new OverlayForm();
-
-			// 페이트 안되게하자 
-			// 2020-1-10 페이트 찾았다
-#if false
-			tabLeft.TabPages.Remove(tabPageFates);
-			chkWholeFates.Enabled = false;
-#endif
 		}
 		#endregion
 
 		#region ACT처리
 		// ACT에 어셈블리 등록
-		private static void RegisterActAssemblies()
+		private void RegisterActAssemblies()
 		{
 			var pub = new Publish();
 
 			var pin = ActGlobals.oFormActMain.ActPlugins.FirstOrDefault(x => x.pluginFile.Name.Equals("ACT.DFAssist.dll"));
 			Settings.PluginPath = pin?.pluginFile.DirectoryName;
+
+			// 설정 경로
+			Settings.Path = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config", "ACT.DFAssist.config.xml");
+
+			// FFXIV 플러그인용
+			_fpgNetworkReceiveDelegete = new NetworkReceivedDelegate(OnFFXIVNetworkReceived);
+			_fpgZoneChangeDelegate = new ZoneChangedDelegate(OnFFXIVZoneChanged);
 		}
 
 		//
@@ -110,6 +110,32 @@ namespace ACT.DFAssist
 				ActInitialize();
 			else
 				ActGlobals.oFormActMain.Shown += OFormActMain_Shown;
+
+			// FFXIV 플러그인용
+			if (_FFXIVPlugin == null)
+			{
+				_FFXIVPlugin = ActGlobals.oFormActMain.ActPlugins.Where(x =>
+					 x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_PLUGIN") &&
+					 x.lblPluginStatus.Text.ToUpper().Contains("FFXIV PLUGIN STARTED."))
+					.Select(x => x.pluginObj)
+					.FirstOrDefault();
+			}
+
+			if (_FFXIVPlugin != null)
+			{
+				try
+				{
+					((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.NetworkReceived -= _fpgNetworkReceiveDelegete;
+					((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.NetworkReceived += _fpgNetworkReceiveDelegete;
+					((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.ZoneChanged -= _fpgZoneChangeDelegate;
+					((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.ZoneChanged += _fpgZoneChangeDelegate;
+					_fpgConnect = true;
+				}
+				catch
+				{
+					_fpgConnect = false;
+				}
+			}
 		}
 
 		//
@@ -125,64 +151,47 @@ namespace ACT.DFAssist
 			if (_isInActInit)
 				return;
 
+			//
 			_isInActInit = true;
 
-			MsgLog.SetTextBox(rtxLogger);
+			Mesg.SetTextBox(rtxLogger);
 			ActGlobals.oFormActMain.Shown -= OFormActMain_Shown;
 
-			Localization.Locale defaultlocale = Localization.DefaultLocale;
-			ReadLocale(defaultlocale);
+			ReadMesg();
+			ReadGame();
 
-#if DEBUG && false
-            MsgLog.D("ui-dbg", System.Environment.CurrentDirectory);
-            MsgLog.D("ui-dbg", Settings.PluginPath);
-#endif
-
-			ReadGameData(defaultlocale);
-
-			_isPluginEnabled = true;
-
-			cboUiLanguage.DataSource = Localization.Locales.Clone();
-			cboUiLanguage.DisplayMember = "Name";
-			cboUiLanguage.ValueMember = "Code";
-
-			cboGameLanguage.DataSource = Localization.Locales.Clone();
-			cboGameLanguage.DisplayMember = "Name";
-			cboGameLanguage.ValueMember = "Code";
-
-			cboClientVersion.DataSource = GameData.ClientVersions.Clone();
-			cboClientVersion.DisplayMember = "Name";
-			cboClientVersion.ValueMember = "Value";
-			cboClientVersion.SelectedIndex = 0;
+			//
+			_actLabelStatus.Text = "Initializing...";
 
 			Dock = DockStyle.Fill;
 
-			_actLabelStatus.Text = "Initializing...";
-
 			UpdateUiLanguage();
 
-			_actLabelStatus.Text = Localization.GetText("l-plugin-started");
-			_actTabPage.Text = Localization.GetText("app-name");
+			_actLabelStatus.Text = Mesg.GetText("l-plugin-started");
+			_actTabPage.Text = Mesg.GetText("app-name");
 			_actTabPage.Controls.Add(this);
 
+			//
+			_isPluginEnabled = true;
+
+			//
 			_srset = new SettingsSerializer(this);
 			ReadSettings();
-
 			UpdateFates();
 
 			// 
 			string tagname = Settings.GetTagNameForUpdate();
 			if (!Settings.TagName.Equals(tagname))
 			{
-				MsgLog.I("i-client-updated", tagname);
+				Mesg.I("i-client-updated", tagname);
 
 				if (!txtUpdateSkip.Text.Equals(tagname))
 				{
 					Task.Run(() =>
 					{
 						var res = MessageBox.Show(
-							Localization.GetText("i-visit-updated"),
-							Localization.GetText("app-name"), MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+							Mesg.GetText("i-visit-updated"),
+							Mesg.GetText("app-name"), MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 						if (res == DialogResult.Yes)
 							Process.Start("https://github.com/purutu/ACT.DFAssist/releases/latest");
 						else
@@ -195,15 +204,13 @@ namespace ACT.DFAssist
 			}
 
 			//
-			PacketWorker.OnEventReceived += PacketWorker_OnEventReceived;
-			PacketWorker.BeginMachina();
-
 			_isInActInit = false;
 		}
 
 		//
 		public void DeInitPlugin()
 		{
+			//
 			_isPluginEnabled = false;
 
 			_frmOverlay.Hide();
@@ -211,55 +218,81 @@ namespace ACT.DFAssist
 
 			SaveSettings();
 
+			//
 			_isInitSetting = false;
 
 			_actTabPage = null;
 
 			if (_actLabelStatus != null)
 			{
-				_actLabelStatus.Text = Localization.GetText("l-plugin-stopped");
+				_actLabelStatus.Text = Mesg.GetText("l-plugin-stopped");
 				_actLabelStatus = null;
 			}
 
-			PacketWorker.EndMachina();
-
-			MsgLog.SetTextBox(null);
+			Mesg.SetTextBox(null);
 		}
 		#endregion
 
 		#region UI 처리
+		// 추가 ui 초기화
+		private void InitializeUi()
+		{
+			// 색깔 선택 색깔만들기
+			Type colortype = typeof(System.Drawing.Color);
+			PropertyInfo[] pis = colortype.GetProperties(BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public);
+			foreach (var p in pis)
+				cboLogBackground.Items.Add(p.Name);
+
+			cboLogBackground.SelectedValue = rtxLogger.BackColor.Name;
+
+			// 콤보박스
+			cboUiLanguage.DataSource = Mesg.Locales.Clone();
+			cboUiLanguage.DisplayMember = "Name";
+			cboUiLanguage.ValueMember = "Code";
+
+			cboGameLanguage.DataSource = Mesg.Locales.Clone();
+			cboGameLanguage.DisplayMember = "Name";
+			cboGameLanguage.ValueMember = "Code";
+
+			cboClientVersion.DataSource = GameVersion.Versions.Clone();
+			cboClientVersion.DisplayMember = "Name";
+			cboClientVersion.ValueMember = "Index";
+			cboClientVersion.SelectedIndex = 0;
+		}
+
 		//
 		private void UpdateUiLanguage()
 		{
-			tabPageFates.Text = Localization.GetText("ui-tab-1-text");
-			tabPageSetting.Text = Localization.GetText("ui-tab-2-text");
-			tabPageNotify.Text = Localization.GetText("ui-tab-3-text");
+			tabPageFates.Text = Mesg.GetText("ui-tab-1-text");
+			tabPageSetting.Text = Mesg.GetText("ui-tab-2-text");
+			tabPageNotify.Text = Mesg.GetText("ui-tab-3-text");
 
-			lblClientVersion.Text = Localization.GetText("ui-client-version");
-			lblUiLanguage.Text = Localization.GetText("ui-language");
-			lblGameLanguage.Text = Localization.GetText("ui-in-game");
-			lblBackColor.Text = Localization.GetText("ui-back-color");
-			lblDisplayFont.Text = Localization.GetText("ui-display-font");
-			btnClearLogs.Text = Localization.GetText("ui-clear-logs");
-			btnReconnect.Text = Localization.GetText("ui-reconnect");
-			chkWholeFates.Text = Localization.GetText("ui-log-whole-fate");
-			chkUseOverlay.Text = Localization.GetText("ui-enable-overlay");
-			chkUseSound.Text = Localization.GetText("ui-enable-sound");
-			//btnSelectSound.Text = Localization.GetText("ui-find");
-			label1.Text = Localization.GetText("app-description");
+			lblClientVersion.Text = Mesg.GetText("ui-client-version");
+			lblUiLanguage.Text = Mesg.GetText("ui-language");
+			lblGameLanguage.Text = Mesg.GetText("ui-in-game");
+			lblBackColor.Text = Mesg.GetText("ui-back-color");
+			lblDisplayFont.Text = Mesg.GetText("ui-display-font");
+			btnShowLogSetting.Text = Mesg.GetText("ui-show-log-setting");
+			btnClearLogs.Text = Mesg.GetText("ui-clear-logs");
+			btnReconnect.Text = Mesg.GetText("ui-reconnect");
+			chkWholeFates.Text = Mesg.GetText("ui-log-whole-fate");
+			chkUseOverlay.Text = Mesg.GetText("ui-enable-overlay");
+			chkUseSound.Text = Mesg.GetText("ui-enable-sound");
+			//btnSelectSound.Text = Mesg.GetText("ui-find");
+			label1.Text = Mesg.GetText("app-description");
 
-			btnTestNotify.Text = Localization.GetText("ui-notift-test");
-			chkNtfUseLine.Text = Localization.GetText("ui-notify-use-line");
-			lblNtfLineToken.Text = Localization.GetText("ui-token");
-			chkNtfUseTelegram.Text = Localization.GetText("ui-notify-use-telegram");
-			lblNtfTelegramId.Text = Localization.GetText("ui-id");
-			lblNtfTelegramToken.Text = Localization.GetText("ui-token");
+			btnTestNotify.Text = Mesg.GetText("ui-notift-test");
+			chkNtfUseLine.Text = Mesg.GetText("ui-notify-use-line");
+			lblNtfLineToken.Text = Mesg.GetText("ui-token");
+			chkNtfUseTelegram.Text = Mesg.GetText("ui-notify-use-telegram");
+			lblNtfTelegramId.Text = Mesg.GetText("ui-id");
+			lblNtfTelegramToken.Text = Mesg.GetText("ui-token");
 
 			_frmOverlay.SetInfoText("app-description");
 
-			ttCtrls.SetToolTip(btnBlinkOverlay, Localization.GetText("tip-blink-overlay"));
-			ttCtrls.SetToolTip(btnSelectSound, Localization.GetText("tip-select-sound-dialog"));
-			ttCtrls.SetToolTip(btnSoundPlay, Localization.GetText("tip-sound-play"));
+			ttCtrls.SetToolTip(btnBlinkOverlay, Mesg.GetText("tip-blink-overlay"));
+			ttCtrls.SetToolTip(btnSelectSound, Mesg.GetText("tip-select-sound-dialog"));
+			ttCtrls.SetToolTip(btnSoundPlay, Mesg.GetText("tip-sound-play"));
 
 			btnLogFont.Text = $"{rtxLogger.Font.Name}, {rtxLogger.Font.Size}";
 		}
@@ -267,6 +300,9 @@ namespace ACT.DFAssist
 		//
 		private void TrvFates_AfterCheck(object sender, TreeViewEventArgs e)
 		{
+			if (!_isPluginEnabled)
+				return;
+
 			if (_isLockFates)
 				return;
 
@@ -300,47 +336,54 @@ namespace ACT.DFAssist
 		//
 		private void BtnClearLogs_Click(object sender, EventArgs e)
 		{
+			if (!_isPluginEnabled)
+				return;
+
 			rtxLogger.Clear();
 		}
 
 		//
 		private void CboUiLanguage_SelectedValueChanged(object sender, EventArgs e)
 		{
-			ReadLocale();
+			if (!_isPluginEnabled)
+				return;
+
+			ReadMesg();
 			UpdateUiLanguage();
 		}
 
 		//
 		private void CboGameLanguage_SelectedValueChanged(object sender, EventArgs e)
 		{
-			ReadGameData();
+			if (!_isPluginEnabled)
+				return;
+
+			ReadGame();
 			UpdateFates();
 		}
 
 		//
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
 		private void CboClientVersion_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (!_isPluginEnabled)
+				return;
+
 			if (cboClientVersion.SelectedIndex < 0)
 				return;
 
 			try
 			{
-				var v = GameData.ClientVersions[cboClientVersion.SelectedIndex];
-				//MsgLog.S("i-client-version", string.Format("이전={0}, 변경={1}", Settings.ClientVersion, v.Value));
+				var v = GameVersion.Versions[cboClientVersion.SelectedIndex];
+				Mesg.I("i-client-version", string.Format("이전={0}, 변경={1}", Settings.ClientVersion, v.Index));
 
-				if (Settings.ClientVersion != v.Value)
+				if (Settings.ClientVersion != v.Index)
 				{
-					Settings.ClientVersion = v.Value;
-					txtClientVersion.Text = v.Value.ToString();
+					Settings.ClientVersion = v.Index;
+					txtClientVersion.Text = v.Index.ToString();
 
-					PacketWorker.Codes = GameData.PacketCodes[v.Value];
+					GamePacket.Current = GamePacket.Versions[v.Index];
 
-#if true
-					MsgLog.S("i-client-version", $"{v.Name}, {PacketWorker.Codes.OpFate:X4}/{PacketWorker.Codes.OpDuty:X4}/{PacketWorker.Codes.OpMatch:X4}");
-#else
-					MsgLog.S("i-client-version", v.Name);
-#endif
+					Mesg.I("i-client-version", $"{v.Name}, {GamePacket.Current.OpFate:X4}/{GamePacket.Current.OpDuty:X4}/{GamePacket.Current.OpMatch:X4}");
 					SaveSettings();
 				}
 			}
@@ -377,14 +420,13 @@ namespace ACT.DFAssist
 			if (!string.IsNullOrWhiteSpace(cboLogBackground.Text) && !cboLogBackground.Text.Equals(Color.Transparent.Name))
 			{
 				rtxLogger.BackColor = Color.FromName(cboLogBackground.Text);
-				MsgLog.I("i-selected-color", cboLogBackground.Text);
+				Mesg.I("i-selected-color", cboLogBackground.Text);
 			}
 		}
 
 		//
 		private void BtnReconnect_Click(object sender, EventArgs e)
 		{
-			PacketWorker.BeginMachina();
 		}
 
 		//
@@ -428,7 +470,7 @@ namespace ACT.DFAssist
 		{
 			var dg = new OpenFileDialog
 			{
-				Title = Localization.GetText("ui-select-sound"),
+				Title = Mesg.GetText("ui-select-sound"),
 				DefaultExt = "wav",
 				Filter = "Wave (*.wav)|*.wav|All (*.*)|*.*"
 			};
@@ -466,51 +508,56 @@ namespace ACT.DFAssist
 				SaveSettings();
 			}
 		}
+
+		private void btnShowLogSetting_Click(object sender, EventArgs e)
+		{
+			pnlLogSetting.Visible = !pnlLogSetting.Visible;
+		}
 		#endregion
 
 		#region 자료 처리
 		//
-		private void ReadLocale(Localization.Locale uilang = null)
+		private void ReadMesg(Mesg.Locale locale = null)
 		{
-			Localization.Locale lang = uilang ?? (Localization.Locale)cboUiLanguage.SelectedItem;
+			Mesg.Locale loc = locale ?? (Mesg.Locale)cboUiLanguage.SelectedItem;
 
-			if (_localeUi == null || !lang.Code.Equals(_localeUi.Code))
+			if (_localeUi == null || !loc.Code.Equals(_localeUi.Code))
 			{
-				_localeUi = lang;
+				_localeUi = loc;
 
 				string json;
-				switch (lang.Index)
+				switch (loc.Code)
 				{
-					case 1: json = Properties.Resources.locale_ja; break;
-					case 4: json = Properties.Resources.locale_ko; break;
-					default: json = Properties.Resources.locale_en; break;
+					case "ja": json = Properties.Resources.mesg_ja; break;
+					case "ko": json = Properties.Resources.mesg_ko; break;
+					default: json = Properties.Resources.mesg_en; break;
 				}
-				Localization.Initialize(json);
+
+				Mesg.Initialize(json);
 			}
 		}
 
 		//
-		private void ReadGameData(Localization.Locale gamelang = null)
+		private void ReadGame(Mesg.Locale locale = null)
 		{
-			Localization.Locale lang = gamelang ?? (Localization.Locale)cboGameLanguage.SelectedItem;
+			Mesg.Locale loc = locale ?? (Mesg.Locale)cboGameLanguage.SelectedItem;
 
-			if (_localeGame == null || !lang.Code.Equals(_localeGame.Code))
+			if (_localeGame == null || !loc.Code.Equals(_localeGame.Code))
 			{
-				_localeGame = lang;
+				_localeGame = loc;
 
 				string json;
-				switch (lang.Index)
+				switch (loc.Code)
 				{
-					case 1: json = Properties.Resources.gamedata_ja; break;
-					case 2: json = Properties.Resources.gamedata_de; break;
-					case 3: json = Properties.Resources.gamedata_fr; break;
-					case 4: json = Properties.Resources.gamedata_ko; break;
-					default: json = Properties.Resources.gamedata_en; break;
+					case "ja": json = Properties.Resources.dfas_ja; break;
+					//case "de": json = Properties.Resources.dfas_de; break;
+					//case "fr": json = Properties.Resources.dfas_fr; break;
+					case "ko": json = Properties.Resources.dfas_ko; break;
+					default: json = Properties.Resources.dfas_en; break;
 				}
 				GameData.Initialize(json);
 
-				MsgLog.I("i-data-version",
-					GameData.Version,
+				Mesg.I("i-data-version",
 					GameData.Areas.Count, GameData.Instances.Count,
 					GameData.Roulettes.Count, GameData.Fates.Count);
 			}
@@ -558,7 +605,7 @@ namespace ACT.DFAssist
 					}
 					catch (Exception ex)
 					{
-						_actLabelStatus.Text = Localization.GetText("e-setting-load", ex.Message);
+						_actLabelStatus.Text = Mesg.GetText("e-setting-load", ex.Message);
 					}
 
 					xr.Close();
@@ -567,9 +614,9 @@ namespace ACT.DFAssist
 
 			// game version
 			int.TryParse(txtClientVersion.Text, out int clientversion);
-			for (int i = 0; i < GameData.ClientVersions.Length; i++)
+			for (int i = 0; i < GameVersion.Versions.Length; i++)
 			{
-				if (GameData.ClientVersions[i].Value == clientversion)
+				if (GameVersion.Versions[i].Index == clientversion)
 				{
 					cboClientVersion.SelectedIndex = i;
 					break;
@@ -577,8 +624,8 @@ namespace ACT.DFAssist
 			}
 
 			// locale
-			_localeUi = (Localization.Locale)cboUiLanguage.SelectedItem;
-			_localeGame = (Localization.Locale)cboGameLanguage.SelectedItem;
+			_localeUi = (Mesg.Locale)cboUiLanguage.SelectedItem;
+			_localeGame = (Mesg.Locale)cboGameLanguage.SelectedItem;
 
 			// fates
 			Settings.LoggingWholeFates = chkWholeFates.Checked;
@@ -670,7 +717,7 @@ namespace ACT.DFAssist
 			}
 			catch (Exception ex)
 			{
-				MsgLog.Ex(ex, "Exception: save setting failed");
+				Mesg.Ex(ex, "Exception: save setting failed");
 			}
 		}
 		#endregion
@@ -759,7 +806,6 @@ namespace ACT.DFAssist
 			btnSelectSound.Enabled = chkUseSound.Checked;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
 		private void PlayEffectSound(bool force = false)
 		{
 			if (!force && !chkUseSound.Checked)
@@ -786,134 +832,6 @@ namespace ACT.DFAssist
 		}
 		#endregion
 
-		#region 게임 프로시져
-		// 실제 데이터 처리 하는 곳
-		private void PacketWorker_OnEventReceived(string pid, GameEvents gameevent, int[] args)
-		{
-			var text = pid + "|" + gameevent + "|";
-			var pos = 0;
-
-			var isfate = false;
-
-			switch (gameevent)
-			{
-				case GameEvents.InstanceEnter:      // [0] = instance code
-				case GameEvents.InstanceLeave:
-					{
-						if (args.Length > 0)
-						{
-							text += GameData.GetInstanceName(args[0]) + "|";
-							pos++;
-						}
-
-						_frmOverlay.EventNone();
-					}
-					break;
-
-				case GameEvents.FateOccur:          // [0] = fate code
-					{
-						var fate = GameData.GetFate(args[0]);
-						text += fate.Name + "|" + fate.Area.Name + "|";
-						pos++;
-
-						// 모든 페이트를 골라도 목록에 있는것만 알려줌
-						if (Settings.SelectedFates.Contains(args[0].ToString()))
-						{
-							_frmOverlay.EventFate(fate);
-							if (_use_notify)
-								NotifyFate(fate);
-							PlayEffectSound();
-						}
-
-						isfate = true;
-					}
-					break;
-
-				case GameEvents.MatchQueue:         // [0] = MatchType, [1] = code, [...] = instances
-					{
-						var type = (MatchType)args[0];
-
-						text += type + "|";
-						pos++;
-
-						switch (type)
-						{
-							case MatchType.Roulette:
-								var roulette = GameData.GetRoulette(args[1]);
-
-								text += roulette.Name + "|";
-								pos++;
-
-								_frmOverlay.EventRoulette(roulette);
-
-								break;
-
-							case MatchType.Assignment:
-								text += args[1] + "|";
-								pos++;
-
-								var p = pos;
-								for (var i = p; i < args.Length; i++)
-								{
-									text += GameData.GetInstanceName(args[i]) + "|";
-									pos++;
-								}
-
-								_frmOverlay.EventStatus(args[1]);
-
-								break;
-						}
-					}
-					break;
-
-				case GameEvents.MatchDone:          // [0] = roulette code, [1] = instance code
-					{
-						var roulette = GameData.TryRoulette(args[0]);
-						var instance = GameData.TryInstance(args[1]);
-
-						var name =
-							instance != null ? instance.Name :
-							roulette != null ? roulette.Name :
-							Localization.GetText("l-unknown-instance", 0);
-
-						text += name + "|";
-						pos++;
-
-						_frmOverlay.EventMatch(name);
-						if (_use_notify)
-							NotifyMatch(name);
-						PlayEffectSound();
-					}
-					break;
-
-				case GameEvents.MatchEnter:          // [0] = instance code
-					{
-						var instance = GameData.GetInstance(args[0]);
-
-						text += instance.Name + "|";
-						pos++;
-
-						_frmOverlay.EventMatch(instance.Name);
-						if (_use_notify)
-							NotifyMatch(instance.Name);
-					}
-					break;
-
-				case GameEvents.MatchCancel:
-					_frmOverlay.StopBlink();
-					break;
-			}
-
-			for (var i = pos; i < args.Length; i++)
-				text += args[i] + "|";
-
-			if (isfate)
-				text += args[0] + "|";
-
-			ActGlobals.oFormActMain.ParseRawLogLine(false, DateTime.Now, "00|" + DateTime.Now.ToString("O") + "|0048|F|" + text);
-		}
-		#endregion
-
 		#region 알림
 		private void CheckUseNotify()
 		{
@@ -934,21 +852,21 @@ namespace ACT.DFAssist
 
 		private void NotifyFate(GameData.Fate fate)
 		{
-			string s = Localization.GetText("l-fate-occured-info", fate.Name);
+			string s = Mesg.GetText("l-fate-occured-info", fate.Name);
 			SendNotify(s);
 		}
 
 		private void NotifyMatch(string name)
 		{
-			string s = Localization.GetText("i-matched", name);
+			string s = Mesg.GetText("i-matched", name);
 			SendNotify(s);
 		}
 
 		private async void BtnTestNotify_Click(object sender, EventArgs e)
 		{
 			string s = string.Format("{0} - {1}",
-				Localization.GetText("ui-notift-test"),
-				Localization.GetText("app-description"));
+				Mesg.GetText("ui-notift-test"),
+				Mesg.GetText("app-description"));
 
 			if (chkNtfUseLine.Checked)
 				await InternalNotifyByLine(s);
@@ -1006,6 +924,165 @@ namespace ACT.DFAssist
 				txtNtfTelegramToken.Text, txtNtfTelegramId.Text, mesg);
 			var wr = WebRequest.Create(url);
 			wr.GetResponse().GetResponseStream();
+		}
+		#endregion
+
+		#region 게임 프로시져
+		// FFXIV 플러그인: 장소 변경
+		public void OnFFXIVZoneChanged(uint zoneId, string zoneName)
+		{
+#if DEBUG
+			Mesg.I($"장소 바뀜: {zoneId}/{zoneName}");
+#endif
+			_frmOverlay.EventNone();
+		}
+
+		// FFXIV 플러그인: 메시지 받음
+		public void OnFFXIVNetworkReceived(string connection, long epoch, byte[] message)
+		{
+			if (message.Length < 32)
+				return;
+
+			try
+			{
+				PacketHandler(connection, message);
+			}
+			catch
+			{
+			}
+		}
+
+		private void PacketHandler(string pid, byte[] message)
+		{
+			var opcode = BitConverter.ToUInt16(message, 18);
+
+			if (opcode != GamePacket.Current.OpFate &&
+				opcode != GamePacket.Current.OpDuty &&
+				opcode != GamePacket.Current.OpMatch &&
+				opcode != GamePacket.Current.OpInstance)
+				return;
+
+			var data = message.Skip(32).ToArray();
+
+			// FATE
+			if (opcode == GamePacket.Current.OpFate)
+			{
+				if (data[0] == GamePacket.Current.FateIndex)
+				{
+					var fcode = BitConverter.ToUInt16(data, 4);
+					bool isselected = Settings.SelectedFates.Contains(fcode.ToString());
+
+					if (Settings.LoggingWholeFates || isselected)
+					{
+						var fate = GameData.GetFate(fcode);
+
+						Mesg.Fate("l-fate-occured-info", fate.Name);
+
+						if (isselected)
+						{
+							PlayEffectSound();
+							_frmOverlay.EventFate(fate);
+
+							if (_use_notify)
+								NotifyFate(fate);
+						}
+					}
+				}
+			}
+			// 듀티
+			else if (opcode == GamePacket.Current.OpDuty)
+			{
+				// 안쓴다
+				// var status = data[0];
+				// var reason = data[4];
+				var rcode = data[GamePacket.Current.DutyRoulette];
+
+				if (rcode != 0)
+				{
+					// 루렛
+					var roulette = GameData.GetRoulette(rcode);
+
+					Mesg.Duty("i-queue-roulette", roulette.Name);
+
+					_frmOverlay.EventQueue(roulette.Name);
+				}
+				else
+				{
+					// 직접 골라 큐
+					var insts = new List<int>();
+					for (var i = 0; i < 5; i++)
+					{
+						var icode = BitConverter.ToUInt16(data, GamePacket.Current.DutyInstance + (i * 4));
+						if (icode == 0)
+							break;
+					}
+
+					if (insts.Any())
+					{
+						Mesg.Duty("i-queue-instance", string.Join(", ", insts.Select(x => GameData.GetInstance(x).Name).ToArray()));
+
+						_frmOverlay.EventStatus(insts.Count);
+					}
+				}
+			}
+			// 매치
+			else if (opcode == GamePacket.Current.OpMatch)
+			{
+				var rcode = BitConverter.ToUInt16(data, GamePacket.Current.MatchRoulette);
+				var icode = BitConverter.ToUInt16(data, GamePacket.Current.MatchInstance);
+				string name;
+
+				if (icode == 0 && rcode != 0)
+				{
+					// 이것 루렛 매칭
+					var roulette = GameData.GetRoulette(rcode);
+
+					Mesg.Duty("i-matched", roulette.Name);
+					name = roulette.Name;
+				}
+				else if (icode != 0)
+				{
+					// 이건 골라 매칭
+					var instance = GameData.GetInstance(icode);
+
+					Mesg.Duty("i-matched", instance.Name);
+					name = instance.Name;
+				}
+				else
+				{
+					// 루렛도 인스도 아녀
+					name = Mesg.GetText("l-unknown-instance", icode);
+				}
+
+				PlayEffectSound();
+				_frmOverlay.EventMatch(name);
+
+				if (_use_notify)
+					NotifyMatch(name);
+
+			}
+			// 인스턴스 관련
+			else if (opcode == GamePacket.Current.OpInstance && GamePacket.Current.OpInstance != 0)
+			{
+				if (data[4] == 0)
+				{
+					// 0은 최초 입장때만 나오므로 이거 쓰자
+					var icode = BitConverter.ToUInt16(data, GamePacket.Current.InstanceInstance);
+					var instance = GameData.GetInstance(icode);
+
+					Mesg.Duty("l-instance-enter", instance.Name);
+
+					_frmOverlay.EventMatch(Mesg.GetText("l-instance-enter", instance.Name));
+
+					if (_use_notify)
+						NotifyMatch(instance.Name);
+				}
+				else
+				{
+					// 조용히 시키자
+					_frmOverlay.EventNone();
+				}
+			}
 		}
 		#endregion
 	}

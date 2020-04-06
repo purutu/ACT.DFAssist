@@ -37,7 +37,7 @@ namespace ACT.DFAssist.Toolkits
 
                 var name = l.Substring(0, div);
 
-                if (name[0] == '#' || name[0] == ';' || name.StartsWith("//"))
+                if (name[0] == '#' || name.StartsWith("//"))
                     continue;
 
                 var value = l.Substring(div + 1);
@@ -53,19 +53,23 @@ namespace ACT.DFAssist.Toolkits
             return value;
         }
 
+        public bool Try(string name, out string value)
+        {
+            return _db.TryGetValue(name, out value);
+        }
+
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _db.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _db.GetEnumerator();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
 
         public bool MoveNext()

@@ -145,28 +145,28 @@
   <data name="play" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\play.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gamedata_de" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\act\gamedata-de.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="mesg_en" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mesg.en.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="gamedata_en" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\act\gamedata-en.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="mesg_ja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mesg.ja.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="gamedata_fr" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\act\gamedata-fr.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="mesg_ko" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mesg.ko.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="gamedata_ja" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\act\gamedata-ja.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="dfas_en" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dfas.en.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="gamedata_ko" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\act\gamedata-ko.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="dfas_ja" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dfas.ja.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="locale_en" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\act\locale-en.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="dfas_ko" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dfas.ko.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="locale_ja" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\act\locale-ja.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="dfas_de" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dfas.de.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="locale_ko" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\act\locale-ko.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="dfas_fr" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dfas.fr.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

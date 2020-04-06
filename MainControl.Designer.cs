@@ -38,6 +38,8 @@
 			this.tabLeft = new System.Windows.Forms.TabControl();
 			this.tabPageFates = new System.Windows.Forms.TabPage();
 			this.tabPageSetting = new System.Windows.Forms.TabPage();
+			this.btnShowLogSetting = new System.Windows.Forms.Button();
+			this.txtUpdateSkip = new System.Windows.Forms.TextBox();
 			this.txtClientVersion = new System.Windows.Forms.TextBox();
 			this.cboClientVersion = new System.Windows.Forms.ComboBox();
 			this.lblClientVersion = new System.Windows.Forms.Label();
@@ -57,7 +59,7 @@
 			this.btnBlinkOverlay = new System.Windows.Forms.Button();
 			this.chkUseOverlay = new System.Windows.Forms.CheckBox();
 			this.chkWholeFates = new System.Windows.Forms.CheckBox();
-			this.panel1 = new System.Windows.Forms.Panel();
+			this.pnlLogSetting = new System.Windows.Forms.Panel();
 			this.lblDisplayFont = new System.Windows.Forms.Label();
 			this.btnLogFont = new System.Windows.Forms.Button();
 			this.btnClearLogs = new System.Windows.Forms.Button();
@@ -81,7 +83,6 @@
 			this.chkNtfUseLine = new System.Windows.Forms.CheckBox();
 			this.ilTab = new System.Windows.Forms.ImageList(this.components);
 			this.ttCtrls = new System.Windows.Forms.ToolTip(this.components);
-			this.txtUpdateSkip = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitBase)).BeginInit();
 			this.splitBase.Panel1.SuspendLayout();
 			this.splitBase.Panel2.SuspendLayout();
@@ -92,7 +93,7 @@
 			this.panel4.SuspendLayout();
 			this.panel3.SuspendLayout();
 			this.panel2.SuspendLayout();
-			this.panel1.SuspendLayout();
+			this.pnlLogSetting.SuspendLayout();
 			this.tabPageNotify.SuspendLayout();
 			this.panel6.SuspendLayout();
 			this.panel5.SuspendLayout();
@@ -127,7 +128,7 @@
 			this.rtxLogger.Location = new System.Drawing.Point(0, 0);
 			this.rtxLogger.Name = "rtxLogger";
 			this.rtxLogger.ReadOnly = true;
-			this.rtxLogger.Size = new System.Drawing.Size(658, 559);
+			this.rtxLogger.Size = new System.Drawing.Size(559, 559);
 			this.rtxLogger.TabIndex = 2;
 			this.rtxLogger.Text = "";
 			// 
@@ -137,7 +138,7 @@
 			this.trvFates.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.trvFates.Location = new System.Drawing.Point(3, 3);
 			this.trvFates.Name = "trvFates";
-			this.trvFates.Size = new System.Drawing.Size(236, 510);
+			this.trvFates.Size = new System.Drawing.Size(334, 510);
 			this.trvFates.TabIndex = 3;
 			this.trvFates.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.TrvFates_AfterCheck);
 			// 
@@ -149,13 +150,13 @@
 			// 
 			// splitBase.Panel1
 			// 
-			this.splitBase.Panel1.Controls.Add(this.tabLeft);
+			this.splitBase.Panel1.Controls.Add(this.rtxLogger);
 			// 
 			// splitBase.Panel2
 			// 
-			this.splitBase.Panel2.Controls.Add(this.rtxLogger);
+			this.splitBase.Panel2.Controls.Add(this.tabLeft);
 			this.splitBase.Size = new System.Drawing.Size(912, 559);
-			this.splitBase.SplitterDistance = 250;
+			this.splitBase.SplitterDistance = 559;
 			this.splitBase.TabIndex = 4;
 			// 
 			// tabLeft
@@ -169,7 +170,7 @@
 			this.tabLeft.Location = new System.Drawing.Point(0, 0);
 			this.tabLeft.Name = "tabLeft";
 			this.tabLeft.SelectedIndex = 0;
-			this.tabLeft.Size = new System.Drawing.Size(250, 559);
+			this.tabLeft.Size = new System.Drawing.Size(349, 559);
 			this.tabLeft.TabIndex = 5;
 			// 
 			// tabPageFates
@@ -180,7 +181,7 @@
 			this.tabPageFates.Location = new System.Drawing.Point(4, 39);
 			this.tabPageFates.Name = "tabPageFates";
 			this.tabPageFates.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageFates.Size = new System.Drawing.Size(242, 516);
+			this.tabPageFates.Size = new System.Drawing.Size(340, 516);
 			this.tabPageFates.TabIndex = 0;
 			this.tabPageFates.Text = "FATEs";
 			this.tabPageFates.UseVisualStyleBackColor = true;
@@ -188,6 +189,7 @@
 			// tabPageSetting
 			// 
 			this.tabPageSetting.AutoScroll = true;
+			this.tabPageSetting.Controls.Add(this.btnShowLogSetting);
 			this.tabPageSetting.Controls.Add(this.txtUpdateSkip);
 			this.tabPageSetting.Controls.Add(this.txtClientVersion);
 			this.tabPageSetting.Controls.Add(this.cboClientVersion);
@@ -197,7 +199,7 @@
 			this.tabPageSetting.Controls.Add(this.btnTest);
 			this.tabPageSetting.Controls.Add(this.panel3);
 			this.tabPageSetting.Controls.Add(this.panel2);
-			this.tabPageSetting.Controls.Add(this.panel1);
+			this.tabPageSetting.Controls.Add(this.pnlLogSetting);
 			this.tabPageSetting.Controls.Add(this.txtOverayLocation);
 			this.tabPageSetting.Controls.Add(this.txtSelectedFates);
 			this.tabPageSetting.Controls.Add(this.btnReconnect);
@@ -205,10 +207,32 @@
 			this.tabPageSetting.Location = new System.Drawing.Point(4, 39);
 			this.tabPageSetting.Name = "tabPageSetting";
 			this.tabPageSetting.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageSetting.Size = new System.Drawing.Size(242, 516);
+			this.tabPageSetting.Size = new System.Drawing.Size(341, 516);
 			this.tabPageSetting.TabIndex = 1;
 			this.tabPageSetting.Text = "Setting";
 			this.tabPageSetting.UseVisualStyleBackColor = true;
+			// 
+			// btnShowLogSetting
+			// 
+			this.btnShowLogSetting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnShowLogSetting.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.btnShowLogSetting.Location = new System.Drawing.Point(3, 285);
+			this.btnShowLogSetting.Name = "btnShowLogSetting";
+			this.btnShowLogSetting.Size = new System.Drawing.Size(334, 23);
+			this.btnShowLogSetting.TabIndex = 24;
+			this.btnShowLogSetting.Text = "Log setting";
+			this.btnShowLogSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.btnShowLogSetting.UseVisualStyleBackColor = false;
+			this.btnShowLogSetting.Click += new System.EventHandler(this.btnShowLogSetting_Click);
+			// 
+			// txtUpdateSkip
+			// 
+			this.txtUpdateSkip.Location = new System.Drawing.Point(84, 486);
+			this.txtUpdateSkip.Name = "txtUpdateSkip";
+			this.txtUpdateSkip.Size = new System.Drawing.Size(20, 25);
+			this.txtUpdateSkip.TabIndex = 23;
+			this.txtUpdateSkip.Visible = false;
 			// 
 			// txtClientVersion
 			// 
@@ -226,7 +250,7 @@
 			this.cboClientVersion.FormattingEnabled = true;
 			this.cboClientVersion.Location = new System.Drawing.Point(96, 6);
 			this.cboClientVersion.Name = "cboClientVersion";
-			this.cboClientVersion.Size = new System.Drawing.Size(140, 25);
+			this.cboClientVersion.Size = new System.Drawing.Size(239, 25);
 			this.cboClientVersion.TabIndex = 7;
 			this.cboClientVersion.SelectedIndexChanged += new System.EventHandler(this.CboClientVersion_SelectedIndexChanged);
 			this.cboClientVersion.SelectedValueChanged += new System.EventHandler(this.CboClientVersion_SelectedValueChanged);
@@ -251,7 +275,7 @@
 			this.panel4.Controls.Add(this.lblGameLanguage);
 			this.panel4.Location = new System.Drawing.Point(3, 37);
 			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(236, 65);
+			this.panel4.Size = new System.Drawing.Size(335, 65);
 			this.panel4.TabIndex = 21;
 			// 
 			// cboUiLanguage
@@ -262,7 +286,7 @@
 			this.cboUiLanguage.FormattingEnabled = true;
 			this.cboUiLanguage.Location = new System.Drawing.Point(91, 3);
 			this.cboUiLanguage.Name = "cboUiLanguage";
-			this.cboUiLanguage.Size = new System.Drawing.Size(140, 25);
+			this.cboUiLanguage.Size = new System.Drawing.Size(239, 25);
 			this.cboUiLanguage.TabIndex = 3;
 			this.cboUiLanguage.SelectedValueChanged += new System.EventHandler(this.CboUiLanguage_SelectedValueChanged);
 			// 
@@ -274,7 +298,7 @@
 			this.cboGameLanguage.FormattingEnabled = true;
 			this.cboGameLanguage.Location = new System.Drawing.Point(91, 34);
 			this.cboGameLanguage.Name = "cboGameLanguage";
-			this.cboGameLanguage.Size = new System.Drawing.Size(140, 25);
+			this.cboGameLanguage.Size = new System.Drawing.Size(239, 25);
 			this.cboGameLanguage.TabIndex = 5;
 			this.cboGameLanguage.SelectedValueChanged += new System.EventHandler(this.CboGameLanguage_SelectedValueChanged);
 			// 
@@ -324,9 +348,9 @@
 			this.panel3.Controls.Add(this.txtSoundFile);
 			this.panel3.Controls.Add(this.btnSelectSound);
 			this.panel3.Controls.Add(this.chkUseSound);
-			this.panel3.Location = new System.Drawing.Point(3, 172);
+			this.panel3.Location = new System.Drawing.Point(3, 193);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(236, 65);
+			this.panel3.Size = new System.Drawing.Size(335, 65);
 			this.panel3.TabIndex = 18;
 			// 
 			// btnSoundPlay
@@ -345,7 +369,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtSoundFile.Location = new System.Drawing.Point(83, 30);
 			this.txtSoundFile.Name = "txtSoundFile";
-			this.txtSoundFile.Size = new System.Drawing.Size(145, 25);
+			this.txtSoundFile.Size = new System.Drawing.Size(244, 25);
 			this.txtSoundFile.TabIndex = 16;
 			// 
 			// btnSelectSound
@@ -377,9 +401,9 @@
 			this.panel2.Controls.Add(this.btnBlinkOverlay);
 			this.panel2.Controls.Add(this.chkUseOverlay);
 			this.panel2.Controls.Add(this.chkWholeFates);
-			this.panel2.Location = new System.Drawing.Point(3, 108);
+			this.panel2.Location = new System.Drawing.Point(3, 119);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(236, 58);
+			this.panel2.Size = new System.Drawing.Size(335, 58);
 			this.panel2.TabIndex = 17;
 			// 
 			// btnBlinkOverlay
@@ -414,20 +438,21 @@
 			this.chkWholeFates.UseVisualStyleBackColor = true;
 			this.chkWholeFates.CheckedChanged += new System.EventHandler(this.ChkWholeFates_CheckedChanged);
 			// 
-			// panel1
+			// pnlLogSetting
 			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.pnlLogSetting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel1.Controls.Add(this.lblDisplayFont);
-			this.panel1.Controls.Add(this.btnLogFont);
-			this.panel1.Controls.Add(this.btnClearLogs);
-			this.panel1.Controls.Add(this.lblBackColor);
-			this.panel1.Controls.Add(this.cboLogBackground);
-			this.panel1.Location = new System.Drawing.Point(3, 243);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(236, 115);
-			this.panel1.TabIndex = 16;
+			this.pnlLogSetting.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pnlLogSetting.Controls.Add(this.lblDisplayFont);
+			this.pnlLogSetting.Controls.Add(this.btnLogFont);
+			this.pnlLogSetting.Controls.Add(this.btnClearLogs);
+			this.pnlLogSetting.Controls.Add(this.lblBackColor);
+			this.pnlLogSetting.Controls.Add(this.cboLogBackground);
+			this.pnlLogSetting.Location = new System.Drawing.Point(3, 309);
+			this.pnlLogSetting.Name = "pnlLogSetting";
+			this.pnlLogSetting.Size = new System.Drawing.Size(335, 115);
+			this.pnlLogSetting.TabIndex = 16;
+			this.pnlLogSetting.Visible = false;
 			// 
 			// lblDisplayFont
 			// 
@@ -444,7 +469,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnLogFont.Location = new System.Drawing.Point(91, 35);
 			this.btnLogFont.Name = "btnLogFont";
-			this.btnLogFont.Size = new System.Drawing.Size(141, 23);
+			this.btnLogFont.Size = new System.Drawing.Size(240, 23);
 			this.btnLogFont.TabIndex = 12;
 			this.btnLogFont.Text = "Font";
 			this.btnLogFont.UseVisualStyleBackColor = true;
@@ -457,7 +482,7 @@
 			this.btnClearLogs.Image = global::ACT.DFAssist.Properties.Resources.btn_del;
 			this.btnClearLogs.Location = new System.Drawing.Point(91, 64);
 			this.btnClearLogs.Name = "btnClearLogs";
-			this.btnClearLogs.Size = new System.Drawing.Size(141, 44);
+			this.btnClearLogs.Size = new System.Drawing.Size(240, 44);
 			this.btnClearLogs.TabIndex = 6;
 			this.btnClearLogs.Text = "Clear Logs";
 			this.btnClearLogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -482,7 +507,7 @@
 			this.cboLogBackground.FormattingEnabled = true;
 			this.cboLogBackground.Location = new System.Drawing.Point(91, 3);
 			this.cboLogBackground.Name = "cboLogBackground";
-			this.cboLogBackground.Size = new System.Drawing.Size(140, 26);
+			this.cboLogBackground.Size = new System.Drawing.Size(239, 26);
 			this.cboLogBackground.TabIndex = 8;
 			this.cboLogBackground.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.CboLogBackground_DrawItem);
 			this.cboLogBackground.SelectedValueChanged += new System.EventHandler(this.CboLogBackground_SelectedValueChanged);
@@ -511,7 +536,7 @@
 			this.btnReconnect.Image = global::ACT.DFAssist.Properties.Resources.Player2_Icon;
 			this.btnReconnect.Location = new System.Drawing.Point(211, 485);
 			this.btnReconnect.Name = "btnReconnect";
-			this.btnReconnect.Size = new System.Drawing.Size(25, 25);
+			this.btnReconnect.Size = new System.Drawing.Size(124, 25);
 			this.btnReconnect.TabIndex = 10;
 			this.btnReconnect.Text = "Reconnect";
 			this.btnReconnect.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -530,7 +555,7 @@
 			this.tabPageNotify.ImageIndex = 4;
 			this.tabPageNotify.Location = new System.Drawing.Point(4, 39);
 			this.tabPageNotify.Name = "tabPageNotify";
-			this.tabPageNotify.Size = new System.Drawing.Size(242, 516);
+			this.tabPageNotify.Size = new System.Drawing.Size(340, 516);
 			this.tabPageNotify.TabIndex = 2;
 			this.tabPageNotify.Text = "Notify";
 			this.tabPageNotify.UseVisualStyleBackColor = true;
@@ -547,7 +572,7 @@
 			this.panel6.Controls.Add(this.chkNtfUseTelegram);
 			this.panel6.Location = new System.Drawing.Point(3, 92);
 			this.panel6.Name = "panel6";
-			this.panel6.Size = new System.Drawing.Size(236, 97);
+			this.panel6.Size = new System.Drawing.Size(334, 97);
 			this.panel6.TabIndex = 4;
 			// 
 			// lblNtfTelegramToken
@@ -574,7 +599,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtNtfTelegramId.Location = new System.Drawing.Point(61, 62);
 			this.txtNtfTelegramId.Name = "txtNtfTelegramId";
-			this.txtNtfTelegramId.Size = new System.Drawing.Size(170, 25);
+			this.txtNtfTelegramId.Size = new System.Drawing.Size(268, 25);
 			this.txtNtfTelegramId.TabIndex = 1;
 			this.txtNtfTelegramId.TextChanged += new System.EventHandler(this.TxtNtfLineToken_TextChanged);
 			// 
@@ -584,7 +609,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtNtfTelegramToken.Location = new System.Drawing.Point(61, 31);
 			this.txtNtfTelegramToken.Name = "txtNtfTelegramToken";
-			this.txtNtfTelegramToken.Size = new System.Drawing.Size(170, 25);
+			this.txtNtfTelegramToken.Size = new System.Drawing.Size(268, 25);
 			this.txtNtfTelegramToken.TabIndex = 4;
 			this.txtNtfTelegramToken.TextChanged += new System.EventHandler(this.TxtNtfLineToken_TextChanged);
 			// 
@@ -605,7 +630,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnTestNotify.Location = new System.Drawing.Point(3, 195);
 			this.btnTestNotify.Name = "btnTestNotify";
-			this.btnTestNotify.Size = new System.Drawing.Size(236, 43);
+			this.btnTestNotify.Size = new System.Drawing.Size(334, 43);
 			this.btnTestNotify.TabIndex = 3;
 			this.btnTestNotify.Text = "Test Notify";
 			this.btnTestNotify.UseVisualStyleBackColor = true;
@@ -622,14 +647,14 @@
 			this.panel5.Controls.Add(this.chkNtfUseLine);
 			this.panel5.Location = new System.Drawing.Point(3, 3);
 			this.panel5.Name = "panel5";
-			this.panel5.Size = new System.Drawing.Size(236, 83);
+			this.panel5.Size = new System.Drawing.Size(334, 83);
 			this.panel5.TabIndex = 2;
 			// 
 			// lnklblLineNotify
 			// 
 			this.lnklblLineNotify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.lnklblLineNotify.AutoSize = true;
-			this.lnklblLineNotify.Location = new System.Drawing.Point(75, 55);
+			this.lnklblLineNotify.Location = new System.Drawing.Point(173, 55);
 			this.lnklblLineNotify.Name = "lnklblLineNotify";
 			this.lnklblLineNotify.Size = new System.Drawing.Size(156, 17);
 			this.lnklblLineNotify.TabIndex = 3;
@@ -652,7 +677,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtNtfLineToken.Location = new System.Drawing.Point(61, 27);
 			this.txtNtfLineToken.Name = "txtNtfLineToken";
-			this.txtNtfLineToken.Size = new System.Drawing.Size(170, 25);
+			this.txtNtfLineToken.Size = new System.Drawing.Size(268, 25);
 			this.txtNtfLineToken.TabIndex = 1;
 			this.txtNtfLineToken.TextChanged += new System.EventHandler(this.TxtNtfLineToken_TextChanged);
 			// 
@@ -682,14 +707,6 @@
 			this.ttCtrls.IsBalloon = true;
 			this.ttCtrls.ShowAlways = true;
 			// 
-			// txtUpdateSkip
-			// 
-			this.txtUpdateSkip.Location = new System.Drawing.Point(84, 486);
-			this.txtUpdateSkip.Name = "txtUpdateSkip";
-			this.txtUpdateSkip.Size = new System.Drawing.Size(20, 25);
-			this.txtUpdateSkip.TabIndex = 23;
-			this.txtUpdateSkip.Visible = false;
-			// 
 			// MainControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -711,8 +728,8 @@
 			this.panel3.PerformLayout();
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
+			this.pnlLogSetting.ResumeLayout(false);
+			this.pnlLogSetting.PerformLayout();
 			this.tabPageNotify.ResumeLayout(false);
 			this.tabPageNotify.PerformLayout();
 			this.panel6.ResumeLayout(false);
@@ -747,7 +764,7 @@
         private System.Windows.Forms.TextBox txtSelectedFates;
         private System.Windows.Forms.CheckBox chkUseOverlay;
         private System.Windows.Forms.TextBox txtOverayLocation;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlLogSetting;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TextBox txtSoundFile;
@@ -777,5 +794,6 @@
 		private System.Windows.Forms.Label lblNtfTelegramToken;
 		private System.Windows.Forms.TextBox txtNtfTelegramToken;
 		private System.Windows.Forms.TextBox txtUpdateSkip;
+		private System.Windows.Forms.Button btnShowLogSetting;
 	}
 }

@@ -39,11 +39,13 @@
       <HintPath>ACT\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Machina, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Machina.FFXIV.2.1.1\lib\net40\Machina.dll</HintPath>
+    <Reference Include="FFXIV_ACT_Plugin">
+      <HintPath>ACT\FFXIV_ACT_Plugin.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Machina.FFXIV, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Machina.FFXIV.2.1.1\lib\net40\Machina.FFXIV.dll</HintPath>
+    <Reference Include="FFXIV_ACT_Plugin.Common">
+      <HintPath>ACT\FFXIV_ACT_Plugin.Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -63,15 +65,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameEvents.cs" />
+    <Compile Include="GamePacket.cs" />
+    <Compile Include="GameVersion.cs" />
+    <Compile Include="Mesg.cs" />
     <Compile Include="OverlayForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="OverlayForm.Designer.cs">
       <DependentUpon>OverlayForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PacketWorker.cs" />
-    <Compile Include="Localization.cs" />
-    <Compile Include="MsgLog.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="MainControl.cs">
       <SubType>UserControl</SubType>
@@ -89,16 +91,6 @@
     <Compile Include="Toolkits\ConcurrentHashSet.cs" />
     <Compile Include="Toolkits\HttpHelper.cs" />
     <Compile Include="Toolkits\LineDb.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ACT\gamedata-de.json" />
-    <EmbeddedResource Include="ACT\gamedata-en.json" />
-    <EmbeddedResource Include="ACT\gamedata-fr.json" />
-    <EmbeddedResource Include="ACT\gamedata-ja.json" />
-    <EmbeddedResource Include="ACT\gamedata-ko.json" />
-    <EmbeddedResource Include="ACT\locale-en.json" />
-    <EmbeddedResource Include="ACT\locale-ja.json" />
-    <EmbeddedResource Include="ACT\locale-ko.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainControl.resx">
@@ -125,6 +117,11 @@
     <None Include="Resources\061809.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\dfas.en.json" />
+    <EmbeddedResource Include="Resources\dfas.ja.json" />
+    <EmbeddedResource Include="Resources\dfas.ko.json" />
+    <EmbeddedResource Include="Resources\dfas.de.json" />
+    <EmbeddedResource Include="Resources\dfas.fr.json" />
     <None Include="Resources\Main_Command_52_Icon.png" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +141,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ILMergeOrder.txt" />
+    <EmbeddedResource Include="Resources\mesg.ja.txt" />
+    <EmbeddedResource Include="Resources\mesg.ko.txt" />
+    <EmbeddedResource Include="Resources\mesg.en.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ACT\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

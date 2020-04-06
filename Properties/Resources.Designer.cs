@@ -92,245 +92,117 @@ namespace ACT.DFAssist.Properties {
         
         /// <summary>
         ///   {
-        ///  // Data from Jaehyuk-Lee/DFASSIST
-        ///  // Version
-        ///  &quot;version&quot;: &quot;202001101.4&quot;,
-        ///
-        ///  // Duty
-        ///  &quot;instances&quot;: {
-        ///    // 2.0 A Realm Reborn
-        ///    // 2.0 Dungeons
-        ///    &quot;4&quot;: {
-        ///      &quot;name&quot;: &quot;Sastasha&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;8&quot;: {
-        ///      &quot;name&quot;: &quot;Brüllvolx&apos; Langrast&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;10&quot;: {
-        ///      &quot;name&quot;: &quot;Palast des Wanderers&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///    &quot;roulettes&quot;: {
+        ///        &quot;1&quot;: &quot;Zufallsinhalt: Stufensteigerung&quot;,
+        ///        &quot;2&quot;: &quot;Zufallsinhalt: Stufe 50/60/70&quot;,
+        ///        &quot;3&quot;: &quot;Zufallsinhalt: Hauptszenario&quot;,
+        ///        &quot;4&quot;: &quot;Zufallsinhalt: Gildengeheiß&quot;,
+        ///        &quot;5&quot;: &quot;Zufallsinhalt: Experte&quot;,
+        ///        &quot;6&quot;: &quot;Zufallsinhalt: Prüfung&quot;,
+        ///        &quot;7&quot;: &quot;Zufallsinhalt: PvP-Front&quot;,
+        ///        &quot;8&quot;: &quot;Zufallsinhalt: Stufe 80&quot;,
+        ///        &quot;9&quot;: &quot;Zufallsinhalt: Mentor&quot;,
+        ///        &quot;10&quot;: &quot;The Feast (Übungskampf)&quot;,
+        ///        &quot;11&quot;: &quot;The Feast (Übungskampf)&quot;,
+        ///        &quot;13&quot;: &quot;The Feast (gew[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        internal static string gamedata_de {
+        internal static string dfas_de {
             get {
-                return ResourceManager.GetString("gamedata_de", resourceCulture);
+                return ResourceManager.GetString("dfas_de", resourceCulture);
             }
         }
         
         /// <summary>
         ///   {
-        ///  // Version
-        ///  &quot;version&quot;: &quot;202001101.1&quot;,
-        ///
-        ///  // Duty
-        ///  &quot;instances&quot;: {
-        ///    // 2.0 A Realm Reborn
-        ///    // 2.0 Dungeons
-        ///    &quot;4&quot;: {
-        ///      &quot;name&quot;: &quot;Sastasha&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;8&quot;: {
-        ///      &quot;name&quot;: &quot;Brayflox&apos;s Longstop&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;10&quot;: {
-        ///      &quot;name&quot;: &quot;The Wanderer&apos;s Palace&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;3&quot;: {
-        ///      &quot;name&quot;: &quot;Copperbell Min[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///    &quot;roulettes&quot;: {
+        ///        &quot;1&quot;: &quot;Duty Roulette: Leveling&quot;,
+        ///        &quot;2&quot;: &quot;Duty Roulette: Level 50/60/70 Dungeons&quot;,
+        ///        &quot;3&quot;: &quot;Duty Roulette: Main Scenario&quot;,
+        ///        &quot;4&quot;: &quot;Duty Roulette: Guildhests&quot;,
+        ///        &quot;5&quot;: &quot;Duty Roulette: Expert&quot;,
+        ///        &quot;6&quot;: &quot;Duty Roulette: Trials&quot;,
+        ///        &quot;7&quot;: &quot;Duty Roulette: Frontline&quot;,
+        ///        &quot;8&quot;: &quot;Duty Roulette: Level 80 Dungeons&quot;,
+        ///        &quot;9&quot;: &quot;Duty Roulette: Mentor&quot;,
+        ///        &quot;10&quot;: &quot;The Feast - Training&quot;,
+        ///        &quot;11&quot;: &quot;The Feast - Training&quot;,
+        ///        &quot;13&quot;: &quot;The Feast - Ra[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        internal static string gamedata_en {
+        internal static string dfas_en {
             get {
-                return ResourceManager.GetString("gamedata_en", resourceCulture);
+                return ResourceManager.GetString("dfas_en", resourceCulture);
             }
         }
         
         /// <summary>
         ///   {
-        ///  // Data from Jaehyuk-Lee/DFASSIST
-        ///  // Version
-        ///  &quot;version&quot;: &quot;202001101.5&quot;,
-        ///
-        ///  // Duty
-        ///  &quot;instances&quot;: {
-        ///    // 2.0 A Realm Reborn
-        ///    // 2.0 Dungeons
-        ///    &quot;4&quot;: {
-        ///      &quot;name&quot;: &quot;Sastasha&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;8&quot;: {
-        ///      &quot;name&quot;: &quot;le Bivouac de Brayflox&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;10&quot;: {
-        ///      &quot;name&quot;: &quot;le Palais du Vagabond&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        /// [나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///    &quot;roulettes&quot;: {
+        ///        &quot;1&quot;: &quot;Mission aléatorie: gain de niveaux&quot;,
+        ///        &quot;2&quot;: &quot;Mission aléatorie: donjons nv 50/60/70&quot;,
+        ///        &quot;3&quot;: &quot;Mission aléatorie: épopée&quot;,
+        ///        &quot;4&quot;: &quot;Mission aléatorie: opérations de guilde&quot;,
+        ///        &quot;5&quot;: &quot;Mission aléatorie: expert&quot;,
+        ///        &quot;6&quot;: &quot;Mission aléatorie: défis&quot;,
+        ///        &quot;7&quot;: &quot;Mission aléatorie: Front&quot;,
+        ///        &quot;8&quot;: &quot;Mission aléatorie: donjons nv 80&quot;,
+        ///        &quot;9&quot;: &quot;Mission aléatorie: Mentor&quot;,
+        ///        &quot;10&quot;: &quot;The Feast (entraînement)&quot;,
+        ///        &quot;11&quot;: &quot;The Feast (entr[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        internal static string gamedata_fr {
+        internal static string dfas_fr {
             get {
-                return ResourceManager.GetString("gamedata_fr", resourceCulture);
+                return ResourceManager.GetString("dfas_fr", resourceCulture);
             }
         }
         
         /// <summary>
         ///   {
-        ///  // Version
-        ///  &quot;version&quot;: &quot;202001101.2&quot;,
-        ///
-        ///  // Duty
-        ///  &quot;instances&quot;: {
-        ///    // 2.0 A Realm Reborn
-        ///    // 2.0 Dungeons
-        ///    &quot;4&quot;: {
-        ///      &quot;name&quot;: &quot;天然要害 サスタシャ浸食洞&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;8&quot;: {
-        ///      &quot;name&quot;: &quot;奪還支援 ブレイフロクスの野営地&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;10&quot;: {
-        ///      &quot;name&quot;: &quot;旅神聖域 ワンダラーパレス&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;3&quot;: {
-        ///      &quot;name&quot;: &quot;封鎖坑道 カッパーベル銅山&quot;,
-        ///   [나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///    &quot;roulettes&quot;: {
+        ///        &quot;1&quot;: &quot;コンテンツルーレット: レベリング&quot;,
+        ///        &quot;2&quot;: &quot;コンテンツルーレット: レベル50・60・70ダンジョン&quot;,
+        ///        &quot;3&quot;: &quot;コンテンツルーレット: メインクエスト&quot;,
+        ///        &quot;4&quot;: &quot;コンテンツルーレット: ギルドオーダー&quot;,
+        ///        &quot;5&quot;: &quot;コンテンツルーレット: エキスパート&quot;,
+        ///        &quot;6&quot;: &quot;コンテンツルーレット: 討伐・討滅戦&quot;,
+        ///        &quot;7&quot;: &quot;コンテンツルーレット: フロントライン&quot;,
+        ///        &quot;8&quot;: &quot;コンテンツルーレット: レベル80ダンジョン&quot;,
+        ///        &quot;9&quot;: &quot;コンテンツルーレット: メンター&quot;,
+        ///        &quot;10&quot;: &quot;ザ・フィースト (カジュアルマッチ)&quot;,
+        ///        &quot;11&quot;: &quot;ザ・フィースト (カジュアルマッチ)&quot;,
+        ///        &quot;13&quot;: &quot;ザ・フィースト (ランクマッチ)&quot;,
+        ///        &quot;15&quot;: &quot;コンテンツルーレット: アライアンスレイド&quot;,
+        ///        &quot;16&quot;: &quot;ザ・[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        internal static string gamedata_ja {
+        internal static string dfas_ja {
             get {
-                return ResourceManager.GetString("gamedata_ja", resourceCulture);
+                return ResourceManager.GetString("dfas_ja", resourceCulture);
             }
         }
         
         /// <summary>
         ///   {
-        ///  // Version
-        ///  &quot;version&quot;: &quot;202001101.3&quot;,
-        ///
-        ///  // 임무
-        ///  &quot;instances&quot;: {
-        ///    // 2.0 신생 에오르제아
-        ///    // 2.0 던전
-        ///    &quot;4&quot;: {
-        ///      &quot;name&quot;: &quot;사스타샤 침식 동굴&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;8&quot;: {
-        ///      &quot;name&quot;: &quot;브레이플록스의 야영지&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;10&quot;: {
-        ///      &quot;name&quot;: &quot;방랑자의 궁전&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1&quot;,
-        ///      &quot;dps&quot;: &quot;2&quot;
-        ///    },
-        ///    &quot;3&quot;: {
-        ///      &quot;name&quot;: &quot;구리종 광산&quot;,
-        ///      &quot;tank&quot;: &quot;1&quot;,
-        ///      &quot;healer&quot;: &quot;1[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///    &quot;roulettes&quot;: {
+        ///        &quot;1&quot;: &quot;무작위 임무: 레벨링&quot;,
+        ///        &quot;2&quot;: &quot;무작위 임무: 레벨 50/60/70 던전&quot;,
+        ///        &quot;3&quot;: &quot;무작위 임무: 주요 퀘스트&quot;,
+        ///        &quot;4&quot;: &quot;무작위 임무: 길드 작전&quot;,
+        ///        &quot;5&quot;: &quot;무작위 임무: 숙련자&quot;,
+        ///        &quot;6&quot;: &quot;무작위 임무: 토벌전&quot;,
+        ///        &quot;7&quot;: &quot;무작위 임무: 전장&quot;,
+        ///        &quot;8&quot;: &quot;무작위 임무: 레벨 80 던전&quot;,
+        ///        &quot;9&quot;: &quot;무작위 임무: 멘토&quot;,
+        ///        &quot;10&quot;: &quot;더 피스트 - 친선 경기&quot;,
+        ///        &quot;11&quot;: &quot;더 피스트 - 친선 경기&quot;,
+        ///        &quot;13&quot;: &quot;더 피스트 - 개인&quot;,
+        ///        &quot;15&quot;: &quot;무작위 임무: 24인 레이드&quot;,
+        ///        &quot;16&quot;: &quot;더 피스트 - 팀&quot;,
+        ///        &quot;17&quot;: &quot;무작위 임무: 레이드&quot;,
+        ///        &quot;18&quot;: &quot;초코보 레이스: 사골리길&quot;,
+        ///        &quot;1[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        internal static string gamedata_ko {
+        internal static string dfas_ko {
             get {
-                return ResourceManager.GetString("gamedata_ko", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   {
-        ///  &quot;app-description&quot;: &quot;DFASSIST for ACT&quot;,
-        ///  &quot;app-name&quot;: &quot;DFASSIST&quot;,
-        ///  &quot;l-data-error&quot;: &quot;Error on processing data&quot;,
-        ///  &quot;l-fate-occured-info&quot;: &quot;{0} spawned!&quot;,
-        ///  &quot;l-instance-enter&quot;: &quot;Enter instance: {0}&quot;,
-        ///  &quot;l-instance-leave&quot;: &quot;Leave instance&quot;,
-        ///  &quot;i-selected-color&quot;: &quot;Selected color is {0}&quot;,
-        ///  &quot;i-data-version&quot;: &quot;Using data version {0} (A:{1}/I:{2}/R:{3}/F:{4})&quot;,
-        ///  &quot;l-plugin-started&quot;: &quot;Plugin started&quot;,
-        ///  &quot;l-plugin-stopped&quot;: &quot;Plugin stopped&quot;,
-        ///  &quot;i-matched&quot;: &quot;Matched [{0}]&quot;,
-        ///  &quot;i-queue-instance&quot;: &quot;Start matching [{[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        internal static string locale_en {
-            get {
-                return ResourceManager.GetString("locale_en", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   {
-        ///  &quot;app-description&quot;: &quot;ACT用のDFASSISTプラグイン&quot;,
-        ///  &quot;app-name&quot;: &quot;DFASSIST&quot;,
-        ///  &quot;l-analyze-error&quot;: &quot;Analyze: メッセージ処理エラー&quot;,
-        ///  &quot;l-analyze-error-general&quot;: &quot;Analyze: メッセージ分析エラー&quot;,
-        ///  &quot;l-analyze-error-handle&quot;: &quot;Analyze: メッセージ分析エラー&quot;,
-        ///  &quot;l-analyze-error-length&quot;: &quot;Analyze: メッセージ長さエラー: {0}, {1}/{2}&quot;,
-        ///  &quot;l-assembly-load-error&quot;: &quot;アセンブリの読むことが出来ません: {0}&quot;,
-        ///  &quot;l-data-error&quot;: &quot;Data: データ処理に問題があります&quot;,
-        ///  &quot;l-fate-occured-info&quot;: &quot;FATE: {0} 発生!&quot;,
-        ///  &quot;l-field-instance-entered&quot;: &quot;Instance: 入ります: {0}&quot;,
-        ///  &quot;l-field-instance-left&quot;: &quot;Instance: 離れま[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        internal static string locale_ja {
-            get {
-                return ResourceManager.GetString("locale_ja", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   {
-        ///  &quot;app-description&quot;: &quot;ACT에서 쓸 수 있는 DFASSIST 플러그인&quot;,
-        ///  &quot;app-name&quot;: &quot;DFASSIST&quot;,
-        ///  &quot;l-analyze-error&quot;: &quot;Analyze: 메시지 처리 오류&quot;,
-        ///  &quot;l-analyze-error-general&quot;: &quot;Analyze: 메시지 분석 오류&quot;,
-        ///  &quot;l-analyze-error-handle&quot;: &quot;Analyze: 메시지 핸들링 오류&quot;,
-        ///  &quot;l-analyze-error-length&quot;: &quot;Analyze: 메시지 길이 오류: {0}, {1}/{2}&quot;,
-        ///  &quot;l-assembly-load-error&quot;: &quot;어셈블리를 읽을 수 없습니다: {0}&quot;,
-        ///  &quot;l-data-error&quot;: &quot;Data: 데이터 처리에 문제가 있습니다&quot;,
-        ///  &quot;l-fate-occured-info&quot;: &quot;FATE: {0} 떳다!&quot;,
-        ///  &quot;l-field-instance-entered&quot;: &quot;Instance: 들어감: {0}&quot;,
-        ///  &quot;l-field-instance-left&quot;: &quot;Instanc[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        internal static string locale_ko {
-            get {
-                return ResourceManager.GetString("locale_ko", resourceCulture);
+                return ResourceManager.GetString("dfas_ko", resourceCulture);
             }
         }
         
@@ -361,6 +233,81 @@ namespace ACT.DFAssist.Properties {
             get {
                 object obj = ResourceManager.GetObject("Map64_Icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   # ACT.DFAssist english message
+        ///
+        ///app-description=DFASSIST for ACT
+        ///app-name=DFASSIST
+        ///e-setting-load=Error on reading settings: {0}
+        ///e-setting-save=Error on saving settings
+        ///e-null-data=Null data found: {0}
+        ///i-data-version=Read game data (R:{2}/I:{1}/A:{0}/F:{3})
+        ///i-matched=Matched [{0}]
+        ///i-queue-instance=Start matching [{0}]
+        ///i-queue-roulette=Start roulette matching [{0}]
+        ///i-selected-color=Selected color is {0}
+        ///l-data-error=Error on processing data
+        ///l-fate-occured-info=\&quot;{0}\&quot; spawned!
+        ///l-instance-enter=[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string mesg_en {
+            get {
+                return ResourceManager.GetString("mesg_en", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   # ACT.DFAssist にほんご メッセージ
+        ///
+        ///app-description=ACT用のDFASSISTプラグイン
+        ///app-name=DFASSIST
+        ///e-setting-load=設定読みにエラー: {0}
+        ///e-setting-save=設定保存にエラー
+        ///e-null-data=空きデータが見つかりました: {0}
+        ///i-data-version=データを読みました (A:{0}/I:{1}/R:{2}/F:{3})
+        ///i-matched=準備完了 [{0}]
+        ///i-queue-instance=コンテンツ参加申請開始 [{0}]
+        ///i-queue-roulette=ルーレット参加申請開始 [{0}]
+        ///i-selected-color=選択した色は{0}です
+        ///l-data-error= データ処理に問題があります
+        ///l-fate-occured-info=\&quot;{0}\&quot; 発生!
+        ///l-instance-enter=Instance: 入ります: {0}
+        ///l-instance-leave=Instance: 離れます
+        ///l-plugin-started=プラグイン開始
+        ///l-plug[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string mesg_ja {
+            get {
+                return ResourceManager.GetString("mesg_ja", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   # ACT.DFAssist 한국어 메시지
+        ///
+        ///app-description=ACT에서 쓸 수 있는 DFASSIST 플러그인
+        ///app-name=DFASSIST
+        ///e-setting-load=설정 읽기 오류: {0}
+        ///e-setting-save=설정 저장 오류
+        ///e-null-data=빈값이 있습니다: {0}
+        ///i-data-version=데이터를 읽었습니다 (A:{0}/I:{1}/R:{2}/F:{3})
+        ///i-matched=Queue: 매치 잡힘 [{0}]
+        ///i-queue-instance=매치 시작 [{0}]
+        ///i-queue-roulette=루렛 시작 [{0}]
+        ///i-selected-color=선택한 색깔은 {0}입니다
+        ///l-data-error=데이터 처리에 문제가 있습니다
+        ///l-fate-occured-info=\&quot;{0}\&quot; 떳다!
+        ///l-instance-enter=인스턴스 들어감: {0}
+        ///l-instance-leave=인스턴스 나옴
+        ///l-plugin-started=플러그인 시작
+        ///l-plugin-stopped=[나머지 문자열은 잘림]&quot;;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string mesg_ko {
+            get {
+                return ResourceManager.GetString("mesg_ko", resourceCulture);
             }
         }
         

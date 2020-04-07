@@ -2,15 +2,15 @@
 {
 	internal class GamePacket
 	{
-		public string Version { get; set; }				// 게임 버전
-		public ushort OpFate { get; set; }				// FATE op
-		public ushort FateIndex { get; set; }			// 페이트 인덱스
-		public ushort OpDuty { get; set; }				// 임무 op
-		public ushort DutyRoulette { get; set; }		// 임무 룰렛 인덱스
-		public ushort DutyInstance { get; set; }		// 임무 인스턴스 인덱스
-		public ushort OpMatch { get; set; }				// 매치 op
-		public ushort MatchRoulette { get; set; }		// 매치 룰렛 인덱스
-		public ushort MatchInstance { get; set; }		// 매치 인스턴스 인덱스
+		public string Version { get; set; }             // 게임 버전
+		public ushort OpFate { get; set; }              // FATE op
+		public ushort FateIndex { get; set; }           // 페이트 인덱스
+		public ushort OpDuty { get; set; }              // 임무 op
+		public ushort DutyRoulette { get; set; }        // 임무 룰렛 인덱스
+		public ushort DutyInstance { get; set; }        // 임무 인스턴스 인덱스
+		public ushort OpMatch { get; set; }             // 매치 op
+		public ushort MatchRoulette { get; set; }       // 매치 룰렛 인덱스
+		public ushort MatchInstance { get; set; }       // 매치 인스턴스 인덱스
 		public ushort OpInstance { get; set; }          // 인스턴스
 		public ushort InstanceInstance { get; set; }    // 인스턴스 인스턴스 인덱스
 
@@ -21,15 +21,15 @@
 			new GamePacket
 			{
 				Version = "Current",
-				OpFate = 0x0253,
-				FateIndex = 0x35,	// 페이트 인덱스는 35아니면 3E 둘중 하나인데 35로함
-				OpDuty = 0x0164,
+				OpFate = 0x0165,
+				FateIndex = 0x35,
+				OpDuty = 0x0230,
 				DutyRoulette = 8,
 				DutyInstance = 12,
-				OpMatch = 0x02C7,
+				OpMatch = 0x0145,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0x12F,
+				OpInstance = 0x398,
 				InstanceInstance = 0,
 			},
 																			  				 
@@ -96,7 +96,7 @@
 			/*   5 */
 			new GamePacket
 			{
-				Version = "Current",
+				Version = "0511",
 				OpFate = 0x00E3,
 				FateIndex = 0x74,
 				OpDuty = 0x0193,
@@ -151,6 +151,21 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x12F,
+				InstanceInstance = 0,
+			},
+			/*   9 */ 
+			new GamePacket
+			{
+				Version = "0525",
+				OpFate = 0x0165,
+				FateIndex = 0x35,
+				OpDuty = 0x0230,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x0145,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpInstance = 0x398,
 				InstanceInstance = 0,
 			},
 		};

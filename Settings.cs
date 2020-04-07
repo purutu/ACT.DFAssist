@@ -7,7 +7,7 @@ namespace ACT.DFAssist
 	static class Settings
 	{
 		// 태그
-		public static string TagName = "20200407";  // 20200405 -> 20200407
+		public static string TagName = "20200408";  // 20200407 -> 20200408
 
 		// 경로
 		public static string Path { get; set; }

@@ -97,7 +97,7 @@ namespace ACT.DFAssist
 
 			// FFXIV 플러그인용
 			_fpgNetworkReceiveDelegete = new NetworkReceivedDelegate(OnFFXIVNetworkReceived);
-			_fpgZoneChangeDelegate = new ZoneChangedDelegate(OnFFXIVZoneChanged);
+			//_fpgZoneChangeDelegate = new ZoneChangedDelegate(OnFFXIVZoneChanged);
 		}
 
 		//

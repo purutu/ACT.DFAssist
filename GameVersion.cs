@@ -20,7 +20,8 @@
 		// 버전 목록
 		public static readonly GameVersion[] Versions = new GameVersion[]
 		{
-			/* 20200330 */ new GameVersion(0, "5.25"),
+			/* 20200811 */ new GameVersion(0, "5.30"),
+			/* 20200330 */ new GameVersion(9, "5.25"),
 			/* 20200330 */ new GameVersion(8, "5.21HF"),
 			/* 20200218 */ new GameVersion(7, "5.2"),
 			/* 20191224 */ new GameVersion(6, "5.18"),

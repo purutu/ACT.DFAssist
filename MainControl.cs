@@ -804,7 +804,15 @@ namespace ACT.DFAssist
 		{
 			txtSoundFile.Enabled = chkUseSound.Checked;
 			btnSelectSound.Enabled = chkUseSound.Checked;
+            btnSoundPlay.Enabled = chkUseSound.Checked;
+            btnSoundStop.Enabled = chkUseSound.Checked;
+            if (!txtSoundFile.Enabled)
+            {
+                sp.Stop();
+            }
 		}
+
+        private SoundPlayer sp = new SoundPlayer();
 
 		private void PlayEffectSound(bool force = false)
 		{
@@ -822,18 +830,24 @@ namespace ACT.DFAssist
 
 				try
 				{
-					using (var sp = new SoundPlayer(txtSoundFile.Text))
-						sp.Play();
+                    sp.Stop();
+                    sp.SoundLocation = txtSoundFile.Text;
+                    sp.Play();
 				}
 				catch
 				{
 				}
 			}
 		}
-		#endregion
 
-		#region 알림
-		private void CheckUseNotify()
+        private void StopEffectSound()
+        {
+            sp.Stop();
+        }
+        #endregion
+
+        #region 알림
+        private void CheckUseNotify()
 		{
 			_use_notify = chkNtfUseLine.Checked || chkNtfUseTelegram.Checked;
 
@@ -1084,6 +1098,16 @@ namespace ACT.DFAssist
 				}
 			}
 		}
-		#endregion
-	}
+        #endregion
+
+        private void txtSoundFile_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnSoundStop_Click(object sender, EventArgs e)
+        {
+            StopEffectSound();
+        }
+    }
 }

@@ -13,3 +13,7 @@ Copy downloaded **plugin file**(ACT.DFAssist.dll) to your plugin directory. Then
 ![ACT3 plugin add image](https://user-images.githubusercontent.com/47320226/52210588-db581b00-28ca-11e9-8c60-4d4d1fc21fa4.png)
 
 * This plugin requires lastest **ravhan's FFXIV plugin**
+
+## Help!
+I need informations for Bozjan southen skirmish and critical engagement!
+Please post at [issues](https://github.com/purutu/ACT.DFAssist/issues) if you have any data or informations

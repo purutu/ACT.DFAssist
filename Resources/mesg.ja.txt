@@ -30,6 +30,7 @@ ui-display-font=ログフォント
 ui-duty-finder=コンテンツファインダー
 ui-enable-overlay=オーバーレイ使用
 ui-enable-sound=サウンド使用
+ui-instance=ID
 ui-fate=FATE
 ui-find=検索
 ui-in-game=ゲーム言語

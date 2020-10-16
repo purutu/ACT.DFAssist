@@ -30,6 +30,7 @@ ui-display-font=Display font
 ui-duty-finder=Duty finder
 ui-enable-overlay=Enable overlay
 ui-enable-sound=Enable sound
+ui-instance=Instance
 ui-fate=FATE
 ui-find=Find
 ui-in-game=In Game

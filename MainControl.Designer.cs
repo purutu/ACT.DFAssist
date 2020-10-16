@@ -51,6 +51,11 @@
 			this.txtLogFont = new System.Windows.Forms.TextBox();
 			this.btnTest = new System.Windows.Forms.Button();
 			this.panel3 = new System.Windows.Forms.Panel();
+			this.btnSoundPlayFate = new System.Windows.Forms.Button();
+			this.btnSelectSoundFate = new System.Windows.Forms.Button();
+			this.txtSoundFate = new System.Windows.Forms.TextBox();
+			this.lblSoundFate = new System.Windows.Forms.Label();
+			this.lblSoundInstance = new System.Windows.Forms.Label();
 			this.btnSoundStop = new System.Windows.Forms.Button();
 			this.btnSoundPlay = new System.Windows.Forms.Button();
 			this.txtSoundFile = new System.Windows.Forms.TextBox();
@@ -218,7 +223,7 @@
 			this.btnShowLogSetting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnShowLogSetting.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.btnShowLogSetting.Location = new System.Drawing.Point(3, 285);
+			this.btnShowLogSetting.Location = new System.Drawing.Point(4, 313);
 			this.btnShowLogSetting.Name = "btnShowLogSetting";
 			this.btnShowLogSetting.Size = new System.Drawing.Size(334, 23);
 			this.btnShowLogSetting.TabIndex = 24;
@@ -345,6 +350,11 @@
 			this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel3.Controls.Add(this.btnSoundPlayFate);
+			this.panel3.Controls.Add(this.btnSelectSoundFate);
+			this.panel3.Controls.Add(this.txtSoundFate);
+			this.panel3.Controls.Add(this.lblSoundFate);
+			this.panel3.Controls.Add(this.lblSoundInstance);
 			this.panel3.Controls.Add(this.btnSoundStop);
 			this.panel3.Controls.Add(this.btnSoundPlay);
 			this.panel3.Controls.Add(this.txtSoundFile);
@@ -352,23 +362,74 @@
 			this.panel3.Controls.Add(this.chkUseSound);
 			this.panel3.Location = new System.Drawing.Point(3, 193);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(335, 65);
+			this.panel3.Size = new System.Drawing.Size(335, 109);
 			this.panel3.TabIndex = 18;
+			// 
+			// btnSoundPlayFate
+			// 
+			this.btnSoundPlayFate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnSoundPlayFate.Image = global::ACT.DFAssist.Properties.Resources.play;
+			this.btnSoundPlayFate.Location = new System.Drawing.Point(297, 71);
+			this.btnSoundPlayFate.Name = "btnSoundPlayFate";
+			this.btnSoundPlayFate.Size = new System.Drawing.Size(32, 32);
+			this.btnSoundPlayFate.TabIndex = 23;
+			this.btnSoundPlayFate.UseVisualStyleBackColor = true;
+			this.btnSoundPlayFate.Click += new System.EventHandler(this.btnSoundPlayFate_Click);
+			// 
+			// btnSelectSoundFate
+			// 
+			this.btnSelectSoundFate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnSelectSoundFate.Image = global::ACT.DFAssist.Properties.Resources.magnifyingglassicon_114513_22;
+			this.btnSelectSoundFate.Location = new System.Drawing.Point(264, 71);
+			this.btnSelectSoundFate.Name = "btnSelectSoundFate";
+			this.btnSelectSoundFate.Size = new System.Drawing.Size(32, 32);
+			this.btnSelectSoundFate.TabIndex = 22;
+			this.btnSelectSoundFate.UseVisualStyleBackColor = true;
+			this.btnSelectSoundFate.Click += new System.EventHandler(this.btnSelectSoundFate_Click);
+			// 
+			// txtSoundFate
+			// 
+			this.txtSoundFate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtSoundFate.Location = new System.Drawing.Point(92, 76);
+			this.txtSoundFate.Name = "txtSoundFate";
+			this.txtSoundFate.Size = new System.Drawing.Size(166, 25);
+			this.txtSoundFate.TabIndex = 21;
+			// 
+			// lblSoundFate
+			// 
+			this.lblSoundFate.AutoSize = true;
+			this.lblSoundFate.Location = new System.Drawing.Point(4, 79);
+			this.lblSoundFate.Name = "lblSoundFate";
+			this.lblSoundFate.Size = new System.Drawing.Size(34, 17);
+			this.lblSoundFate.TabIndex = 20;
+			this.lblSoundFate.Text = "FATE";
+			// 
+			// lblSoundInstance
+			// 
+			this.lblSoundInstance.AutoSize = true;
+			this.lblSoundInstance.Location = new System.Drawing.Point(4, 43);
+			this.lblSoundInstance.Name = "lblSoundInstance";
+			this.lblSoundInstance.Size = new System.Drawing.Size(55, 17);
+			this.lblSoundInstance.TabIndex = 19;
+			this.lblSoundInstance.Text = "Instance";
 			// 
 			// btnSoundStop
 			// 
+			this.btnSoundStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnSoundStop.Image = global::ACT.DFAssist.Properties.Resources.stop;
-			this.btnSoundStop.Location = new System.Drawing.Point(82, 25);
+			this.btnSoundStop.Location = new System.Drawing.Point(264, 1);
 			this.btnSoundStop.Name = "btnSoundStop";
-			this.btnSoundStop.Size = new System.Drawing.Size(32, 32);
+			this.btnSoundStop.Size = new System.Drawing.Size(65, 32);
 			this.btnSoundStop.TabIndex = 18;
 			this.btnSoundStop.UseVisualStyleBackColor = true;
 			this.btnSoundStop.Click += new System.EventHandler(this.BtnSoundStop_Click);
 			// 
 			// btnSoundPlay
 			// 
+			this.btnSoundPlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnSoundPlay.Image = global::ACT.DFAssist.Properties.Resources.play;
-			this.btnSoundPlay.Location = new System.Drawing.Point(45, 25);
+			this.btnSoundPlay.Location = new System.Drawing.Point(297, 35);
 			this.btnSoundPlay.Name = "btnSoundPlay";
 			this.btnSoundPlay.Size = new System.Drawing.Size(32, 32);
 			this.btnSoundPlay.TabIndex = 17;
@@ -379,16 +440,17 @@
 			// 
 			this.txtSoundFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtSoundFile.Location = new System.Drawing.Point(120, 30);
+			this.txtSoundFile.Location = new System.Drawing.Point(92, 40);
 			this.txtSoundFile.Name = "txtSoundFile";
-			this.txtSoundFile.Size = new System.Drawing.Size(207, 25);
+			this.txtSoundFile.Size = new System.Drawing.Size(166, 25);
 			this.txtSoundFile.TabIndex = 16;
 			this.txtSoundFile.TextChanged += new System.EventHandler(this.txtSoundFile_TextChanged);
 			// 
 			// btnSelectSound
 			// 
+			this.btnSelectSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnSelectSound.Image = global::ACT.DFAssist.Properties.Resources.magnifyingglassicon_114513_22;
-			this.btnSelectSound.Location = new System.Drawing.Point(7, 25);
+			this.btnSelectSound.Location = new System.Drawing.Point(264, 35);
 			this.btnSelectSound.Name = "btnSelectSound";
 			this.btnSelectSound.Size = new System.Drawing.Size(32, 32);
 			this.btnSelectSound.TabIndex = 15;
@@ -461,7 +523,7 @@
 			this.pnlLogSetting.Controls.Add(this.btnClearLogs);
 			this.pnlLogSetting.Controls.Add(this.lblBackColor);
 			this.pnlLogSetting.Controls.Add(this.cboLogBackground);
-			this.pnlLogSetting.Location = new System.Drawing.Point(3, 309);
+			this.pnlLogSetting.Location = new System.Drawing.Point(3, 338);
 			this.pnlLogSetting.Name = "pnlLogSetting";
 			this.pnlLogSetting.Size = new System.Drawing.Size(335, 115);
 			this.pnlLogSetting.TabIndex = 16;
@@ -808,5 +870,10 @@
 		private System.Windows.Forms.TextBox txtUpdateSkip;
 		private System.Windows.Forms.Button btnShowLogSetting;
         private System.Windows.Forms.Button btnSoundStop;
-    }
+		private System.Windows.Forms.Button btnSoundPlayFate;
+		private System.Windows.Forms.Button btnSelectSoundFate;
+		private System.Windows.Forms.TextBox txtSoundFate;
+		private System.Windows.Forms.Label lblSoundFate;
+		private System.Windows.Forms.Label lblSoundInstance;
+	}
 }

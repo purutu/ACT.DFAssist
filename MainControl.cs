@@ -42,12 +42,11 @@ namespace ACT.DFAssist
 		//
 		private IActPluginV1 _FFXIVPlugin;
 		private NetworkReceivedDelegate _fpgNetworkReceiveDelegete;
-		private ZoneChangedDelegate _fpgZoneChangeDelegate;
+		//private ZoneChangedDelegate _fpgZoneChangeDelegate;
 		private bool _fpgConnect = false;
 
 		//
 		private bool _use_notify = false;
-		private long _last_notify;
 		private long _last_sound;
 
 		//
@@ -127,8 +126,8 @@ namespace ACT.DFAssist
 				{
 					((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.NetworkReceived -= _fpgNetworkReceiveDelegete;
 					((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.NetworkReceived += _fpgNetworkReceiveDelegete;
-					((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.ZoneChanged -= _fpgZoneChangeDelegate;
-					((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.ZoneChanged += _fpgZoneChangeDelegate;
+					//((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.ZoneChanged -= _fpgZoneChangeDelegate;
+					//((FFXIV_ACT_Plugin.FFXIV_ACT_Plugin)_FFXIVPlugin).DataSubscription.ZoneChanged += _fpgZoneChangeDelegate;
 					_fpgConnect = true;
 				}
 				catch
@@ -181,7 +180,8 @@ namespace ACT.DFAssist
 
 			// 
 			string tagname = Settings.GetTagNameForUpdate();
-			if (!Settings.TagName.Equals(tagname))
+			//if (!Settings.TagName.Equals(tagname))
+			if (long.Parse(Settings.TagName) < long.Parse(tagname))
 			{
 				Mesg.I("i-client-updated", tagname);
 
@@ -279,6 +279,8 @@ namespace ACT.DFAssist
 			chkUseOverlay.Text = Mesg.GetText("ui-enable-overlay");
 			chkUseSound.Text = Mesg.GetText("ui-enable-sound");
 			//btnSelectSound.Text = Mesg.GetText("ui-find");
+			lblSoundInstance.Text = Mesg.GetText("ui-instance");
+			lblSoundFate.Text = Mesg.GetText("ui-fate");
 			label1.Text = Mesg.GetText("app-description");
 
 			btnTestNotify.Text = Mesg.GetText("ui-notift-test");
@@ -293,6 +295,8 @@ namespace ACT.DFAssist
 			ttCtrls.SetToolTip(btnBlinkOverlay, Mesg.GetText("tip-blink-overlay"));
 			ttCtrls.SetToolTip(btnSelectSound, Mesg.GetText("tip-select-sound-dialog"));
 			ttCtrls.SetToolTip(btnSoundPlay, Mesg.GetText("tip-sound-play"));
+			ttCtrls.SetToolTip(btnSelectSoundFate, Mesg.GetText("tip-select-sound-dialog"));
+			ttCtrls.SetToolTip(btnSoundPlayFate, Mesg.GetText("tip-sound-play"));
 
 			btnLogFont.Text = $"{rtxLogger.Font.Name}, {rtxLogger.Font.Size}";
 		}
@@ -463,7 +467,7 @@ namespace ACT.DFAssist
 
 		private void BtnTest_Click(object sender, EventArgs e)
 		{
-			PlayEffectSound();
+			PlayEffectSound(txtSoundFile.Text);
 		}
 
 		private void BtnSelectSound_Click(object sender, EventArgs e)
@@ -485,7 +489,34 @@ namespace ACT.DFAssist
 
 		private void BtnSoundPlay_Click(object sender, EventArgs e)
 		{
-			PlayEffectSound(true);
+			PlayEffectSound(txtSoundFile.Text, true);
+		}
+
+		private void txtSoundFile_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void btnSelectSoundFate_Click(object sender, EventArgs e)
+		{
+			var dg = new OpenFileDialog
+			{
+				Title = Mesg.GetText("ui-select-sound"),
+				DefaultExt = "wav",
+				Filter = "Wave (*.wav)|*.wav|All (*.*)|*.*"
+			};
+
+			if (dg.ShowDialog() == DialogResult.OK)
+			{
+				txtSoundFate.Text = dg.FileName;
+
+				SaveSettings();
+			}
+		}
+
+		private void btnSoundPlayFate_Click(object sender, EventArgs e)
+		{
+			PlayEffectSound(txtSoundFate.Text, true);
 		}
 
 		private void BtnLogFont_Click(object sender, EventArgs e)
@@ -507,6 +538,11 @@ namespace ACT.DFAssist
 
 				SaveSettings();
 			}
+		}
+
+		private void BtnSoundStop_Click(object sender, EventArgs e)
+		{
+			StopEffectSound();
 		}
 
 		private void btnShowLogSetting_Click(object sender, EventArgs e)
@@ -580,12 +616,14 @@ namespace ACT.DFAssist
 			_srset.AddControlSetting("LogFont", txtLogFont);
 			_srset.AddControlSetting("ClientVersion", txtClientVersion);
 			_srset.AddControlSetting("UpdateSkip", txtUpdateSkip);
-
+			//
 			_srset.AddControlSetting("NotifyUseLine", chkNtfUseLine);
 			_srset.AddControlSetting("NotifyLineToken", txtNtfLineToken);
 			_srset.AddControlSetting("NotifyUseTelegram", chkNtfUseTelegram);
 			_srset.AddControlSetting("NotifyTelegramId", txtNtfTelegramId);
 			_srset.AddControlSetting("NotifyTelegramToken", txtNtfTelegramToken);
+			//
+			_srset.AddControlSetting("SoundFate", txtSoundFate);
 
 			if (File.Exists(Settings.Path))
 			{
@@ -805,21 +843,27 @@ namespace ACT.DFAssist
 			txtSoundFile.Enabled = chkUseSound.Checked;
 			btnSelectSound.Enabled = chkUseSound.Checked;
             btnSoundPlay.Enabled = chkUseSound.Checked;
-            btnSoundStop.Enabled = chkUseSound.Checked;
-            if (!txtSoundFile.Enabled)
+
+			txtSoundFate.Enabled = chkUseSound.Checked;
+			btnSelectSoundFate.Enabled = chkUseSound.Checked;
+			btnSoundPlayFate.Enabled = chkUseSound.Checked;
+
+			btnSoundStop.Enabled = chkUseSound.Checked;
+
+            if (!chkUseSound.Checked)
             {
-                sp.Stop();
+                _sndplay.Stop();
             }
 		}
 
-        private SoundPlayer sp = new SoundPlayer();
+        private readonly SoundPlayer _sndplay = new SoundPlayer();
 
-		private void PlayEffectSound(bool force = false)
+		private void PlayEffectSound(string soundfile, bool force = false)
 		{
 			if (!force && !chkUseSound.Checked)
 				return;
 
-			if (string.IsNullOrWhiteSpace(txtSoundFile.Text) || !File.Exists(txtSoundFile.Text))
+			if (string.IsNullOrWhiteSpace(soundfile) || !File.Exists(soundfile))
 				return;
 
 			long now = DateTime.Now.Ticks;
@@ -830,9 +874,9 @@ namespace ACT.DFAssist
 
 				try
 				{
-                    sp.Stop();
-                    sp.SoundLocation = txtSoundFile.Text;
-                    sp.Play();
+                    _sndplay.Stop();
+                    _sndplay.SoundLocation = soundfile;
+                    _sndplay.Play();
 				}
 				catch
 				{
@@ -842,7 +886,7 @@ namespace ACT.DFAssist
 
         private void StopEffectSound()
         {
-            sp.Stop();
+            _sndplay.Stop();
         }
         #endregion
 
@@ -994,7 +1038,7 @@ namespace ACT.DFAssist
 
 						if (isselected)
 						{
-							PlayEffectSound();
+							PlayEffectSound(txtSoundFate.Text);
 							_frmOverlay.EventFate(fate);
 
 							if (_use_notify)
@@ -1068,7 +1112,7 @@ namespace ACT.DFAssist
 					name = Mesg.GetText("l-unknown-instance", icode);
 				}
 
-				PlayEffectSound();
+				PlayEffectSound(txtSoundFile.Text);
 				_frmOverlay.EventMatch(name);
 
 				if (_use_notify)
@@ -1099,15 +1143,5 @@ namespace ACT.DFAssist
 			}
 		}
         #endregion
-
-        private void txtSoundFile_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void BtnSoundStop_Click(object sender, EventArgs e)
-        {
-            StopEffectSound();
-        }
-    }
+	}
 }

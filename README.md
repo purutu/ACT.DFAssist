@@ -6,7 +6,7 @@ This plugin provide matched duty and FATEs occurrence informations.
 
 ## Feature
 * Supported game client: Version **5.35**
-* Assist both **duty instances** and **FATEs & Eureka**
+* Assist both **duty instances** and **FATEs** / **Eureka** / **Bozja**
 
 ## Install
 Copy downloaded **plugin file**(ACT.DFAssist.dll) to your plugin directory. Then, register with your plugin list
@@ -14,6 +14,4 @@ Copy downloaded **plugin file**(ACT.DFAssist.dll) to your plugin directory. Then
 
 * This plugin requires lastest **ravhan's FFXIV plugin**
 
-## Help!
-I need informations for Bozjan southen skirmish and critical engagement!
-Please post at [issues](https://github.com/purutu/ACT.DFAssist/issues) if you have any data or informations
+

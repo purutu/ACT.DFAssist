@@ -595,7 +595,8 @@ namespace ACT.DFAssist
 
 				Mesg.I("i-data-version",
 					GameData.Areas.Count, GameData.Instances.Count,
-					GameData.Roulettes.Count, GameData.Fates.Count);
+					GameData.Roulettes.Count, GameData.Fates.Count,
+					Settings.TagName);
 			}
 		}
 

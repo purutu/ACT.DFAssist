@@ -2,6 +2,7 @@
 using FFXIV_ACT_Plugin.Common;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -44,6 +45,8 @@ namespace ACT.DFAssist
 		private NetworkReceivedDelegate _fpgNetworkReceiveDelegete;
 		//private ZoneChangedDelegate _fpgZoneChangeDelegate;
 		private bool _fpgConnect = false;
+
+		ConcurrentDictionary<int, int> _missions = new ConcurrentDictionary<int, int>();
 
 		//
 		private bool _use_notify = false;
@@ -843,7 +846,7 @@ namespace ACT.DFAssist
 		{
 			txtSoundFile.Enabled = chkUseSound.Checked;
 			btnSelectSound.Enabled = chkUseSound.Checked;
-            btnSoundPlay.Enabled = chkUseSound.Checked;
+			btnSoundPlay.Enabled = chkUseSound.Checked;
 
 			txtSoundFate.Enabled = chkUseSound.Checked;
 			btnSelectSoundFate.Enabled = chkUseSound.Checked;
@@ -851,13 +854,13 @@ namespace ACT.DFAssist
 
 			btnSoundStop.Enabled = chkUseSound.Checked;
 
-            if (!chkUseSound.Checked)
-            {
-                _sndplay.Stop();
-            }
+			if (!chkUseSound.Checked)
+			{
+				_sndplay.Stop();
+			}
 		}
 
-        private readonly SoundPlayer _sndplay = new SoundPlayer();
+		private readonly SoundPlayer _sndplay = new SoundPlayer();
 
 		private void PlayEffectSound(string soundfile, bool force = false)
 		{
@@ -875,9 +878,9 @@ namespace ACT.DFAssist
 
 				try
 				{
-                    _sndplay.Stop();
-                    _sndplay.SoundLocation = soundfile;
-                    _sndplay.Play();
+					_sndplay.Stop();
+					_sndplay.SoundLocation = soundfile;
+					_sndplay.Play();
 				}
 				catch
 				{
@@ -885,14 +888,14 @@ namespace ACT.DFAssist
 			}
 		}
 
-        private void StopEffectSound()
-        {
-            _sndplay.Stop();
-        }
-        #endregion
+		private void StopEffectSound()
+		{
+			_sndplay.Stop();
+		}
+		#endregion
 
-        #region 알림
-        private void CheckUseNotify()
+		#region 알림
+		private void CheckUseNotify()
 		{
 			_use_notify = chkNtfUseLine.Checked || chkNtfUseTelegram.Checked;
 
@@ -1018,7 +1021,9 @@ namespace ACT.DFAssist
 			if (opcode != GamePacket.Current.OpFate &&
 				opcode != GamePacket.Current.OpDuty &&
 				opcode != GamePacket.Current.OpMatch &&
-				opcode != GamePacket.Current.OpInstance)
+				opcode != GamePacket.Current.OpInstance &&
+				opcode != 0x299 // 특수: 5.35 보즈야 서던 프론트 크리티컬 인게이지먼트
+				)
 				return;
 
 			var data = message.Skip(32).ToArray();
@@ -1083,6 +1088,9 @@ namespace ACT.DFAssist
 						_frmOverlay.EventStatus(insts.Count);
 					}
 				}
+
+				//임무에 들어가면 미션은 모두 해제
+				_missions.Clear();
 			}
 			// 매치
 			else if (opcode == GamePacket.Current.OpMatch)
@@ -1135,6 +1143,9 @@ namespace ACT.DFAssist
 
 					if (_use_notify)
 						NotifyMatch(instance.Name);
+
+					// 미션...이 처리가되나
+					_missions.Clear();
 				}
 				else
 				{
@@ -1142,7 +1153,58 @@ namespace ACT.DFAssist
 					_frmOverlay.EventNone();
 				}
 			}
+			// 5.35 보즈야 서던 프론트 크리티컬 인게이지먼트
+			else if (opcode == 0x299)
+			{
+				//  0[4] 타임스탬프
+				//  4[2] 카운트 (아마도 모집시간?)
+				//  6[2] ?
+				//  8[1] 코드
+				//  9[1] ?
+				// 10[1] 상태 0=끝, 1=알림/모집, 2=??, 3=진행
+				// 12[1] 진행 퍼센트
+
+				int ce = 30000 + data[8];	// 30000번대 페이트로 취급
+
+				if (data[10] == 0 /* || data[10] == 3 */) // 3은 진행했으면 알릴 의미가 없기 때문인데, 일단 패스
+				{
+					// 제거
+					if (_missions.ContainsKey(ce))
+					{
+						// 미션 목록에서 뺀다
+						_missions.TryRemove(ce, out _);
+					}
+				}
+				else if (data[10] == 1)
+				{
+					// 알림
+					if (!_missions.ContainsKey(ce))
+					{
+						// 미션 목록에 없으면 넣는다
+						_missions.TryAdd(ce, 0);
+
+						// 일단 페이트 취급
+						bool isselected = Settings.SelectedFates.Contains(ce.ToString());
+
+						if (Settings.LoggingWholeFates || isselected)
+						{
+							var fate = GameData.GetFate(ce);
+
+							Mesg.Fate("l-fate-occured-info", fate.Name);
+
+							if (isselected)
+							{
+								PlayEffectSound(txtSoundFate.Text);
+								_frmOverlay.EventFate(fate);
+
+								if (_use_notify)
+									NotifyFate(fate);
+							}
+						}
+					}
+				}
+			}
 		}
-        #endregion
+		#endregion
 	}
 }

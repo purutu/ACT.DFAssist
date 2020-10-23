@@ -1194,7 +1194,7 @@ namespace ACT.DFAssist
 
 							if (isselected)
 							{
-								PlayEffectSound(txtSoundFate.Text);
+								PlayEffectSound(txtSoundFile.Text);	// 인스턴스 사운드 출력
 								_frmOverlay.EventFate(fate);
 
 								if (_use_notify)

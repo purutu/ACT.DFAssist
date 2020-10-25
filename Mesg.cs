@@ -54,6 +54,9 @@ namespace ACT.DFAssist
 
 			Duty,
 			FATE,
+
+			SK,
+			CE,
 		}
 
 		// 네이티브
@@ -142,6 +145,16 @@ namespace ACT.DFAssist
 		public static void Fate(string key, params object[] args)
 		{
 			Write(Category.FATE, Color.Black, GetText(key, args));
+		}
+
+		public static void Skirmish(string key, params object[] args)
+		{
+			Write(Category.SK, Color.Black, GetText(key, args));
+		}
+
+		public static void CriticalEngagement(string key, params object[] args)
+		{
+			Write(Category.CE, Color.Black, GetText(key, args));
 		}
 	}
 }

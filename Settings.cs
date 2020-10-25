@@ -7,10 +7,19 @@ namespace ACT.DFAssist
 	static class Settings
 	{
 		// 태그
-		public static string TagName = "202010246";  // 202010212 -> 202010246
+		public static string TagName = "202010251";  // 202010246 -> 202010251
 
 		// 경로
 		public static string Path { get; set; }
+
+		// 선택한 페이트 목록
+		public static FateSelection[] FateList = new FateSelection[4]
+		{
+			new FateSelection(),
+			new FateSelection(),
+			new FateSelection(),
+			new FateSelection(),
+		};
 
 		// 현재 페이트 목록
 		public static FateSelection CurrentFate { get; set; } = FateList[0];
@@ -56,15 +65,6 @@ namespace ACT.DFAssist
 			// 확인못하면 체크 못하게 현재 태그 날림
 			return TagName;
 		}
-
-		// 선택한 페이트 목록
-		public static FateSelection[] FateList = new FateSelection[4]
-		{
-			new FateSelection(),
-			new FateSelection(),
-			new FateSelection(),
-			new FateSelection(),
-		};
 	}
 
 	class FateSelection

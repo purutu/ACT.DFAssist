@@ -282,7 +282,7 @@ namespace ACT.DFAssist
 			tabPageSetting.Text = Mesg.GetText("ui-tab-2-text");
 			tabPageNotify.Text = Mesg.GetText("ui-tab-3-text");
 
-			lblFatePreset.Text= Mesg.GetText("ui-preset");
+			lblFatePreset.Text = Mesg.GetText("ui-preset");
 
 			lblClientVersion.Text = Mesg.GetText("ui-client-version");
 			lblUiLanguage.Text = Mesg.GetText("ui-language");
@@ -1220,7 +1220,7 @@ namespace ACT.DFAssist
 				// 10[1] 상태 0=끝, 1=알림/모집, 2=??, 3=진행
 				// 12[1] 진행 퍼센트
 
-				int ce = 30000 + data[8];	// 30000번대 페이트로 취급
+				int ce = 30000 + data[8];   // 30000번대 페이트로 취급
 
 				if (data[10] == 0 /* || data[10] == 3 */) // 3은 진행했으면 알릴 의미가 없기 때문인데, 일단 패스
 				{
@@ -1246,11 +1246,11 @@ namespace ACT.DFAssist
 						{
 							var fate = GameData.GetFate(ce);
 
-							Mesg.Fate("l-fate-occured-info", fate.Name);
+							Mesg.CriticalEngagement("l-fate-occured-info", fate.Name);
 
 							if (isselected)
 							{
-								PlayEffectSound(txtSoundFile.Text);	// 인스턴스 사운드 출력
+								PlayEffectSound(txtSoundFile.Text); // 인스턴스 사운드 출력
 								_frmOverlay.EventFate(fate);
 
 								if (_use_notify)
@@ -1259,6 +1259,23 @@ namespace ACT.DFAssist
 						}
 					}
 				}
+#if true
+				else if (Settings.LoggingWholeFates && (data[10] == 2 || data[10] == 3))    // 그냥 한번 로그에 남기자
+				{
+					if (!_missions.ContainsKey(ce))
+					{
+						// 미션 목록에 없으면 넣는다
+						_missions.TryAdd(ce, 0);
+
+						if (Settings.CurrentFate.Selected.Contains(ce.ToString()))
+						{
+							var fate = GameData.GetFate(ce);
+
+							Mesg.CriticalEngagement("l-fate-occured-info", fate.Name);
+						}
+					}
+				}
+#endif
 			}
 		}
 		#endregion

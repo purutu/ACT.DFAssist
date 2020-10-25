@@ -7,13 +7,13 @@ namespace ACT.DFAssist
 	static class Settings
 	{
 		// 태그
-		public static string TagName = "202010241";  // 202010212 -> 202010241
+		public static string TagName = "202010246";  // 202010212 -> 202010246
 
 		// 경로
 		public static string Path { get; set; }
 
-		// 선택한 페이트 목록
-		public static readonly ConcurrentHashSet<string> SelectedFates = new ConcurrentHashSet<string>();
+		// 현재 페이트 목록
+		public static FateSelection CurrentFate { get; set; } = FateList[0];
 
 		// 모든 페이트 로깅
 		public static bool LoggingWholeFates { get; set; }
@@ -33,9 +33,7 @@ namespace ACT.DFAssist
 		// 프로그램 버전
 		public static int ClientVersion { get; set; } = 0;
 
-
 		// GITHUB에서 버전 태그르 가져온다 -> 업데이트용
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
 		internal static string GetTagNameForUpdate()
 		{
 			string url = "https://api.github.com/repos/purutu/ACT.DFAssist/releases/latest";
@@ -58,5 +56,21 @@ namespace ACT.DFAssist
 			// 확인못하면 체크 못하게 현재 태그 날림
 			return TagName;
 		}
+
+		// 선택한 페이트 목록
+		public static FateSelection[] FateList = new FateSelection[4]
+		{
+			new FateSelection(),
+			new FateSelection(),
+			new FateSelection(),
+			new FateSelection(),
+		};
+	}
+
+	class FateSelection
+	{
+		public ConcurrentHashSet<string> Selected { get; } = new ConcurrentHashSet<string>();
+
+		public object Control { get; set; }
 	}
 }

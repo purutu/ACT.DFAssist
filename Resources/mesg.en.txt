@@ -50,6 +50,7 @@ ui-notift-test=Test Notify
 ui-notify-use-telegram=Use Telegram notify
 ui-id=ID
 ui-show-log-setting=Logging area setting
+ui-preset=Preset
 i-client-version=Client version: {0}
 i-visit-updated=Updated plugin found! Visit download website?
 i-client-updated=Updated plugin found! New version is "{0}"

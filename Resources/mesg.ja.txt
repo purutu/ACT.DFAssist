@@ -50,6 +50,7 @@ ui-notift-test=通知テスト
 ui-notify-use-telegram=Telegram 通知を使用します
 ui-id=ID
 ui-show-log-setting=ログウィンドウ設定
+ui-preset=プリセット
 i-client-version=クライエント・バーション: {0}
 i-visit-updated=新しいプラグインがあります。 ダウンロードサイトに移動しますか？
 i-client-updated=新しいプラグインがあります。 バージョンは"{0}"です

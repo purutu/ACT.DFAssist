@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.EnterpriseServices.Internal;
@@ -13,6 +12,7 @@ using System.Linq;
 using System.Media;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,7 +46,7 @@ namespace ACT.DFAssist
 		//private ZoneChangedDelegate _fpgZoneChangeDelegate;
 		private bool _fpgConnect = false;
 
-		ConcurrentDictionary<int, int> _missions = new ConcurrentDictionary<int, int>();
+		readonly ConcurrentDictionary<int, int> _missions = new ConcurrentDictionary<int, int>();
 
 		//
 		private bool _use_notify = false;
@@ -102,7 +102,7 @@ namespace ACT.DFAssist
 			//_fpgZoneChangeDelegate = new ZoneChangedDelegate(OnFFXIVZoneChanged);
 		}
 
-		//
+		// 플러그인 초기화
 		public void InitPlugin(TabPage pluginScreenSpace, Label pluginStatusText)
 		{
 			_actLabelStatus = pluginStatusText;
@@ -147,7 +147,7 @@ namespace ACT.DFAssist
 			ActInitialize();
 		}
 
-		//
+		// ACT 초기화
 		private void ActInitialize()
 		{
 			if (_isInActInit)
@@ -210,7 +210,7 @@ namespace ACT.DFAssist
 			_isInActInit = false;
 		}
 
-		//
+		// 끝낼 준비
 		public void DeInitPlugin()
 		{
 			//
@@ -240,6 +240,18 @@ namespace ACT.DFAssist
 		// 추가 ui 초기화
 		private void InitializeUi()
 		{
+			// 세팅 - 페이트
+			Settings.FateList[0].Control = txtSelectedFates;
+			Settings.FateList[1].Control = txtSelectedFates1;
+			Settings.FateList[2].Control = txtSelectedFates2;
+			Settings.FateList[3].Control = txtSelectedFates3;
+
+			cboFateSelection.Items.Add("#1");
+			cboFateSelection.Items.Add("#2");
+			cboFateSelection.Items.Add("#3");
+			cboFateSelection.Items.Add("#4");
+			cboFateSelection.SelectedIndex = 0;
+
 			// 색깔 선택 색깔만들기
 			Type colortype = typeof(System.Drawing.Color);
 			PropertyInfo[] pis = colortype.GetProperties(BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public);
@@ -263,12 +275,14 @@ namespace ACT.DFAssist
 			cboClientVersion.SelectedIndex = 0;
 		}
 
-		//
+		// 화면인터페이스 업뎃
 		private void UpdateUiLanguage()
 		{
 			tabPageFates.Text = Mesg.GetText("ui-tab-1-text");
 			tabPageSetting.Text = Mesg.GetText("ui-tab-2-text");
 			tabPageNotify.Text = Mesg.GetText("ui-tab-3-text");
+
+			lblFatePreset.Text= Mesg.GetText("ui-preset");
 
 			lblClientVersion.Text = Mesg.GetText("ui-client-version");
 			lblUiLanguage.Text = Mesg.GetText("ui-language");
@@ -349,7 +363,37 @@ namespace ACT.DFAssist
 			rtxLogger.Clear();
 		}
 
-		//
+		// 페이트 변경
+		private void CboFateSelection_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!_isPluginEnabled)
+				return;
+
+			switch (cboFateSelection.SelectedIndex)
+			{
+				case 1:
+					Settings.CurrentFate = Settings.FateList[1];
+					UpdateFates();
+					break;
+
+				case 2:
+					Settings.CurrentFate = Settings.FateList[2];
+					UpdateFates();
+					break;
+
+				case 3:
+					Settings.CurrentFate = Settings.FateList[3];
+					UpdateFates();
+					break;
+
+				default:    // 0도 포함
+					Settings.CurrentFate = Settings.FateList[0];
+					UpdateFates();
+					break;
+			}
+		}
+
+		// 화면인터페이스 언어
 		private void CboUiLanguage_SelectedValueChanged(object sender, EventArgs e)
 		{
 			if (!_isPluginEnabled)
@@ -359,7 +403,7 @@ namespace ACT.DFAssist
 			UpdateUiLanguage();
 		}
 
-		//
+		// 게임 언어
 		private void CboGameLanguage_SelectedValueChanged(object sender, EventArgs e)
 		{
 			if (!_isPluginEnabled)
@@ -369,7 +413,7 @@ namespace ACT.DFAssist
 			UpdateFates();
 		}
 
-		//
+		// 클라이언트 버전
 		private void CboClientVersion_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_isPluginEnabled)
@@ -495,12 +539,12 @@ namespace ACT.DFAssist
 			PlayEffectSound(txtSoundFile.Text, true);
 		}
 
-		private void txtSoundFile_TextChanged(object sender, EventArgs e)
+		private void TxtSoundFile_TextChanged(object sender, EventArgs e)
 		{
 
 		}
 
-		private void btnSelectSoundFate_Click(object sender, EventArgs e)
+		private void BtnSelectSoundFate_Click(object sender, EventArgs e)
 		{
 			var dg = new OpenFileDialog
 			{
@@ -517,7 +561,7 @@ namespace ACT.DFAssist
 			}
 		}
 
-		private void btnSoundPlayFate_Click(object sender, EventArgs e)
+		private void BtnSoundPlayFate_Click(object sender, EventArgs e)
 		{
 			PlayEffectSound(txtSoundFate.Text, true);
 		}
@@ -548,14 +592,14 @@ namespace ACT.DFAssist
 			StopEffectSound();
 		}
 
-		private void btnShowLogSetting_Click(object sender, EventArgs e)
+		private void BtnShowLogSetting_Click(object sender, EventArgs e)
 		{
 			pnlLogSetting.Visible = !pnlLogSetting.Visible;
 		}
 		#endregion
 
 		#region 자료 처리
-		//
+		// 메시지 언어 자료 읽기
 		private void ReadMesg(Mesg.Locale locale = null)
 		{
 			Mesg.Locale loc = locale ?? (Mesg.Locale)cboUiLanguage.SelectedItem;
@@ -576,7 +620,7 @@ namespace ACT.DFAssist
 			}
 		}
 
-		//
+		// 게임 데이터 자료 읽기
 		private void ReadGame(Mesg.Locale locale = null)
 		{
 			Mesg.Locale loc = locale ?? (Mesg.Locale)cboGameLanguage.SelectedItem;
@@ -604,8 +648,7 @@ namespace ACT.DFAssist
 		}
 
 		#region 설정
-		//
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
+		// 세팅 읽기. 사실 읽기를 가장한 저장인듯
 		private void ReadSettings()
 		{
 			_srset.AddControlSetting("LocaleUi", cboUiLanguage);
@@ -628,6 +671,9 @@ namespace ACT.DFAssist
 			_srset.AddControlSetting("NotifyTelegramToken", txtNtfTelegramToken);
 			//
 			_srset.AddControlSetting("SoundFate", txtSoundFate);
+			_srset.AddControlSetting("SelectedFates1", txtSelectedFates1);
+			_srset.AddControlSetting("SelectedFates2", txtSelectedFates2);
+			_srset.AddControlSetting("SelectedFates3", txtSelectedFates3);
 
 			if (File.Exists(Settings.Path))
 			{
@@ -672,6 +718,7 @@ namespace ACT.DFAssist
 			// fates
 			Settings.LoggingWholeFates = chkWholeFates.Checked;
 
+			// overlay
 			try
 			{
 				var ss = txtOverayLocation.Text.Split(',');
@@ -686,7 +733,6 @@ namespace ACT.DFAssist
 			{
 			}
 
-			// overlay
 			if (chkUseOverlay.Checked)
 				_frmOverlay.Show();
 			else
@@ -731,9 +777,7 @@ namespace ACT.DFAssist
 			_isInitSetting = true;
 		}
 
-
-		//
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<보류 중>")]
+		// 세팅 저장. 중요한것은 읽은게 없으면 정보가 없기땜에 저장도 안됨
 		private void SaveSettings()
 		{
 			if (!_isInitSetting)
@@ -772,7 +816,7 @@ namespace ACT.DFAssist
 			foreach (TreeNode n in node)
 			{
 				if (n.Checked)
-					Settings.SelectedFates.Add((string)n.Tag);
+					Settings.CurrentFate.Selected.Add((string)n.Tag);
 				InternalBuildSelectedFates(n.Nodes);
 			}
 		}
@@ -780,29 +824,35 @@ namespace ACT.DFAssist
 		//
 		private void BuildSelectedFates(bool maketext = false)
 		{
-			Settings.SelectedFates.Clear();
+			var fs = Settings.CurrentFate;
+			var tb = (TextBox)fs.Control;
+
+			fs.Selected.Clear();
 			InternalBuildSelectedFates(trvFates.Nodes);
 
 			if (maketext)
-				txtSelectedFates.Text = string.Join("|", Settings.SelectedFates);
+				tb.Text = string.Join("|", fs.Selected);
 		}
 
-		//
+		// 페이트 목록 갱신
 		private void UpdateFates()
 		{
+			var fs = Settings.CurrentFate;
+			var tb = (TextBox)fs.Control;
+
 			trvFates.Nodes.Clear();
 
 			//
-			Settings.SelectedFates.Clear();
+			fs.Selected.Clear();
 
-			if (!string.IsNullOrWhiteSpace(txtSelectedFates.Text))
+			if (!string.IsNullOrWhiteSpace(tb.Text))
 			{
-				var ss = txtSelectedFates.Text.Split('|');
+				var ss = tb.Text.Split('|');
 
 				foreach (var s in ss)
 				{
 					if (!string.IsNullOrWhiteSpace(s))
-						Settings.SelectedFates.Add(s);
+						fs.Selected.Add(s);
 				}
 			}
 
@@ -813,7 +863,7 @@ namespace ACT.DFAssist
 				var n = trvFates.Nodes.Add(a.Value.Name);
 				n.Tag = "AREA:" + a.Key;
 
-				if (Settings.SelectedFates.Contains((string)n.Tag))
+				if (fs.Selected.Contains((string)n.Tag))
 				{
 					n.Checked = true;
 					n.Expand();
@@ -825,7 +875,7 @@ namespace ACT.DFAssist
 					var node = n.Nodes.Add(name);
 					node.Tag = f.Key.ToString();
 
-					if (Settings.SelectedFates.Contains((string)node.Tag))
+					if (fs.Selected.Contains((string)node.Tag))
 					{
 						node.Checked = true;
 
@@ -860,8 +910,10 @@ namespace ACT.DFAssist
 			}
 		}
 
+		// 전역 사운트 재생기
 		private readonly SoundPlayer _sndplay = new SoundPlayer();
 
+		// 사운드 재생
 		private void PlayEffectSound(string soundfile, bool force = false)
 		{
 			if (!force && !chkUseSound.Checked)
@@ -888,6 +940,7 @@ namespace ACT.DFAssist
 			}
 		}
 
+		// 사운드 스똡
 		private void StopEffectSound()
 		{
 			_sndplay.Stop();
@@ -953,6 +1006,7 @@ namespace ACT.DFAssist
 			Process.Start("https://notify-bot.line.me/");
 		}
 
+		// 이건 문제 없다
 		internal async Task InternalNotifyByLine(string mesg)
 		{
 			if (txtNtfLineToken.TextLength == 0)
@@ -977,6 +1031,7 @@ namespace ACT.DFAssist
 			SaveSettings();
 		}
 
+		// 이거 안된다는 보고. 해보니깐 되던데!!! 왜!!!
 		internal void InternalNotifyByTelegram(string mesg)
 		{
 			if (txtNtfTelegramId.TextLength == 0 || txtNtfTelegramToken.TextLength == 0)
@@ -1014,6 +1069,7 @@ namespace ACT.DFAssist
 			}
 		}
 
+		// 받은 메시지 처리기
 		private void PacketHandler(string pid, byte[] message)
 		{
 			var opcode = BitConverter.ToUInt16(message, 18);
@@ -1034,7 +1090,7 @@ namespace ACT.DFAssist
 				if (data[0] == GamePacket.Current.FateIndex)
 				{
 					var fcode = BitConverter.ToUInt16(data, 4);
-					bool isselected = Settings.SelectedFates.Contains(fcode.ToString());
+					bool isselected = Settings.CurrentFate.Selected.Contains(fcode.ToString());
 
 					if (Settings.LoggingWholeFates || isselected)
 					{
@@ -1184,7 +1240,7 @@ namespace ACT.DFAssist
 						_missions.TryAdd(ce, 0);
 
 						// 일단 페이트 취급
-						bool isselected = Settings.SelectedFates.Contains(ce.ToString());
+						bool isselected = Settings.CurrentFate.Selected.Contains(ce.ToString());
 
 						if (Settings.LoggingWholeFates || isselected)
 						{

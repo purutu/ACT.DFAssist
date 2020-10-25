@@ -37,7 +37,12 @@
 			this.splitBase = new System.Windows.Forms.SplitContainer();
 			this.tabLeft = new System.Windows.Forms.TabControl();
 			this.tabPageFates = new System.Windows.Forms.TabPage();
+			this.lblFatePreset = new System.Windows.Forms.Label();
+			this.cboFateSelection = new System.Windows.Forms.ComboBox();
 			this.tabPageSetting = new System.Windows.Forms.TabPage();
+			this.txtSelectedFates3 = new System.Windows.Forms.TextBox();
+			this.txtSelectedFates2 = new System.Windows.Forms.TextBox();
+			this.txtSelectedFates1 = new System.Windows.Forms.TextBox();
 			this.btnShowLogSetting = new System.Windows.Forms.Button();
 			this.txtUpdateSkip = new System.Windows.Forms.TextBox();
 			this.txtClientVersion = new System.Windows.Forms.TextBox();
@@ -140,11 +145,13 @@
 			// 
 			// trvFates
 			// 
+			this.trvFates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.trvFates.CheckBoxes = true;
-			this.trvFates.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.trvFates.Location = new System.Drawing.Point(3, 3);
+			this.trvFates.Location = new System.Drawing.Point(3, 37);
 			this.trvFates.Name = "trvFates";
-			this.trvFates.Size = new System.Drawing.Size(335, 510);
+			this.trvFates.Size = new System.Drawing.Size(335, 476);
 			this.trvFates.TabIndex = 3;
 			this.trvFates.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.TrvFates_AfterCheck);
 			// 
@@ -181,6 +188,8 @@
 			// 
 			// tabPageFates
 			// 
+			this.tabPageFates.Controls.Add(this.lblFatePreset);
+			this.tabPageFates.Controls.Add(this.cboFateSelection);
 			this.tabPageFates.Controls.Add(this.trvFates);
 			this.tabPageFates.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabPageFates.ImageIndex = 0;
@@ -192,9 +201,31 @@
 			this.tabPageFates.Text = "FATEs";
 			this.tabPageFates.UseVisualStyleBackColor = true;
 			// 
+			// lblFatePreset
+			// 
+			this.lblFatePreset.AutoSize = true;
+			this.lblFatePreset.Location = new System.Drawing.Point(6, 9);
+			this.lblFatePreset.Name = "lblFatePreset";
+			this.lblFatePreset.Size = new System.Drawing.Size(44, 17);
+			this.lblFatePreset.TabIndex = 5;
+			this.lblFatePreset.Text = "Preset";
+			// 
+			// cboFateSelection
+			// 
+			this.cboFateSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboFateSelection.FormattingEnabled = true;
+			this.cboFateSelection.Location = new System.Drawing.Point(95, 6);
+			this.cboFateSelection.Name = "cboFateSelection";
+			this.cboFateSelection.Size = new System.Drawing.Size(231, 25);
+			this.cboFateSelection.TabIndex = 4;
+			this.cboFateSelection.SelectedIndexChanged += new System.EventHandler(this.CboFateSelection_SelectedIndexChanged);
+			// 
 			// tabPageSetting
 			// 
 			this.tabPageSetting.AutoScroll = true;
+			this.tabPageSetting.Controls.Add(this.txtSelectedFates3);
+			this.tabPageSetting.Controls.Add(this.txtSelectedFates2);
+			this.tabPageSetting.Controls.Add(this.txtSelectedFates1);
 			this.tabPageSetting.Controls.Add(this.btnShowLogSetting);
 			this.tabPageSetting.Controls.Add(this.txtUpdateSkip);
 			this.tabPageSetting.Controls.Add(this.txtClientVersion);
@@ -218,6 +249,30 @@
 			this.tabPageSetting.Text = "Setting";
 			this.tabPageSetting.UseVisualStyleBackColor = true;
 			// 
+			// txtSelectedFates3
+			// 
+			this.txtSelectedFates3.Location = new System.Drawing.Point(193, 459);
+			this.txtSelectedFates3.Name = "txtSelectedFates3";
+			this.txtSelectedFates3.Size = new System.Drawing.Size(31, 25);
+			this.txtSelectedFates3.TabIndex = 27;
+			this.txtSelectedFates3.Visible = false;
+			// 
+			// txtSelectedFates2
+			// 
+			this.txtSelectedFates2.Location = new System.Drawing.Point(230, 459);
+			this.txtSelectedFates2.Name = "txtSelectedFates2";
+			this.txtSelectedFates2.Size = new System.Drawing.Size(31, 25);
+			this.txtSelectedFates2.TabIndex = 26;
+			this.txtSelectedFates2.Visible = false;
+			// 
+			// txtSelectedFates1
+			// 
+			this.txtSelectedFates1.Location = new System.Drawing.Point(267, 459);
+			this.txtSelectedFates1.Name = "txtSelectedFates1";
+			this.txtSelectedFates1.Size = new System.Drawing.Size(31, 25);
+			this.txtSelectedFates1.TabIndex = 25;
+			this.txtSelectedFates1.Visible = false;
+			// 
 			// btnShowLogSetting
 			// 
 			this.btnShowLogSetting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -230,7 +285,7 @@
 			this.btnShowLogSetting.Text = "Log setting";
 			this.btnShowLogSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.btnShowLogSetting.UseVisualStyleBackColor = false;
-			this.btnShowLogSetting.Click += new System.EventHandler(this.btnShowLogSetting_Click);
+			this.btnShowLogSetting.Click += new System.EventHandler(this.BtnShowLogSetting_Click);
 			// 
 			// txtUpdateSkip
 			// 
@@ -374,7 +429,7 @@
 			this.btnSoundPlayFate.Size = new System.Drawing.Size(32, 32);
 			this.btnSoundPlayFate.TabIndex = 23;
 			this.btnSoundPlayFate.UseVisualStyleBackColor = true;
-			this.btnSoundPlayFate.Click += new System.EventHandler(this.btnSoundPlayFate_Click);
+			this.btnSoundPlayFate.Click += new System.EventHandler(this.BtnSoundPlayFate_Click);
 			// 
 			// btnSelectSoundFate
 			// 
@@ -385,7 +440,7 @@
 			this.btnSelectSoundFate.Size = new System.Drawing.Size(32, 32);
 			this.btnSelectSoundFate.TabIndex = 22;
 			this.btnSelectSoundFate.UseVisualStyleBackColor = true;
-			this.btnSelectSoundFate.Click += new System.EventHandler(this.btnSelectSoundFate_Click);
+			this.btnSelectSoundFate.Click += new System.EventHandler(this.BtnSelectSoundFate_Click);
 			// 
 			// txtSoundFate
 			// 
@@ -444,7 +499,7 @@
 			this.txtSoundFile.Name = "txtSoundFile";
 			this.txtSoundFile.Size = new System.Drawing.Size(166, 25);
 			this.txtSoundFile.TabIndex = 16;
-			this.txtSoundFile.TextChanged += new System.EventHandler(this.txtSoundFile_TextChanged);
+			this.txtSoundFile.TextChanged += new System.EventHandler(this.TxtSoundFile_TextChanged);
 			// 
 			// btnSelectSound
 			// 
@@ -597,7 +652,7 @@
 			// 
 			// txtSelectedFates
 			// 
-			this.txtSelectedFates.Location = new System.Drawing.Point(136, 486);
+			this.txtSelectedFates.Location = new System.Drawing.Point(304, 459);
 			this.txtSelectedFates.Name = "txtSelectedFates";
 			this.txtSelectedFates.Size = new System.Drawing.Size(31, 25);
 			this.txtSelectedFates.TabIndex = 12;
@@ -794,6 +849,7 @@
 			this.splitBase.ResumeLayout(false);
 			this.tabLeft.ResumeLayout(false);
 			this.tabPageFates.ResumeLayout(false);
+			this.tabPageFates.PerformLayout();
 			this.tabPageSetting.ResumeLayout(false);
 			this.tabPageSetting.PerformLayout();
 			this.panel4.ResumeLayout(false);
@@ -875,5 +931,10 @@
 		private System.Windows.Forms.TextBox txtSoundFate;
 		private System.Windows.Forms.Label lblSoundFate;
 		private System.Windows.Forms.Label lblSoundInstance;
+		private System.Windows.Forms.TextBox txtSelectedFates3;
+		private System.Windows.Forms.TextBox txtSelectedFates2;
+		private System.Windows.Forms.TextBox txtSelectedFates1;
+		private System.Windows.Forms.Label lblFatePreset;
+		private System.Windows.Forms.ComboBox cboFateSelection;
 	}
 }

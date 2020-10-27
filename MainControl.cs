@@ -1106,7 +1106,7 @@ namespace ACT.DFAssist
 				opcode != GamePacket.Current.OpDuty &&
 				opcode != GamePacket.Current.OpMatch &&
 				opcode != GamePacket.Current.OpInstance &&
-				opcode != 0x299 // 특수: 5.35 보즈야 서던 프론트 크리티컬 인게이지먼트
+				opcode != GamePacket.Current.CriticalEngagement
 				)
 				return;
 
@@ -1237,8 +1237,8 @@ namespace ACT.DFAssist
 					_frmOverlay.EventNone();
 				}
 			}
-			// 5.35 보즈야 서던 프론트 크리티컬 인게이지먼트
-			else if (opcode == 0x299)
+			// 보즈야 서던 프론트 크리티컬 인게이지먼트
+			else if (opcode == GamePacket.Current.CriticalEngagement)
 			{
 				//  0[4] 타임스탬프
 				//  4[2] 남은시간 (mmss)

@@ -31,7 +31,7 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x010B,
-				CriticalEngagement = 0x299,
+				CriticalEngagement = 0x0143,
 			},
 																			  				 
 			/*   1 */
@@ -223,7 +223,7 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x010B,
-				CriticalEngagement = 0x299,
+				CriticalEngagement = 0x0143,
 			},
 		};
 

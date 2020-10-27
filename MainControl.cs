@@ -1,5 +1,9 @@
 ﻿using Advanced_Combat_Tracker;
+#if MACHINA
+using Machina.FFXIV;
+#else
 using FFXIV_ACT_Plugin.Common;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -41,10 +45,18 @@ namespace ACT.DFAssist
 		private SettingsSerializer _srset;
 
 		//
+		private bool _fpgConnect = false;
+
+#if MACHINA
+		private FFXIVNetworkMonitor _monitor;
+		public bool IsAttached => _fpgConnect;
+#else
 		private IActPluginV1 _FFXIVPlugin;
 		private NetworkReceivedDelegate _fpgNetworkReceiveDelegete;
 		//private ZoneChangedDelegate _fpgZoneChangeDelegate;
-		private bool _fpgConnect = false;
+
+		public bool IsAttached => _FFXIVPlugin != null && _fpgConnect;
+#endif
 
 		readonly ConcurrentDictionary<int, int> _missions = new ConcurrentDictionary<int, int>();
 
@@ -54,14 +66,9 @@ namespace ACT.DFAssist
 
 		//
 		private OverlayForm _frmOverlay;
-		#endregion
+#endregion
 
-		#region
-		//
-		public bool IsAttached => _FFXIVPlugin != null && _fpgConnect;
-		#endregion
-
-		#region 클래스
+#region 클래스
 		//
 		public MainControl()
 		{
@@ -83,9 +90,9 @@ namespace ACT.DFAssist
 			//
 			_frmOverlay = new OverlayForm();
 		}
-		#endregion
+#endregion
 
-		#region ACT처리
+#region ACT처리
 		// ACT에 어셈블리 등록
 		private void RegisterActAssemblies()
 		{
@@ -97,9 +104,12 @@ namespace ACT.DFAssist
 			// 설정 경로
 			Settings.Path = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, "Config", "ACT.DFAssist.config.xml");
 
+#if MACHINA
+#else
 			// FFXIV 플러그인용
 			_fpgNetworkReceiveDelegete = new NetworkReceivedDelegate(OnFFXIVNetworkReceived);
 			//_fpgZoneChangeDelegate = new ZoneChangedDelegate(OnFFXIVZoneChanged);
+#endif
 		}
 
 		// 플러그인 초기화
@@ -113,6 +123,14 @@ namespace ACT.DFAssist
 			else
 				ActGlobals.oFormActMain.Shown += OFormActMain_Shown;
 
+#if MACHINA
+			// 마시나
+			_monitor = new FFXIVNetworkMonitor
+			{
+				MessageReceived = new FFXIVNetworkMonitor.MessageReceivedDelegate(OnFFXIVNetworkReceived)
+			};
+			_monitor.Start();
+#else
 			// FFXIV 플러그인용
 			if (_FFXIVPlugin == null)
 			{
@@ -138,6 +156,7 @@ namespace ACT.DFAssist
 					_fpgConnect = false;
 				}
 			}
+#endif
 		}
 
 		//
@@ -221,6 +240,15 @@ namespace ACT.DFAssist
 
 			SaveSettings();
 
+#if MACHINA
+			// 마시나
+			if (_monitor!=null)
+			{
+				_monitor.Stop();
+				_monitor = null;
+			}
+#endif
+
 			//
 			_isInitSetting = false;
 
@@ -234,9 +262,9 @@ namespace ACT.DFAssist
 
 			Mesg.SetTextBox(null);
 		}
-		#endregion
+#endregion
 
-		#region UI 처리
+#region UI 처리
 		// 추가 ui 초기화
 		private void InitializeUi()
 		{
@@ -596,9 +624,9 @@ namespace ACT.DFAssist
 		{
 			pnlLogSetting.Visible = !pnlLogSetting.Visible;
 		}
-		#endregion
+#endregion
 
-		#region 자료 처리
+#region 자료 처리
 		// 메시지 언어 자료 읽기
 		private void ReadMesg(Mesg.Locale locale = null)
 		{
@@ -647,7 +675,7 @@ namespace ACT.DFAssist
 			}
 		}
 
-		#region 설정
+#region 설정
 		// 세팅 읽기. 사실 읽기를 가장한 저장인듯
 		private void ReadSettings()
 		{
@@ -806,10 +834,10 @@ namespace ACT.DFAssist
 				Mesg.Ex(ex, "Exception: save setting failed");
 			}
 		}
-		#endregion
-		#endregion
+#endregion
+#endregion
 
-		#region FATE 처리
+#region FATE 처리
 		//
 		private void InternalBuildSelectedFates(IEnumerable node)
 		{
@@ -889,9 +917,9 @@ namespace ACT.DFAssist
 
 			_isLockFates = false;
 		}
-		#endregion
+#endregion
 
-		#region 소리 처리
+#region 소리 처리
 		private void CheckSoundEnable()
 		{
 			txtSoundFile.Enabled = chkUseSound.Checked;
@@ -945,9 +973,9 @@ namespace ACT.DFAssist
 		{
 			_sndplay.Stop();
 		}
-		#endregion
+#endregion
 
-		#region 알림
+#region 알림
 		private void CheckUseNotify()
 		{
 			_use_notify = chkNtfUseLine.Checked || chkNtfUseTelegram.Checked;
@@ -1042,9 +1070,9 @@ namespace ACT.DFAssist
 			var wr = WebRequest.Create(url);
 			wr.GetResponse().GetResponseStream();
 		}
-		#endregion
+#endregion
 
-		#region 게임 프로시져
+#region 게임 프로시져
 		// FFXIV 플러그인: 장소 변경
 		public void OnFFXIVZoneChanged(uint zoneId, string zoneName)
 		{
@@ -1278,6 +1306,6 @@ namespace ACT.DFAssist
 #endif
 			}
 		}
-		#endregion
+#endregion
 	}
 }

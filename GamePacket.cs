@@ -2,17 +2,18 @@
 {
 	internal class GamePacket
 	{
-		public string Version { get; set; }             // 게임 버전
-		public ushort OpFate { get; set; }              // FATE op
-		public ushort FateIndex { get; set; }           // 페이트 인덱스
-		public ushort OpDuty { get; set; }              // 임무 op
-		public ushort DutyRoulette { get; set; }        // 임무 룰렛 인덱스
-		public ushort DutyInstance { get; set; }        // 임무 인스턴스 인덱스
-		public ushort OpMatch { get; set; }             // 매치 op
-		public ushort MatchRoulette { get; set; }       // 매치 룰렛 인덱스
-		public ushort MatchInstance { get; set; }       // 매치 인스턴스 인덱스
-		public ushort OpInstance { get; set; }          // 인스턴스
-		public ushort InstanceInstance { get; set; }    // 인스턴스 인스턴스 인덱스
+		public string Version { get; set; }                     // 게임 버전
+		public ushort OpFate { get; set; }                      // FATE op
+		public ushort FateIndex { get; set; }                   // 페이트 인덱스
+		public ushort OpDuty { get; set; }                      // 임무 op
+		public ushort DutyRoulette { get; set; }                // 임무 룰렛 인덱스
+		public ushort DutyInstance { get; set; }                // 임무 인스턴스 인덱스
+		public ushort OpMatch { get; set; }                     // 매치 op
+		public ushort MatchRoulette { get; set; }               // 매치 룰렛 인덱스
+		public ushort MatchInstance { get; set; }               // 매치 인스턴스 인덱스
+		public ushort OpInstance { get; set; } = 0;             // 인스턴스
+		public ushort InstanceInstance { get; set; } = 0;       // 인스턴스 인스턴스 인덱스
+		public ushort CriticalEngagement { get; set; } = 0;
 
 		//
 		public static readonly GamePacket[] Versions = new GamePacket[]
@@ -21,16 +22,16 @@
 			new GamePacket
 			{
 				Version = "Current",
-				OpFate = 0x032C,
+				OpFate = 0x02C8,
 				FateIndex = 0x35,
-				OpDuty = 0x0283,
+				OpDuty = 0x03DB,
 				DutyRoulette = 8,
 				DutyInstance = 12,
-				OpMatch = 0x016F,
+				OpMatch = 0x02C4,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0x029C,
-				InstanceInstance = 0,
+				OpInstance = 0x010B,
+				CriticalEngagement = 0x299,
 			},
 																			  				 
 			/*   1 */
@@ -45,8 +46,6 @@
 				OpMatch = 0x0080,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
-				InstanceInstance = 0,
 			},
 			/*   2 */
 			new GamePacket
@@ -60,8 +59,6 @@
 				OpMatch = 0x00B3,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
-				InstanceInstance = 0,
 			},
 			/*   3 */
 			new GamePacket
@@ -75,8 +72,6 @@
 				OpMatch = 0x032D,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
-				InstanceInstance = 0,
 			},
 			/*   4 */
 			new GamePacket
@@ -90,8 +85,6 @@
 				OpMatch = 0x02B0,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
-				InstanceInstance = 0,
 			},
 			/*   5 */
 			new GamePacket
@@ -105,8 +98,6 @@
 				OpMatch = 0x0135,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
-				InstanceInstance = 0,
 			},
 			/*   6 */ 
 			new GamePacket
@@ -120,8 +111,6 @@
 				OpMatch = 0x01F8,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
-				InstanceInstance = 0,
 			},
 			/*   7 */ 
 			new GamePacket
@@ -135,8 +124,6 @@
 				OpMatch = 0x025C,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
-				InstanceInstance = 0,
 			},
 			/*   8 */
 			new GamePacket
@@ -151,7 +138,6 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x12F,
-				InstanceInstance = 0,
 			},
 			/*   9 */ 
 			new GamePacket
@@ -166,7 +152,6 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x398,
-				InstanceInstance = 0,
 			},
 			/*  10 */ 
 			new GamePacket
@@ -181,7 +166,6 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x0167,
-				InstanceInstance = 0,
 			},
 			/*  11 */ 
 			new GamePacket
@@ -196,7 +180,6 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x0385,
-				InstanceInstance = 0,
 			},			
 			/*  12 */ 
 			new GamePacket
@@ -211,7 +194,6 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x00BC,
-				InstanceInstance = 0,
 			},			
 			/*  13 */ 
 			new GamePacket
@@ -226,7 +208,22 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x029C,
-				InstanceInstance = 0,
+				CriticalEngagement=0x299,
+			},
+			/*  14 */ 
+			new GamePacket
+			{
+				Version = "0535HF",
+				OpFate = 0x02C8,
+				FateIndex = 0x35,
+				OpDuty = 0x03DB,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x02C4,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpInstance = 0x010B,
+				CriticalEngagement = 0x299,
 			},
 		};
 

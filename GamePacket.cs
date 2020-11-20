@@ -224,6 +224,21 @@
 				MatchInstance = 20,
 				OpInstance = 0x010B,
 				CriticalEngagement = 0x0143,
+			},			
+			/*  15 */ 
+			new GamePacket
+			{
+				Version = "0525KR",
+				OpFate = 0x0200,
+				FateIndex = 0x35,
+				OpDuty = 0x0156,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x0242,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpInstance = 0,
+				CriticalEngagement = 0,
 			},
 		};
 

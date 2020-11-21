@@ -21,7 +21,7 @@
 		public static readonly GameVersion[] Versions = new GameVersion[]
 		{
 			/* 20201027 */ new GameVersion(0, "5.35HF"),
-			/* 20201027 */ new GameVersion(15, "KR 5.25"),
+			/* 20201110 */ new GameVersion(15, "KR 5.25"),
 			/* 20201027 */ new GameVersion(14, "5.35HF"),
 			/* 20201013 */ new GameVersion(13, "5.35"),
 			/* 20200909 */ new GameVersion(12, "5.31"),

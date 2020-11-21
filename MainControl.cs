@@ -1106,7 +1106,7 @@ namespace ACT.DFAssist
 				opcode != GamePacket.Current.OpDuty &&
 				opcode != GamePacket.Current.OpMatch &&
 				opcode != GamePacket.Current.OpInstance &&
-				opcode != GamePacket.Current.CriticalEngagement
+				opcode != GamePacket.Current.OpBozjaCe
 				)
 				return;
 
@@ -1238,7 +1238,7 @@ namespace ACT.DFAssist
 				}
 			}
 			// 보즈야 서던 프론트 크리티컬 인게이지먼트
-			else if (opcode == GamePacket.Current.CriticalEngagement)
+			else if (opcode == GamePacket.Current.OpBozjaCe)
 			{
 				//  0[4] 타임스탬프
 				//  4[2] 남은시간 (mmss)

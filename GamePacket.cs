@@ -13,7 +13,7 @@
 		public ushort MatchInstance { get; set; }               // 매치 인스턴스 인덱스
 		public ushort OpInstance { get; set; } = 0;             // 인스턴스
 		public ushort InstanceInstance { get; set; } = 0;       // 인스턴스 인스턴스 인덱스
-		public ushort CriticalEngagement { get; set; } = 0;
+		public ushort OpBozjaCe { get; set; } = 0;				// 남부 보즈야 전선 크리티컬 인게이지먼트
 
 		//
 		public static readonly GamePacket[] Versions = new GamePacket[]
@@ -31,7 +31,7 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x010B,
-				CriticalEngagement = 0x0143,
+				OpBozjaCe = 0x0143,
 			},
 																			  				 
 			/*   1 */
@@ -208,7 +208,7 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x029C,
-				CriticalEngagement=0x299,
+				OpBozjaCe=0x299,
 			},
 			/*  14 */ 
 			new GamePacket
@@ -223,7 +223,7 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x010B,
-				CriticalEngagement = 0x0143,
+				OpBozjaCe = 0x0143,
 			},			
 			/*  15 */ 
 			new GamePacket
@@ -238,7 +238,7 @@
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0,
-				CriticalEngagement = 0,
+				OpBozjaCe = 0,
 			},
 		};
 

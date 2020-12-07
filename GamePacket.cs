@@ -22,16 +22,16 @@
 			new GamePacket
 			{
 				Version = "Current",
-				OpFate = 0x02C8,
+				OpFate = 0,
 				FateIndex = 0x35,
-				OpDuty = 0x03DB,
+				OpDuty = 0,
 				DutyRoulette = 8,
 				DutyInstance = 12,
-				OpMatch = 0x02C4,
+				OpMatch = 0,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0x010B,
-				OpBozjaCe = 0x0143,
+				OpInstance = 0,
+				OpBozjaCe = 0,
 			},
 																			  				 
 			/*   1 */
@@ -235,6 +235,21 @@
 				DutyRoulette = 8,
 				DutyInstance = 12,
 				OpMatch = 0x0242,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpInstance = 0,
+				OpBozjaCe = 0,
+			},
+			/*  16 */ 
+			new GamePacket
+			{
+				Version = "0540",
+				OpFate = 0,
+				FateIndex = 0x35,
+				OpDuty = 0,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0,
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0,

@@ -22,12 +22,12 @@
 			new GamePacket
 			{
 				Version = "Current",
-				OpFate = 0,
+				OpFate = 0x318,
 				FateIndex = 0x35,
-				OpDuty = 0,
+				OpDuty = 0x369,
 				DutyRoulette = 8,
 				DutyInstance = 12,
-				OpMatch = 0,
+				OpMatch = 0x1F6,
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0,
@@ -244,12 +244,12 @@
 			new GamePacket
 			{
 				Version = "0540",
-				OpFate = 0,
+				OpFate = 0x318,
 				FateIndex = 0x35,
-				OpDuty = 0,
+				OpDuty = 0x369,
 				DutyRoulette = 8,
 				DutyInstance = 12,
-				OpMatch = 0,
+				OpMatch = 0x1F6,
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0,

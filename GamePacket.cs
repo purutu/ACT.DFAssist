@@ -30,7 +30,7 @@
 				OpMatch = 0x1F6,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
+				OpInstance = 0xB0,
 				OpBozjaCe = 0,
 			},
 																			  				 
@@ -252,7 +252,7 @@
 				OpMatch = 0x1F6,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
+				OpInstance = 0xB0,
 				OpBozjaCe = 0,
 			},
 		};

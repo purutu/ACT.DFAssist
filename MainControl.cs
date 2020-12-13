@@ -460,7 +460,7 @@ namespace ACT.DFAssist
 					Settings.ClientVersion = v.Index;
 					txtClientVersion.Text = v.Index.ToString();
 
-					GamePacket.Current = GamePacket.Versions[v.Index];
+					GamePacket.Current = GamePacket.Packets[v.Index];
 
 					Mesg.I("i-client-version", $"{v.Name}, {GamePacket.Current.OpFate:X4}/{GamePacket.Current.OpDuty:X4}/{GamePacket.Current.OpMatch:X4}");
 					SaveSettings();

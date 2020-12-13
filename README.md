@@ -6,7 +6,7 @@ This plugin provide matched duty and FATEs occurrence informations.
 
 ## Feature
 * Supported game client: Version **5.4** / **KR 5.25**
-* Assist **duty instances** / **FATEs** / **Eureka** / **Bozja** *(Skirmish/CE)*
+* Assist **instances** / **FATEs** / **Eureka** / **Bozja**
 
 ## Install
 Copy downloaded **plugin file**(ACT.DFAssist.dll) to your plugin directory. Then, register with your plugin list

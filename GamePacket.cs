@@ -45,7 +45,7 @@
 				OpMatch = 0x0242,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0,
+				OpInstance = 0x039F,
 				OpBozjaCe = 0,
 			},
 		};

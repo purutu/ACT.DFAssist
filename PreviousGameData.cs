@@ -11,23 +11,24 @@ namespace ACT.DFAssist.Keep
 		// 버전 목록
 		public static readonly GameVersion[] PreviousVersions = new GameVersion[]
 		{
-			/* 20201208 */ new GameVersion(0, "5.4"),
-			/* 20201208 */ new GameVersion(16, "5.4"),
-			/* 20201110 */ new GameVersion(15, "KR 5.25"),
-			/* 20201027 */ new GameVersion(14, "5.35HF"),
-			/* 20201013 */ new GameVersion(13, "5.35"),
-			/* 20200909 */ new GameVersion(12, "5.31"),
-			/* 20200825 */ new GameVersion(11, "5.3HF"),
-			/* 20200811 */ new GameVersion(10, "5.3"),
-			/* 20200330 */ new GameVersion(9, "5.25"),
-			/* 20200330 */ new GameVersion(8, "5.21HF"),
-			/* 20200218 */ new GameVersion(7, "5.2"),
-			/* 20191224 */ new GameVersion(6, "5.18"),
-			/* 20191210 */ new GameVersion(5, "5.15"),
-			/* 20191126 */ new GameVersion(4, "5.11HF"),
-			/* 20191111 */ new GameVersion(3, "5.11"),
+			/* 00000000 */ new GameVersion(0, "not-existance"),
+			/* 20190628 */ new GameVersion(1, "5.0"),
 			/* 20191029 */ new GameVersion(2, "5.1"),
-			/* 20190628 */ new GameVersion(1, "<= 5.0"),
+			/* 20191111 */ new GameVersion(3, "5.11"),
+			/* 20191126 */ new GameVersion(4, "5.11HF"),
+			/* 20191210 */ new GameVersion(5, "5.15"),
+			/* 20191224 */ new GameVersion(6, "5.18"),
+			/* 20200218 */ new GameVersion(7, "5.2"),
+			/* 20200330 */ new GameVersion(8, "5.21HF"),
+			/* 20200330 */ new GameVersion(9, "5.25"),
+			/* 20200811 */ new GameVersion(10, "5.3"),
+			/* 20200825 */ new GameVersion(11, "5.3HF"),
+			/* 20200909 */ new GameVersion(12, "5.31"),
+			/* 20201013 */ new GameVersion(13, "5.35"),
+			/* 20201027 */ new GameVersion(14, "5.35HF"),
+			/* 20201110 */ new GameVersion(15, "KR 5.25"),
+			/* 20201208 */ new GameVersion(16, "5.4"),
+			/* 20201222 */ new GameVersion(17, "5.4HF"),
 		};
 
 		//
@@ -36,17 +37,17 @@ namespace ACT.DFAssist.Keep
 			/*   0 */ 
 			new GamePacket
 			{
-				Version = "Current",
-				OpFate = 0x318,
-				FateIndex = 0x35,
-				OpDuty = 0x369,
-				DutyRoulette = 8,
-				DutyInstance = 12,
-				OpMatch = 0x1F6,
-				MatchRoulette = 2,
-				MatchInstance = 20,
-				OpInstance = 0xB0,
-				OpBozjaCe = 0x03C1,
+				Version = "not-existance",
+				OpFate = 0,
+				FateIndex = 0,
+				OpDuty = 0,
+				DutyRoulette = 0,
+				DutyInstance = 0,
+				OpMatch = 0,
+				MatchRoulette = 0,
+				MatchInstance = 0,
+				OpInstance = 0,
+				OpBozjaCe = 0,
 			},
 																			  				 
 			/*   1 */
@@ -269,6 +270,21 @@ namespace ACT.DFAssist.Keep
 				MatchInstance = 20,
 				OpInstance = 0xB0,
 				OpBozjaCe = 0x03C1,
+			},
+			/*  17 */ 
+			new GamePacket
+			{
+				Version = "0540HF",
+				OpFate = 0x06A,
+				FateIndex = 0x35,
+				OpDuty = 0x01FB,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x2E0,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpInstance = 0x0,
+				OpBozjaCe = 0x31B,
 			},
 		};
 	}

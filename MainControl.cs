@@ -1219,7 +1219,7 @@ namespace ACT.DFAssist
 				// 2[2] ?
 				// 4[1] 0=입장?, 4=입장?, 5=나옴
 
-				if (data[4] == 4)
+				if (data[4] == 0)
 				{
 					// 0은 최초 입장때만 나오므로 이거 쓰자
 					var icode = BitConverter.ToUInt16(data, GamePacket.Current.InstanceInstance);

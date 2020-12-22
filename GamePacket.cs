@@ -30,7 +30,7 @@
 				OpMatch = 0x2E0,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0x0,
+				OpInstance = 0x7B,
 				OpBozjaCe = 0x31B,
 			},
 			/*  1 */ 

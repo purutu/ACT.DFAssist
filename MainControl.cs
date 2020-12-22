@@ -66,9 +66,9 @@ namespace ACT.DFAssist
 
 		//
 		private OverlayForm _frmOverlay;
-#endregion
+		#endregion
 
-#region 클래스
+		#region 클래스
 		//
 		public MainControl()
 		{
@@ -90,9 +90,9 @@ namespace ACT.DFAssist
 			//
 			_frmOverlay = new OverlayForm();
 		}
-#endregion
+		#endregion
 
-#region ACT처리
+		#region ACT처리
 		// ACT에 어셈블리 등록
 		private void RegisterActAssemblies()
 		{
@@ -242,7 +242,7 @@ namespace ACT.DFAssist
 
 #if MACHINA
 			// 마시나
-			if (_monitor!=null)
+			if (_monitor != null)
 			{
 				_monitor.Stop();
 				_monitor = null;
@@ -262,9 +262,9 @@ namespace ACT.DFAssist
 
 			Mesg.SetTextBox(null);
 		}
-#endregion
+		#endregion
 
-#region UI 처리
+		#region UI 처리
 		// 추가 ui 초기화
 		private void InitializeUi()
 		{
@@ -624,9 +624,9 @@ namespace ACT.DFAssist
 		{
 			pnlLogSetting.Visible = !pnlLogSetting.Visible;
 		}
-#endregion
+		#endregion
 
-#region 자료 처리
+		#region 자료 처리
 		// 메시지 언어 자료 읽기
 		private void ReadMesg(Mesg.Locale locale = null)
 		{
@@ -675,7 +675,7 @@ namespace ACT.DFAssist
 			}
 		}
 
-#region 설정
+		#region 설정
 		// 세팅 읽기. 사실 읽기를 가장한 저장인듯
 		private void ReadSettings()
 		{
@@ -834,10 +834,10 @@ namespace ACT.DFAssist
 				Mesg.Ex(ex, "Exception: save setting failed");
 			}
 		}
-#endregion
-#endregion
+		#endregion
+		#endregion
 
-#region FATE 처리
+		#region FATE 처리
 		//
 		private void InternalBuildSelectedFates(IEnumerable node)
 		{
@@ -917,9 +917,9 @@ namespace ACT.DFAssist
 
 			_isLockFates = false;
 		}
-#endregion
+		#endregion
 
-#region 소리 처리
+		#region 소리 처리
 		private void CheckSoundEnable()
 		{
 			txtSoundFile.Enabled = chkUseSound.Checked;
@@ -973,9 +973,9 @@ namespace ACT.DFAssist
 		{
 			_sndplay.Stop();
 		}
-#endregion
+		#endregion
 
-#region 알림
+		#region 알림
 		private void CheckUseNotify()
 		{
 			_use_notify = chkNtfUseLine.Checked || chkNtfUseTelegram.Checked;
@@ -1070,9 +1070,9 @@ namespace ACT.DFAssist
 			var wr = WebRequest.Create(url);
 			wr.GetResponse().GetResponseStream();
 		}
-#endregion
+		#endregion
 
-#region 게임 프로시져
+		#region 게임 프로시져
 		// FFXIV 플러그인: 장소 변경
 		public void OnFFXIVZoneChanged(uint zoneId, string zoneName)
 		{
@@ -1215,7 +1215,11 @@ namespace ACT.DFAssist
 			// 인스턴스 관련
 			else if (opcode == GamePacket.Current.OpInstance && GamePacket.Current.OpInstance != 0)
 			{
-				if (data[4] == 0)
+				// 0[2] 인스턴스 번호
+				// 2[2] ?
+				// 4[1] 0=입장?, 4=입장?, 5=나옴
+
+				if (data[4] == 4)
 				{
 					// 0은 최초 입장때만 나오므로 이거 쓰자
 					var icode = BitConverter.ToUInt16(data, GamePacket.Current.InstanceInstance);
@@ -1231,7 +1235,7 @@ namespace ACT.DFAssist
 					// 미션...이 처리가되나
 					_missions.Clear();
 				}
-				else
+				else if (data[4] != 4)  // 0다음에 4가 또 오는데 이거땜에 없어지면 곤란하니깐
 				{
 					// 조용히 시키자
 					_frmOverlay.EventNone();
@@ -1306,6 +1310,6 @@ namespace ACT.DFAssist
 #endif
 			}
 		}
-#endregion
+		#endregion
 	}
 }

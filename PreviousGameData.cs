@@ -29,6 +29,8 @@ namespace ACT.DFAssist.Keep
 			/* 20201110 */ new GameVersion(15, "KR 5.25"),
 			/* 20201208 */ new GameVersion(16, "5.4"),
 			/* 20201222 */ new GameVersion(17, "5.4HF"),
+			/* 20210112 */ new GameVersion(15, "KR 5.3"),
+			/* 20210112 */ new GameVersion(15, "5.41"),
 		};
 
 		//
@@ -285,6 +287,36 @@ namespace ACT.DFAssist.Keep
 				MatchInstance = 20,
 				OpInstance = 0x7B,
 				OpBozjaCe = 0x31B,
+			},	
+			/*  18 */ 
+			new GamePacket
+			{
+				Version = "0530KR",
+				OpFate = 0x025F,
+				FateIndex = 0x35,
+				OpDuty = 0x0081,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x022C,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpInstance = 0x02C3,
+				OpBozjaCe = 0,
+			},
+			/*  19 */ 
+			new GamePacket
+			{
+				Version = "0541",
+				OpFate = 0x0,
+				FateIndex = 0x35,
+				OpDuty = 0x0,
+				DutyRoulette = 8,
+				DutyInstance = 12,
+				OpMatch = 0x0,
+				MatchRoulette = 2,
+				MatchInstance = 20,
+				OpInstance = 0x0,
+				OpBozjaCe = 0x0,
 			},
 		};
 	}

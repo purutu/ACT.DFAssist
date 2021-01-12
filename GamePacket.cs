@@ -21,31 +21,31 @@
 			/*   0 */ 
 			new GamePacket
 			{
-				Version = "0540HF",
-				OpFate = 0x06A,
+				Version = "0541",
+				OpFate = 0x0,
 				FateIndex = 0x35,
-				OpDuty = 0x01FB,
+				OpDuty = 0x0,
 				DutyRoulette = 8,
 				DutyInstance = 12,
-				OpMatch = 0x2E0,
+				OpMatch = 0x0,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0x7B,
-				OpBozjaCe = 0x31B,
+				OpInstance = 0x0,
+				OpBozjaCe = 0x0,
 			},
 			/*  1 */ 
 			new GamePacket
 			{
-				Version = "0525KR",
-				OpFate = 0x0200,
+				Version = "0530KR",
+				OpFate = 0x025F,
 				FateIndex = 0x35,
-				OpDuty = 0x0156,
+				OpDuty = 0x0081,
 				DutyRoulette = 8,
 				DutyInstance = 12,
-				OpMatch = 0x0242,
+				OpMatch = 0x022C,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0x039F,
+				OpInstance = 0x02C3,
 				OpBozjaCe = 0,
 			},
 		};

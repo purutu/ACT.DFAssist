@@ -307,16 +307,16 @@ namespace ACT.DFAssist.Keep
 			new GamePacket
 			{
 				Version = "0541",
-				OpFate = 0x0,
+				OpFate = 0x03A3,
 				FateIndex = 0x35,
-				OpDuty = 0x0,
+				OpDuty = 0x02DC,
 				DutyRoulette = 8,
 				DutyInstance = 12,
-				OpMatch = 0x0,
+				OpMatch = 0x01D2,
 				MatchRoulette = 2,
 				MatchInstance = 20,
-				OpInstance = 0x0,
-				OpBozjaCe = 0x0,
+				OpInstance = 0x0157,
+				OpBozjaCe = 0x0118,
 			},
 		};
 	}

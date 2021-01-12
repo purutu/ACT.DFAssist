@@ -9,6 +9,9 @@ namespace ACT.DFAssist
 		// 태그
 		public static string TagName = "202101121";  // 202012231 -> 202101121
 
+		// Machina.FFXIV
+		public static bool UseMachina = true;
+
 		// 경로
 		public static string Path { get; set; }
 

@@ -332,7 +332,7 @@ namespace ACT.DFAssist.Keep
 				MatchRoulette = 2,
 				MatchInstance = 20,
 				OpInstance = 0x2EE,
-				OpBozjaCe = 0x0,
+				OpBozjaCe = 0x3E1,
 			},
 		};
 	}

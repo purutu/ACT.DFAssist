@@ -5,7 +5,7 @@ Final Fantasy XIV DFAssist(https://github.com/lalafellsleep/ACTFate) forked plug
 This plugin provide matched duty and FATEs occurrence informations.
 
 ## Feature
-* Supported game client: Version **5.45** / **KR 5.3**
+* Supported game client: Version **5.45HotFix** / **KR 5.3**
 * Assist **instances** / **FATEs** / **Eureka** / **Bozja**
 
 ## Install

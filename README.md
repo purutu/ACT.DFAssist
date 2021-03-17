@@ -1,17 +1,8 @@
-# ACT.DFAssist
+**ACT.DFAssist**
 
-Final Fantasy XIV DFAssist(https://github.com/lalafellsleep/ACTFate) forked plugin for **ACT3**
+This repository will be close soon.
+Please try another plugins below for continue
+* [ACT_DFAPlugin](https://github.com/qitana/ACT_DFAPlugin)
+* [DutyContent](https://github.com/kshman/DutyContent/releases)
 
-This plugin provide matched duty and FATEs occurrence informations.
-
-## Feature
-* Supported game client: Version **5.45HotFix** / **KR 5.31**
-* Assist **instances** / **FATEs** / **Eureka** / **Bozja**
-
-## Install
-Copy downloaded **plugin file**(ACT.DFAssist.dll) to your plugin directory. Then, register with your plugin list
-![ACT3 plugin add image](https://user-images.githubusercontent.com/47320226/52210588-db581b00-28ca-11e9-8c60-4d4d1fc21fa4.png)
-
-* This plugin requires lastest **ravhan's FFXIV plugin**
-
-
+Thank you for using this plugins so far :)
